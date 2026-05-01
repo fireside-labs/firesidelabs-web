@@ -26,7 +26,7 @@ export const Hero = () => {
           className="font-mono text-[9px] tracking-[0.4em] text-[#C87533]/50 uppercase whitespace-nowrap py-4"
           style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
         >
-          Fireside Labs · Spec V0.1 · Copper &amp; Obsidian
+          Fireside Labs · Enterprise AI · Calibration Engagements
         </div>
         <div className="w-px flex-1 bg-gradient-to-b from-transparent via-[#C87533]/30 to-transparent" />
       </div>

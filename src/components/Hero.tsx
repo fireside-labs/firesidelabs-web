@@ -1,12 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Flame } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { lazy, Suspense } from 'react';
-
-// Spline runtime is ~200KB — defer until the Hero is actually rendered.
-const FiresideEngine3D = lazy(() =>
-  import('./FiresideEngine3D').then(m => ({ default: m.FiresideEngine3D }))
-);
 
 export const Hero = () => {
   return (
@@ -15,18 +9,27 @@ export const Hero = () => {
       <div className="ambient-glow top-[-200px] left-[-100px]" style={{ background: '#C87533' }} />
       <div className="ambient-glow top-[30%] right-[-200px]" style={{ background: '#A85A20' }} />
 
-      {/* 3D motion centerpiece — Fireside Engine architecture */}
-      <Suspense fallback={null}><FiresideEngine3D /></Suspense>
-
       <div className="absolute inset-0 z-[1] bg-gradient-to-b from-vanta/30 via-vanta/55 to-vanta pointer-events-none" />
-      
-      <div 
+
+      <div
         className="absolute inset-0 z-[2] opacity-[0.03]"
         style={{
           backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
           backgroundSize: '60px 60px',
         }}
       />
+
+      {/* Asymmetric editorial gutter — copper rule + rotated specs label on left edge */}
+      <div className="hidden md:flex absolute left-6 lg:left-10 top-0 bottom-0 z-[3] flex-col items-center justify-center pointer-events-none">
+        <div className="w-px flex-1 bg-gradient-to-b from-transparent via-[#C87533]/30 to-transparent" />
+        <div
+          className="font-mono text-[9px] tracking-[0.4em] text-[#C87533]/50 uppercase whitespace-nowrap py-4"
+          style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
+        >
+          Fireside Labs · Spec V0.1 · Copper &amp; Obsidian
+        </div>
+        <div className="w-px flex-1 bg-gradient-to-b from-transparent via-[#C87533]/30 to-transparent" />
+      </div>
 
       <div className="relative z-10 text-center max-w-5xl mx-auto px-6">
         {/* Status badge */}
@@ -45,21 +48,21 @@ export const Hero = () => {
           </span>
         </motion.div>
 
-        {/* Headline — Broad positioning for all AI adoption stages */}
+        {/* Headline — Fraunces display, broad positioning for all AI adoption stages */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-[-0.04em] leading-[0.95] mb-8"
+          className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold leading-[0.95] mb-8"
         >
           AI That Works.{' '}
           <br className="hidden sm:block" />
-          <span className="text-gradient">
+          <span className="text-gradient italic">
             On Your Terms.
           </span>
         </motion.h1>
 
-        {/* Sub — business outcomes, not technical jargon */}
+        {/* Sub — flexibility-as-feature; deployment fits the data, not the other way around */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -68,7 +71,7 @@ export const Hero = () => {
         >
           We turn your biggest operational bottlenecks into AI-powered solutions —{' '}
           <span className="text-text-primary font-medium">
-            built privately on your systems, so your data never leaves your control.
+            local, hybrid, or private cloud. We architect the AI to fit the data, not the other way around.
           </span>
         </motion.p>
 
@@ -112,9 +115,9 @@ export const Hero = () => {
           className="mt-20 pt-8 border-t border-white/5 flex justify-center gap-12 md:gap-20"
         >
           {[
-            { value: '100%', label: 'On-Premise' },
-            { value: 'Zero', label: 'Cloud Exposure' },
-            { value: 'Full', label: 'Ownership' },
+            { value: 'Your', label: 'Domain' },
+            { value: 'Your', label: 'Boundary' },
+            { value: 'Your', label: 'AI' },
           ].map((m, i) => (
             <div key={i} className="text-left">
               <div className="text-2xl md:text-3xl font-bold text-gradient font-mono">{m.value}</div>

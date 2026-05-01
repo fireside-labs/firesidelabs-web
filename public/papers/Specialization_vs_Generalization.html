@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>When a Smaller Model Wins — Fireside Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --copper:   #C87533;
+      --copper-lt:#D9924E;
+      --dark:     #0A0A0A;
+      --ink:      #1A1A1A;
+      --muted:    #6B6B6B;
+      --rule:     #E8E3DC;
+      --bg:       #FFFFFF;
+      --bg-soft:  #FAF8F5;
+      --mono:     'JetBrains Mono', 'Courier New', monospace;
+      --sans:     'Inter', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    html { font-size: 16px; }
+    body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    @page { size: letter; margin: 0; }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    /* ── COVER ── */
+    .cover {
+      width: 100%; min-height: 100vh; background: var(--dark);
+      display: flex; flex-direction: column;
+      position: relative; overflow: hidden; page-break-after: always;
+    }
+    .cover-flame-bar { height: 6px; background: linear-gradient(90deg, #C87533, #D9924E); }
+    .cover-inner { flex: 1; display: flex; flex-direction: column; padding: 60px 72px; position: relative; z-index: 2; }
+    .cover::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 110% 0%, rgba(200,117,51,0.18) 0%, transparent 60%),
+                  radial-gradient(ellipse at -10% 100%, rgba(200,117,51,0.08) 0%, transparent 50%);
+      z-index: 1;
+    }
+    .cover-logo { font-size: 13px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .cover-logo span { color: rgba(255,255,255,0.4); font-weight: 400; }
+    .cover-content { margin-top: auto; margin-bottom: auto; padding: 60px 0 40px; max-width: 700px; }
+    .cover-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 24px; }
+    .cover-eyebrow { font-size: 12px; color: rgba(255,255,255,0.35); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; font-family: var(--mono); }
+    .cover-title { font-family: var(--mono); font-size: 44px; font-weight: 600; line-height: 1.1; color: #fff; margin-bottom: 20px; }
+    .cover-title em { color: var(--copper-lt); font-style: italic; font-weight: 400; }
+    .cover-subtitle { font-size: 17px; color: rgba(255,255,255,0.5); line-height: 1.6; margin-bottom: 48px; max-width: 600px; }
+    .cover-divider { width: 48px; height: 3px; background: var(--copper); border-radius: 2px; margin-bottom: 32px; }
+    .cover-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px; }
+    .cover-tag { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 10px; border-radius: 3px; border: 1px solid rgba(200,117,51,0.4); color: var(--copper); }
+    .cover-meta { font-size: 12px; color: rgba(255,255,255,0.25); letter-spacing: 0.04em; line-height: 1.7; }
+    .cover-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; margin-top: auto; }
+    .cover-footer div { font-size: 12px; color: rgba(255,255,255,0.28); }
+
+    /* ── ABSTRACT ── */
+    .abstract-block {
+      background: var(--dark); border-radius: 8px;
+      padding: 28px 32px; margin-bottom: 48px;
+      border-left: 3px solid var(--copper);
+    }
+    .abstract-label { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 12px; }
+    .abstract-block p { font-size: 14.5px; color: rgba(255,255,255,0.7); line-height: 1.7; margin: 0; }
+
+    /* ── BODY ── */
+    .doc { max-width: 760px; margin: 0 auto; padding: 72px 72px 80px; }
+    .running-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--rule); margin-bottom: 52px; }
+    .running-logo { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .running-title { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; font-family: var(--mono); }
+
+    h1 { font-family: var(--mono); font-size: 32px; font-weight: 600; line-height: 1.2; color: var(--dark); margin-bottom: 6px; }
+    .doc-subtitle { font-size: 15px; color: var(--muted); margin-bottom: 40px; line-height: 1.5; font-family: var(--mono); }
+    h2 { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--dark); margin-top: 56px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--copper); display: inline-block; }
+    h3 { font-size: 13px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--copper); margin-top: 36px; margin-bottom: 10px; font-family: var(--mono); }
+    p { margin-bottom: 16px; font-size: 15px; color: #2c2c2c; line-height: 1.75; }
+    em { font-style: italic; }
+    strong { font-weight: 600; color: var(--dark); }
+    code { font-family: var(--mono); font-size: 13px; background: var(--bg-soft); border: 1px solid var(--rule); padding: 1px 6px; border-radius: 3px; color: var(--copper); }
+
+    .pull-quote { border-left: 4px solid var(--copper); background: var(--bg-soft); padding: 20px 28px; margin: 36px 0; border-radius: 0 6px 6px 0; }
+    .pull-quote p { font-family: var(--mono); font-size: 16px; line-height: 1.55; color: var(--dark); font-style: italic; margin: 0; }
+
+    /* ── COMPARISON CHART ── */
+    .experiment {
+      background: var(--dark); border-radius: 10px;
+      padding: 32px 36px; margin: 28px 0 36px;
+    }
+    .experiment-label { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 20px; }
+    .experiment-title { font-family: var(--mono); font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 16px; }
+    .experiment-desc { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.65; margin-bottom: 24px; }
+    .result-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+    .result-row:last-child { margin-bottom: 0; }
+    .result-label { font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,0.6); min-width: 200px; }
+    .result-bar-wrap { flex: 1; height: 8px; background: rgba(255,255,255,0.07); border-radius: 4px; overflow: hidden; }
+    .result-bar { height: 100%; border-radius: 4px; }
+    .result-bar.generalist { background: rgba(255,255,255,0.25); }
+    .result-bar.specialist { background: linear-gradient(90deg, #C87533, #D9924E); }
+    .result-bar.dim { background: rgba(255,255,255,0.12); }
+    .result-val { font-family: var(--mono); font-size: 13px; font-weight: 600; min-width: 60px; text-align: right; }
+    .result-val.generalist { color: rgba(255,255,255,0.5); }
+    .result-val.specialist { color: var(--copper-lt); }
+
+    /* ── SCENARIO TABLE ── */
+    .scenario-table { width: 100%; border-collapse: collapse; margin: 28px 0 36px; font-size: 14px; }
+    .scenario-table th { background: var(--dark); color: rgba(255,255,255,0.7); padding: 11px 16px; text-align: left; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; font-family: var(--mono); }
+    .scenario-table th:first-child { border-radius: 6px 0 0 0; }
+    .scenario-table th:last-child { border-radius: 0 6px 0 0; }
+    .scenario-table td { padding: 12px 16px; border-bottom: 1px solid var(--rule); vertical-align: top; color: #2c2c2c; line-height: 1.55; }
+    .scenario-table tr:nth-child(even) td { background: var(--bg-soft); }
+    .tag-specialist { color: var(--copper); font-weight: 700; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; }
+    .tag-generalist { color: var(--muted); font-weight: 600; font-family: var(--mono); font-size: 11px; }
+
+    /* ── CALLOUT ── */
+    .callout { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 8px; padding: 22px 26px; margin: 32px 0; }
+    .callout-label { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 10px; }
+    .callout p { font-size: 14px; margin: 0; color: #3D2A0F; line-height: 1.65; }
+
+    /* ── LEADERBOARD TABLE ── */
+    .leaderboard-wrap { margin: 28px 0 36px; overflow-x: auto; }
+    .leaderboard { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .leaderboard thead th {
+      background: var(--dark); color: rgba(255,255,255,0.6);
+      padding: 10px 12px; text-align: left;
+      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 700; font-family: var(--mono); white-space: nowrap;
+    }
+    .leaderboard thead th:first-child { border-radius: 6px 0 0 0; }
+    .leaderboard thead th:last-child { border-radius: 0 6px 0 0; }
+    .leaderboard tbody td {
+      padding: 11px 12px; border-bottom: 1px solid var(--rule);
+      vertical-align: middle; color: #2c2c2c;
+    }
+    .leaderboard tbody tr:last-child td { border-bottom: none; }
+    .leaderboard tbody tr:nth-child(even) td { background: var(--bg-soft); }
+    .leaderboard tbody tr.specialist-row td {
+      background: rgba(200,117,51,0.07);
+      border-bottom: 1px solid rgba(200,117,51,0.2);
+    }
+    .leaderboard tbody tr.specialist-row td { color: var(--ink); }
+    .lb-rank { font-family: var(--mono); font-weight: 700; font-size: 13px; color: var(--muted); white-space: nowrap; }
+    .lb-model { font-family: var(--mono); font-size: 12px; font-weight: 600; }
+    .specialist-row .lb-model { color: var(--copper); }
+    .lb-score { font-family: var(--mono); font-weight: 700; font-size: 14px; }
+    .lb-cat { font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+    .lb-best { color: var(--copper); font-weight: 700; }
+    .lb-weak { color: #c0392b; }
+    .lb-lat { font-family: var(--mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
+    .tier-badge {
+      display: inline-block; font-family: var(--mono); font-size: 9px;
+      font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 2px 7px; border-radius: 3px; white-space: nowrap;
+    }
+    .tier-cloud { background: rgba(41,128,185,0.12); color: #2980b9; border: 1px solid rgba(41,128,185,0.25); }
+    .tier-mid { background: rgba(200,117,51,0.12); color: var(--copper); border: 1px solid rgba(200,117,51,0.3); }
+    .tier-small { background: rgba(107,107,107,0.1); color: var(--muted); border: 1px solid rgba(107,107,107,0.2); }
+    .tier-specialist { background: rgba(200,117,51,0.2); color: var(--copper); border: 1px solid rgba(200,117,51,0.5); font-weight: 800; }
+
+    .category-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0 36px; }
+    .cat-card { border: 1px solid var(--rule); border-radius: 8px; padding: 16px 18px; }
+    .cat-card-label { font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .cat-card-winner { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--copper); margin-bottom: 4px; }
+    .cat-card-score { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+    /* ── COST COMPARISON ── */
+    .cost-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 28px 0 24px; }
+    .cost-card { border-radius: 8px; padding: 22px 22px; border: 1px solid var(--rule); }
+    .cost-card.cloud-tier { background: var(--bg-soft); }
+    .cost-card.mid-tier { background: var(--dark); border-color: rgba(200,117,51,0.3); }
+    .cost-card.small-tier { background: var(--bg-soft); border-color: rgba(107,107,107,0.3); }
+    .cost-card-label { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px; }
+    .cost-card.cloud-tier .cost-card-label { color: #2980b9; }
+    .cost-card.mid-tier .cost-card-label { color: var(--copper); }
+    .cost-card.small-tier .cost-card-label { color: var(--muted); }
+    .cost-card-name { font-family: var(--mono); font-size: 13px; font-weight: 600; margin-bottom: 14px; line-height: 1.3; }
+    .cost-card.cloud-tier .cost-card-name { color: var(--ink); }
+    .cost-card.mid-tier .cost-card-name { color: #fff; }
+    .cost-card.small-tier .cost-card-name { color: var(--ink); }
+    .cost-item { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 7px; padding-bottom: 7px; border-bottom: 1px solid; }
+    .cost-card.cloud-tier .cost-item { border-color: var(--rule); }
+    .cost-card.mid-tier .cost-item { border-color: rgba(255,255,255,0.08); }
+    .cost-card.small-tier .cost-item { border-color: var(--rule); }
+    .cost-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .cost-item-label { font-size: 12px; }
+    .cost-card.cloud-tier .cost-item-label { color: #3a3a3a; }
+    .cost-card.mid-tier .cost-item-label { color: rgba(255,255,255,0.6); }
+    .cost-card.small-tier .cost-item-label { color: #3a3a3a; }
+    .cost-item-val { font-family: var(--mono); font-size: 12px; font-weight: 600; }
+    .cost-card.cloud-tier .cost-item-val { color: var(--ink); }
+    .cost-card.mid-tier .cost-item-val { color: var(--copper-lt); }
+    .cost-card.small-tier .cost-item-val { color: var(--ink); }
+
+    .cost-math { background: var(--dark); border-radius: 8px; padding: 22px 26px; margin-bottom: 28px; }
+    .cost-math-label { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); margin-bottom: 14px; }
+    .cost-math-row { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 13px; }
+    .cost-math-row:last-child { border-bottom: none; }
+    .cost-math-label-col { color: rgba(255,255,255,0.5); font-family: var(--mono); font-size: 12px; }
+    .cost-math-cloud { color: rgba(255,255,255,0.4); font-family: var(--mono); font-size: 12px; font-weight: 600; }
+    .cost-math-local { color: var(--copper-lt); font-family: var(--mono); font-size: 12px; font-weight: 700; }
+
+    /* ── VERDICT ── */
+    .verdict { border: 2px solid var(--copper); border-radius: 8px; padding: 22px 28px; margin: 36px 0; text-align: center; }
+    .verdict p { font-size: 16px; font-weight: 600; color: var(--copper); margin: 0; line-height: 1.6; font-family: var(--mono); }
+
+    /* ── CONDITIONS CHECKLIST ── */
+    .conditions { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; margin: 24px 0 36px; }
+    .condition-row { display: flex; gap: 0; border-bottom: 1px solid var(--rule); }
+    .condition-row:last-child { border-bottom: none; }
+    .condition-check { font-size: 18px; padding: 18px 20px; background: var(--bg-soft); border-right: 1px solid var(--rule); display: flex; align-items: flex-start; padding-top: 20px; min-width: 54px; justify-content: center; }
+    .condition-content { padding: 18px 22px; flex: 1; }
+    .condition-title { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
+    .condition-body { font-size: 14px; color: #3a3a3a; line-height: 1.6; margin: 0; }
+
+    /* ── CTA ── */
+    .cta-section { background: var(--dark); border-radius: 12px; padding: 48px 52px; margin-top: 52px; position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #C87533, #D9924E); }
+    .cta-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 16px; font-family: var(--mono); }
+    .cta-title { font-family: var(--mono); font-size: 22px; font-weight: 600; color: #fff; line-height: 1.35; margin-bottom: 18px; }
+    .cta-body { font-size: 15px; color: rgba(255,255,255,0.58); line-height: 1.65; margin-bottom: 32px; }
+    .cta-services { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 32px; }
+    .cta-service { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 14px 16px; }
+    .cta-service-name { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--copper-lt); margin-bottom: 6px; letter-spacing: 0.04em; }
+    .cta-service-desc { font-size: 13px; color: rgba(255,255,255,0.42); line-height: 1.5; margin: 0; }
+    .cta-contact { display: flex; align-items: center; gap: 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 26px; }
+    .cta-contact-text { font-size: 13px; color: rgba(255,255,255,0.38); flex: 1; }
+    .cta-contact-link { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--copper-lt); text-decoration: none; white-space: nowrap; }
+
+    .doc-footer { margin-top: 52px; padding-top: 20px; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; }
+    .doc-footer div { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+
+    .print-hint { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 6px; padding: 12px 20px; font-size: 13px; color: #3D2A0F; text-align: center; margin: 24px auto; max-width: 760px; }
+    @media print { .print-hint { display: none; } }
+
+    @media (max-width: 700px) {
+      .cover-title { font-size: 32px; }
+      .cover-inner, .doc { padding: 40px 28px; }
+      .cta-services { grid-template-columns: 1fr; }
+      .cost-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-hint no-print">
+    📄 To save as PDF: <strong>File → Print → Save as PDF</strong> — Margins set to "None"
+  </div>
+
+  <!-- ══ COVER ══ -->
+  <div class="cover">
+    <div class="cover-flame-bar"></div>
+    <div class="cover-inner">
+      <div class="cover-logo">Fireside Labs <span>/ Applied Research</span></div>
+      <div class="cover-content">
+        <div class="cover-label">Technical Paper · Model Specialization</div>
+        <div class="cover-eyebrow">Deployment Economics &nbsp;·&nbsp; Capability vs. Scale</div>
+        <h1 class="cover-title">When a <em>Smaller</em><br/>Model Wins</h1>
+        <p class="cover-subtitle">
+          The conditions under which a domain-specialist model outperforms a
+          much larger generalist — with evidence from controlled benchmarks
+          across single-step and agentic multi-step tasks.
+        </p>
+        <div class="cover-divider"></div>
+        <div class="cover-tags">
+          <span class="cover-tag">Specialization</span>
+          <span class="cover-tag">Deployment Economics</span>
+          <span class="cover-tag">Structural Modification</span>
+          <span class="cover-tag">Agentic Performance</span>
+        </div>
+        <p class="cover-meta">
+          Intended audience: ML engineers, AI architects, and technical decision-makers<br/>
+          evaluating model selection and deployment strategy.
+        </p>
+      </div>
+      <div class="cover-footer">
+        <div>firesidelabs.ai &nbsp;·&nbsp; Applied Research</div>
+        <div>© 2025 Fireside Labs. All rights reserved.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BODY ══ -->
+  <div class="doc">
+    <div class="running-header">
+      <div class="running-logo">Fireside Labs</div>
+      <div class="running-title">When a Smaller Model Wins</div>
+    </div>
+
+    <h1>When a Smaller Model Wins</h1>
+    <p class="doc-subtitle">Specialization vs. Generalization in Production AI Deployment</p>
+
+    <div class="abstract-block">
+      <div class="abstract-label">Abstract</div>
+      <p>
+        The prevailing heuristic in enterprise AI deployment is that larger models perform
+        better. For general-purpose tasks this is largely true. For domain-constrained
+        production workloads, it is frequently wrong. We present evidence from controlled
+        benchmarks showing that a structurally modified specialist model — significantly
+        smaller than a state-of-the-art generalist — matches or exceeds the generalist on
+        domain-specific tasks, while requiring materially less compute per inference. We
+        characterize the conditions under which specialization wins, explain why the generalist
+        heuristic fails at the capability edge, and describe the deployment economics that
+        follow from specialization at scale.
+      </p>
+    </div>
+
+
+    <!-- Section 1 -->
+    <h2>The Bigger-Is-Better Assumption</h2>
+
+    <p>
+      When enterprise teams evaluate AI models, the selection logic is often straightforward:
+      pick the largest model available within budget, assume it handles the task adequately,
+      and tune the prompt. This approach has a strong intuitive basis. Larger pre-trained
+      models do, on average, perform better across a wide range of benchmarks. Scaling
+      laws suggest that more parameters correlate with more capability.
+    </p>
+    <p>
+      The problem is that enterprise workloads are almost never average. A claims processing
+      team, a code review pipeline, an underwriting assistant, a regulatory compliance
+      checker — these are highly constrained, domain-specific tasks with clear success
+      criteria. The relevant question is not "how does this model perform across all tasks"
+      but "how does this model perform on <em>this</em> task."
+    </p>
+    <p>
+      On that narrower question, model size is a poor predictor. Domain expertise is not.
+    </p>
+
+    <div class="pull-quote">
+      <p>
+        A generalist model is optimized to be good at everything.<br/>
+        A specialist is optimized to be excellent at one thing.<br/>
+        In production, you rarely need good at everything.
+      </p>
+    </div>
+
+
+    <!-- Section 2 -->
+    <h2>What "Specialization" Actually Means</h2>
+
+    <p>
+      Fine-tuning is the most common path to specialization, but as discussed in our companion
+      paper <em>Why Fine-Tuning Is Insufficient</em>, it has documented limitations for structural
+      customization. Fine-tuning adjusts what a model emphasizes from its existing representations;
+      it cannot install capabilities the base model does not latently possess.
+    </p>
+    <p>
+      Structural modification is a categorically different approach. Rather than adjusting weights
+      within the existing model, it operates at a post-training level that changes what the model
+      is capable of. The specific mechanisms are proprietary, but the outcome is measurable:
+      a structurally modified specialist performs differently on its target domain than either
+      the base model or the same base model fine-tuned aggressively.
+    </p>
+    <p>
+      The specialist models used in the benchmarks below were produced via Fireside Labs' proprietary
+      modification methodology. They are smaller than the generalist baselines they are compared
+      against. And on domain-specific tasks, they win.
+    </p>
+
+
+    <!-- Section 3 -->
+    <h2>Benchmark Evidence</h2>
+
+    <h3>Single-Step Domain Performance — Domain Task A</h3>
+    <p>
+      We compared base model performance, the performance ceiling of a purpose-built specialist,
+      and Fireside Labs structural optimization on Domain Task A — a complex reasoning benchmark
+      with 164 evaluation cases. Values are indexed to the base model (1.00×).
+    </p>
+
+    <div class="experiment">
+      <div class="experiment-label">Benchmark 1 — Domain Task A (complex reasoning, n=164)</div>
+      <div class="experiment-title">Specialist Performance vs. Same-Class Base and Generalist Reference</div>
+      <p class="experiment-desc">
+        All values indexed to base model (1.00×). Specialist model is smaller-class than
+        the generalist reference ceiling. Fine-tuning of the base model is omitted — it
+        produced negligible performance gain on this task (see companion paper).
+      </p>
+
+      <div class="result-row">
+        <div class="result-label">Base model (no adaptation)</div>
+        <div class="result-bar-wrap"><div class="result-bar generalist" style="width:80.7%"></div></div>
+        <div class="result-val generalist">1.00×</div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">Fireside specialist (modified)</div>
+        <div class="result-bar-wrap"><div class="result-bar specialist" style="width:96.6%"></div></div>
+        <div class="result-val specialist">1.20× <span style="font-size:11px;color:#27ae60;">+20%</span></div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">Fireside specialist (compressed)</div>
+        <div class="result-bar-wrap"><div class="result-bar specialist" style="width:95.3%"></div></div>
+        <div class="result-val specialist">1.18× <span style="font-size:11px;color:#27ae60;">+18%</span></div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">Purpose-built ceiling (reference)</div>
+        <div class="result-bar-wrap"><div class="result-bar dim" style="width:100%"></div></div>
+        <div class="result-val generalist">1.24× <span style="font-size:11px;opacity:0.5;">upper bound</span></div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Key Finding — Domain Task A</div>
+      <p>
+        Structural modification reached <strong>1.20×</strong> the base model's performance — capturing
+        <strong>~82% of the purpose-built specialist ceiling</strong> with zero training data and zero
+        gradient compute. The compressed variant (1.18×) reduces inference cost further with
+        only marginal performance trade-off.
+      </p>
+    </div>
+
+    <h3>Multi-Step Agentic Performance — Domain Task B</h3>
+    <p>
+      Single-step benchmarks favor large generalist models because they can compensate for
+      domain gaps with general reasoning. Agentic tasks — multi-step sequences where errors
+      compound — expose this weakness more directly. We measured performance on Domain Task B,
+      an agentic multi-step benchmark (n=60 tasks) requiring sequential decision-making and
+      task completion under real-world constraints.
+    </p>
+    <p>
+      We compared the Fireside specialist against a stock generalist model in a significantly
+      larger parameter class — approximately 2× the specialist's size.
+    </p>
+
+    <div class="experiment">
+      <div class="experiment-label">Benchmark 2 — Domain Task B (agentic multi-step, n=60)</div>
+      <div class="experiment-title">Specialist vs. 2× Larger Generalist — First-Attempt vs. Retry Performance</div>
+      <p class="experiment-desc">
+        First-attempt score measures reliability without retry budget. Retry score measures
+        maximum achievable performance. In production, first-attempt reliability directly
+        determines cost per successful task completion.
+      </p>
+
+      <div class="result-row">
+        <div class="result-label">Generalist (2× size) — first attempt</div>
+        <div class="result-bar-wrap"><div class="result-bar generalist" style="width:70%"></div></div>
+        <div class="result-val generalist">35% <span style="font-size:11px;opacity:0.5;">21/60</span></div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">Fireside specialist — first attempt</div>
+        <div class="result-bar-wrap"><div class="result-bar specialist" style="width:76.7%"></div></div>
+        <div class="result-val specialist">38% <span style="font-size:11px;color:#27ae60;">23/60 ↑</span></div>
+      </div>
+      <div class="result-row" style="margin-top:16px;">
+        <div class="result-label">Generalist (2× size) — with retry</div>
+        <div class="result-bar-wrap"><div class="result-bar generalist" style="width:100%"></div></div>
+        <div class="result-val generalist">50% <span style="font-size:11px;opacity:0.5;">30/60</span></div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">Fireside specialist — with retry</div>
+        <div class="result-bar-wrap"><div class="result-bar specialist" style="width:100%"></div></div>
+        <div class="result-val specialist">50% <span style="font-size:11px;opacity:0.5;">30/60</span></div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Key Finding — Domain Task B</div>
+      <p>
+        The specialist model matched or exceeded the 2× larger generalist on first-attempt
+        task completion — and reached identical final performance with retry. In production
+        terms: <strong>the specialist solves more tasks on the first try</strong>, meaning fewer
+        retries, lower per-task cost, and faster time-to-result. The generalist model is
+        twice the size and requires more attempts to reach the same outcome.
+      </p>
+    </div>
+
+
+    <h3>Benchmark 3 — Production Routing Evaluation (Public Leaderboard)</h3>
+    <p>
+      Fireside Labs built and operates an independent evaluation harness measuring model
+      performance across four production-relevant categories: routing accuracy, multi-step
+      reasoning, knowledge recall without tools, and ambiguous query handling. The harness
+      runs 100 tasks per evaluation cycle with deterministic scoring. Results below reflect
+      a single evaluation run; full variance analysis and reproducibility methodology are
+      described in our companion paper on benchmark design.
+    </p>
+
+    <div class="leaderboard-wrap">
+      <table class="leaderboard">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Model</th>
+            <th>Score</th>
+            <th>Routing</th>
+            <th>Reasoning</th>
+            <th>No-Tool</th>
+            <th>Ambiguous</th>
+            <th>Avg Latency</th>
+            <th>Tier</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lb-rank">🥇 1st</td>
+            <td class="lb-model">Gemini 3.1 Flash-Lite</td>
+            <td class="lb-score">93</td>
+            <td class="lb-cat">39/40</td>
+            <td class="lb-cat">23/25</td>
+            <td class="lb-cat">18/20</td>
+            <td class="lb-cat">13/15</td>
+            <td class="lb-lat">1,241ms</td>
+            <td><span class="tier-badge tier-cloud">☁ Cloud</span></td>
+          </tr>
+          <tr>
+            <td class="lb-rank">🥈 2nd</td>
+            <td class="lb-model">Gemini 3.0 Flash</td>
+            <td class="lb-score">89</td>
+            <td class="lb-cat">35/40</td>
+            <td class="lb-cat">21/25</td>
+            <td class="lb-cat">20/20</td>
+            <td class="lb-cat">13/15</td>
+            <td class="lb-lat">2,414ms</td>
+            <td><span class="tier-badge tier-cloud">☁ Cloud</span></td>
+          </tr>
+          <tr class="specialist-row">
+            <td class="lb-rank">🥉 3rd</td>
+            <td class="lb-model">Fireside Specialist ✦</td>
+            <td class="lb-score">88</td>
+            <td class="lb-cat lb-best">40/40 🏆</td>
+            <td class="lb-cat">20/25</td>
+            <td class="lb-cat">15/20</td>
+            <td class="lb-cat">13/15</td>
+            <td class="lb-lat">2,893ms</td>
+            <td><span class="tier-badge tier-specialist">✦ Mid · Local</span></td>
+          </tr>
+          <tr>
+            <td class="lb-rank">🥉 3rd</td>
+            <td class="lb-model">Qwen3 (mid-class)</td>
+            <td class="lb-score">88</td>
+            <td class="lb-cat">38/40</td>
+            <td class="lb-cat lb-best">23/25 🏆</td>
+            <td class="lb-cat lb-weak">12/20</td>
+            <td class="lb-cat lb-best">15/15 🏆</td>
+            <td class="lb-lat">2,741ms</td>
+            <td><span class="tier-badge tier-mid">🏠 Mid · Local</span></td>
+          </tr>
+          <tr>
+            <td class="lb-rank">🥉 3rd</td>
+            <td class="lb-model">Stock mid-class (v2)</td>
+            <td class="lb-score">88</td>
+            <td class="lb-cat">39/40</td>
+            <td class="lb-cat">21/25</td>
+            <td class="lb-cat">13/20</td>
+            <td class="lb-cat lb-best">15/15 🏆</td>
+            <td class="lb-lat">2,825ms</td>
+            <td><span class="tier-badge tier-mid">🏠 Mid · Local</span></td>
+          </tr>
+          <tr>
+            <td class="lb-rank">🥉 3rd</td>
+            <td class="lb-model">Mistral (small-class)</td>
+            <td class="lb-score">88</td>
+            <td class="lb-cat">38/40</td>
+            <td class="lb-cat">18/25</td>
+            <td class="lb-cat lb-best">20/20 🏆</td>
+            <td class="lb-cat">12/15</td>
+            <td class="lb-lat">3,108ms</td>
+            <td><span class="tier-badge tier-small">🏠 Small · Local</span></td>
+          </tr>
+          <tr>
+            <td class="lb-rank">7th</td>
+            <td class="lb-model">Gemini 2.5 Flash-Lite</td>
+            <td class="lb-score" style="color:var(--muted);">78</td>
+            <td class="lb-cat">35/40</td>
+            <td class="lb-cat">19/25</td>
+            <td class="lb-cat">12/20</td>
+            <td class="lb-cat">12/15</td>
+            <td class="lb-lat">840ms</td>
+            <td><span class="tier-badge tier-cloud">☁ Cloud</span></td>
+          </tr>
+          <tr>
+            <td class="lb-rank">8th</td>
+            <td class="lb-model">Gemini 2.5 Flash</td>
+            <td class="lb-score" style="color:var(--muted);">77</td>
+            <td class="lb-cat">34/40</td>
+            <td class="lb-cat">15/25</td>
+            <td class="lb-cat">20/20</td>
+            <td class="lb-cat">8/15</td>
+            <td class="lb-lat">1,430ms</td>
+            <td><span class="tier-badge tier-cloud">☁ Cloud</span></td>
+          </tr>
+          <tr>
+            <td class="lb-rank">9th</td>
+            <td class="lb-model">Qwen3 (small-class)</td>
+            <td class="lb-score" style="color:var(--muted);">75</td>
+            <td class="lb-cat">33/40</td>
+            <td class="lb-cat">14/25</td>
+            <td class="lb-cat">19/20</td>
+            <td class="lb-cat">9/15</td>
+            <td class="lb-lat">3,951ms</td>
+            <td><span class="tier-badge tier-small">🏠 Small · Local</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="category-grid">
+      <div class="cat-card">
+        <div class="cat-card-label">Routing</div>
+        <div class="cat-card-winner">Fireside Specialist</div>
+        <div class="cat-card-score">40/40 — only perfect score</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-card-label">Reasoning</div>
+        <div class="cat-card-winner">Qwen3 (mid-class)</div>
+        <div class="cat-card-score">23/25 — ties cloud leader</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-card-label">No-Tool</div>
+        <div class="cat-card-winner">Mistral (small-class)</div>
+        <div class="cat-card-score">20/20 — only perfect score</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-card-label">Ambiguous</div>
+        <div class="cat-card-winner">Qwen3 + Stock mid</div>
+        <div class="cat-card-score">15/15 — beat all cloud tiers</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Key Finding — Benchmark 3</div>
+      <p>
+        Four local models tie Gemini 3.0 Flash at 88/100 — within statistical noise of the
+        cloud leader. The Fireside Specialist is the only model in the evaluation to achieve
+        perfect routing accuracy (40/40). Notably, a small-class local model (Mistral)
+        reaches the same overall score as mid-class models, suggesting that category-specific
+        tuning matters more than raw model size for well-defined task domains.
+      </p>
+    </div>
+
+
+    <!-- Section 4 -->
+    <h2>The Production Economics Argument</h2>
+
+    <p>
+      Benchmark parity between local and cloud models changes the economics of enterprise
+      AI deployment fundamentally. When a local model matches a cloud model on your task,
+      the cost comparison is no longer about capability trade-offs — it's purely arithmetic.
+    </p>
+    <p>
+      Cloud inference is billed per token. Local inference, once the hardware is deployed,
+      has marginal cost approaching zero. At production volume, this difference is measured
+      in hundreds of thousands of dollars annually — before accounting for the compliance,
+      data residency, and vendor lock-in considerations that dominate regulated industry
+      procurement.
+    </p>
+
+    <div class="cost-math">
+      <div class="cost-math-label">Cloud vs. Local — Annual Cost at Scale</div>
+      <div class="cost-math-row">
+        <span class="cost-math-label-col">Volume</span>
+        <span class="cost-math-cloud">Cloud (≈$0.10/1M tokens)</span>
+        <span class="cost-math-local">Local (marginal ≈ $0)</span>
+      </div>
+      <div class="cost-math-row">
+        <span class="cost-math-label-col">1M tokens/day</span>
+        <span class="cost-math-cloud">~$36,500 / year</span>
+        <span class="cost-math-local">$0 marginal</span>
+      </div>
+      <div class="cost-math-row">
+        <span class="cost-math-label-col">10M tokens/day</span>
+        <span class="cost-math-cloud">~$365,000 / year</span>
+        <span class="cost-math-local">$0 marginal</span>
+      </div>
+      <div class="cost-math-row">
+        <span class="cost-math-label-col">100M tokens/day</span>
+        <span class="cost-math-cloud">~$3,650,000 / year</span>
+        <span class="cost-math-local">$0 marginal</span>
+      </div>
+    </div>
+
+    <div class="cost-grid">
+      <div class="cost-card cloud-tier">
+        <div class="cost-card-label">☁ Cloud Tier</div>
+        <div class="cost-card-name">Hosted general-purpose model</div>
+        <div class="cost-item">
+          <span class="cost-item-label">Benchmark score</span>
+          <span class="cost-item-val">89/100</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-label">Routing accuracy</span>
+          <span class="cost-item-val">87.5%</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-label">Avg latency</span>
+          <span class="cost-item-val">2,414ms</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-label">Cost/1M tokens</span>
+          <span class="cost-item-val">~$0.10+</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-label">Data residency</span>
+          <span class="cost-item-val">External</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-label">On-premise</span>
+          <span class="cost-item-val">No</span>
+        </div>
+      </div>
+      <div class="cost-card mid-tier">
+        <div class="cost-card-label">✦ Local Mid-Class</div>
+        <div class="cost-card-name">Fireside Specialist — specialist</div>
+        <div class="cost-item">
+          <span class="cost-item-label">Benchmark score</span>
+          <span class="cost-item-val">88/100</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-label">Routing accuracy</span>
+          <span class="cost-item-val">100% 🏆</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-label">Avg latency</span>
+          <span class="cost-item-val">2,893ms</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-label">Cost/1M tokens</span>
+          <span class="cost-item-val">$0 marginal</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-label">Data residency</span>
+          <span class="cost-item-val">Your infra</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-label">On-premise</span>
+          <span class="cost-item-val">Yes — by design</span>
+        </div>
+      </div>
+      <div class="cost-card small-tier">
+        <div class="cost-card-label">🏠 Local Small-Class</div>
+        <div class="cost-card-name">Mistral — stock small model</div>
+        <div class="cost-item">
+          <span class="cost-item-label">Benchmark score</span>
+          <span class="cost-item-val">88/100</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-label">No-tool accuracy</span>
+          <span class="cost-item-val">100% 🏆</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-label">Avg latency</span>
+          <span class="cost-item-val">3,108ms</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-label">Cost/1M tokens</span>
+          <span class="cost-item-val">$0 marginal</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-label">Data residency</span>
+          <span class="cost-item-val">Your infra</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-label">On-premise</span>
+          <span class="cost-item-val">Yes</span>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      Hardware and infrastructure costs apply to local deployment and vary by workload.
+      The marginal cost advantage compounds at any volume above low-throughput internal
+      tooling. For regulated environments where cloud egress is restricted regardless
+      of cost, local deployment is not a cost decision — it is a compliance requirement.
+    </p>
+
+
+    <!-- Section 5 -->
+    <h2>When Specialization Wins — and When It Doesn't</h2>
+
+    <p>
+      Specialization is not always the right answer. The conditions under which a
+      specialist model outperforms a larger generalist are specific, and the decision
+      should be made deliberately.
+    </p>
+
+    <table class="scenario-table">
+      <thead>
+        <tr>
+          <th>Deployment Scenario</th>
+          <th>Verdict</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>High-volume, well-defined domain task (e.g. classification, extraction, specialized Q&amp;A)</td>
+          <td><span class="tag-specialist">✦ SPECIALIST</span></td>
+          <td>Specialist wins on accuracy and cost. Generalist wastes parameter mass on irrelevant breadth.</td>
+        </tr>
+        <tr>
+          <td>Multi-step agentic workflows with clear success criteria</td>
+          <td><span class="tag-specialist">✦ SPECIALIST</span></td>
+          <td>First-attempt reliability advantage compounds across steps. Fewer retries = lower cost.</td>
+        </tr>
+        <tr>
+          <td>Regulated or air-gapped deployments (finance, healthcare, defense)</td>
+          <td><span class="tag-specialist">✦ SPECIALIST</span></td>
+          <td>Specialist can be deployed on-premise. Cloud-only generalists fail compliance requirements.</td>
+        </tr>
+        <tr>
+          <td>Exploratory or prototyping phase</td>
+          <td><span class="tag-generalist">◇ GENERALIST</span></td>
+          <td>Task requirements not yet stable. Generalist handles breadth until scope narrows.</td>
+        </tr>
+        <tr>
+          <td>True general-purpose assistant (wide task variety, no single domain)</td>
+          <td><span class="tag-generalist">◇ GENERALIST</span></td>
+          <td>No single domain to specialize for. Generalist breadth is the feature.</td>
+        </tr>
+        <tr>
+          <td>Novel, rarely occurring task types with no data pattern</td>
+          <td><span class="tag-generalist">◇ GENERALIST</span></td>
+          <td>Specialist requires a target domain. If the domain is undefined, so is the specialist.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      The critical inflection point: once a deployment team can define the task precisely —
+      what inputs look like, what success looks like, what failure looks like — they have
+      enough signal to justify specialization. Most enterprise production workloads cross
+      this threshold within the first 30–60 days of deployment.
+    </p>
+
+
+    <!-- Section 6 -->
+    <h2>Three Conditions That Determine the Outcome</h2>
+
+    <div class="conditions">
+
+      <div class="condition-row">
+        <div class="condition-check">✦</div>
+        <div class="condition-content">
+          <div class="condition-title">Task Constraint Depth</div>
+          <p class="condition-body">
+            The more constrained the task — in vocabulary, reasoning type, output format,
+            and success criteria — the more value a specialist captures. Shallow constraint
+            ("summarize text") favors generalists. Deep constraint ("route this insurance
+            claim to the correct handler and flag compliance exceptions") favors specialists.
+          </p>
+        </div>
+      </div>
+
+      <div class="condition-row">
+        <div class="condition-check">✦</div>
+        <div class="condition-content">
+          <div class="condition-title">Volume and Cost Sensitivity</div>
+          <p class="condition-body">
+            Specialists produce their largest economic advantage at scale. For one-off or
+            low-volume tasks, the setup cost of specialization may not be worth it. For
+            workloads processing thousands of tasks per day, the per-inference cost advantage
+            and reliability improvement produce compounding savings that dwarf the build cost.
+          </p>
+        </div>
+      </div>
+
+      <div class="condition-row">
+        <div class="condition-check">✦</div>
+        <div class="condition-content">
+          <div class="condition-title">Capability Gap at the Base</div>
+          <p class="condition-body">
+            If the base model already performs near the specialist ceiling on the target task,
+            specialization adds less. The maximum value is captured when the base model has
+            a meaningful capability gap on the domain — and when that gap cannot be closed
+            by fine-tuning alone. This is precisely the scenario where structural modification
+            is the appropriate tool.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="pull-quote">
+      <p>
+        "Why not just use a bigger model?" is the wrong question.<br/>
+        The right question is: "What does your task actually require?"
+      </p>
+    </div>
+
+
+    <!-- Section 7 -->
+    <h2>Implications for Technical Decision-Makers</h2>
+
+    <p>
+      Enterprise AI procurement has been shaped by vendor benchmarks that measure average
+      performance across diverse task sets. These benchmarks reward generalists and
+      systematically undervalue specialists, because specialists are evaluated on tasks
+      they were not designed for.
+    </p>
+    <p>
+      A deployment team evaluating models should build their own benchmarks — narrow,
+      representative samples of their actual production task — and measure performance
+      on those, not on published leaderboard numbers. A model that ranks fifth on general
+      benchmarks might rank first on your task. A model that dominates the leaderboard
+      might underperform on anything outside its pre-training distribution.
+    </p>
+    <p>
+      The right evaluation framework: define your task precisely, build a representative
+      evaluation set of at least 50–100 cases, measure first-attempt success rate and
+      retry rate (not just final accuracy), and price the inference cost into your
+      performance comparison. On that framework, specialists win more often than
+      general benchmark rankings suggest.
+    </p>
+
+    <div class="verdict">
+      <p>
+        In production, a smaller model that knows your domain<br/>
+        outperforms a larger model that doesn't.
+      </p>
+    </div>
+
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <div class="cta-label">Fireside Labs</div>
+      <div class="cta-title">We Build Specialists That Win in Production</div>
+      <p class="cta-body">
+        Fireside Labs is an applied AI research practice. We produce
+        domain-specialist models via proprietary structural modification — deployed
+        within your infrastructure, sized for your workload, and validated on your
+        task before delivery. If your team is hitting the ceiling of a generalist
+        model, or paying too much for inference at scale, we should talk.
+      </p>
+      <div class="cta-services">
+        <div class="cta-service">
+          <div class="cta-service-name">Domain Assessment</div>
+          <p class="cta-service-desc">We define whether your workload justifies specialization and model what the performance and cost delta looks like before any build commitment.</p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Specialist Build</div>
+          <p class="cta-service-desc">Structurally modified models scoped to your domain. Smaller, faster, and more accurate on your task than generalists twice their size.</p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Private Deployment</div>
+          <p class="cta-service-desc">On-premise or private cloud. No API dependency, no data egress, no vendor lock-in. You own the model asset outright.</p>
+        </div>
+      </div>
+      <div class="cta-contact">
+        <p class="cta-contact-text">Ready to see what a specialist model does for your specific workload?</p>
+        <a class="cta-contact-link" href="mailto:j.nguyen@firesidelabs.ai">j.nguyen@firesidelabs.ai →</a>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>Fireside Labs &nbsp;·&nbsp; firesidelabs.ai &nbsp;·&nbsp; © 2025</div>
+      <div>Research findings. Proprietary methodology not disclosed.</div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Data Is Leaving the Building — Fireside Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --copper:   #C87533;
+      --copper-lt:#D9924E;
+      --dark:     #0A0A0A;
+      --ink:      #1A1A1A;
+      --muted:    #6B6B6B;
+      --rule:     #E8E3DC;
+      --bg:       #FFFFFF;
+      --bg-soft:  #FAF8F5;
+      --mono:     'JetBrains Mono', 'Courier New', monospace;
+      --sans:     'Inter', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: var(--sans);
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Print setup ── */
+    @page {
+      size: letter;
+      margin: 0;
+    }
+
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      .page-break { page-break-before: always; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    /* ── COVER PAGE ── */
+    .cover {
+      width: 100%;
+      min-height: 100vh;
+      background: var(--dark);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      page-break-after: always;
+    }
+
+    .cover-flame-bar {
+      height: 6px;
+      background: linear-gradient(90deg, #C87533 0%, #D9924E 100%);
+      width: 100%;
+    }
+
+    .cover-inner {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 60px 72px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* subtle background texture */
+    .cover::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 110% 0%, rgba(200,117,51,0.2) 0%, transparent 60%),
+                  radial-gradient(ellipse at -10% 100%, rgba(200,117,51,0.1) 0%, transparent 50%);
+      z-index: 1;
+    }
+
+    .cover-logo {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--copper);
+    }
+
+    .cover-logo span {
+      color: rgba(255,255,255,0.45);
+      font-weight: 400;
+    }
+
+    .cover-content {
+      margin-top: auto;
+      margin-bottom: auto;
+      padding: 60px 0 40px;
+      max-width: 680px;
+    }
+
+    .cover-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 24px;
+    }
+
+    .cover-title {
+      font-family: var(--mono);
+      font-size: 56px;
+      font-weight: normal;
+      line-height: 1.1;
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
+
+    .cover-title em {
+      font-style: italic;
+      color: var(--copper-lt);
+    }
+
+    .cover-subtitle {
+      font-size: 18px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.5;
+      margin-bottom: 48px;
+      max-width: 520px;
+    }
+
+    .cover-divider {
+      width: 48px;
+      height: 3px;
+      background: var(--copper);
+      border-radius: 2px;
+      margin-bottom: 36px;
+    }
+
+    .cover-meta {
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.04em;
+    }
+
+    .cover-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 20px;
+      margin-top: auto;
+    }
+
+    .cover-footer-left {
+      font-size: 12px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .cover-footer-right {
+      font-size: 12px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ── BODY PAGES ── */
+    .doc {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 72px 72px 80px;
+    }
+
+    /* running header */
+    .running-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 52px;
+    }
+
+    .running-logo {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--copper);
+    }
+
+    .running-title {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* headings */
+    h1 {
+      font-family: var(--mono);
+      font-size: 36px;
+      font-weight: normal;
+      line-height: 1.2;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .doc-subtitle {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 40px;
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-family: var(--mono);
+      font-size: 24px;
+      font-weight: normal;
+      color: var(--dark);
+      margin-top: 52px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--copper);
+      display: inline-block;
+    }
+
+    h3 {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-top: 32px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin-bottom: 16px;
+      font-size: 15.5px;
+      color: #2c2c3e;
+    }
+
+    em { font-style: italic; color: var(--ink); }
+    strong { font-weight: 700; color: var(--dark); }
+
+    /* pull quote */
+    .pull-quote {
+      border-left: 4px solid var(--copper);
+      background: var(--bg-soft);
+      padding: 20px 28px;
+      margin: 36px 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .pull-quote p {
+      font-family: var(--mono);
+      font-size: 18px;
+      line-height: 1.5;
+      color: var(--dark);
+      font-style: italic;
+      margin: 0;
+    }
+
+    /* callout box */
+    .callout {
+      background: #fdf6ee;
+      border: 1px solid #e8c99a;
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin: 36px 0;
+    }
+
+    .callout-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 10px;
+    }
+
+    .callout p {
+      font-size: 14.5px;
+      margin: 0;
+      color: #3D2A0F;
+    }
+
+    /* checklist */
+    .checklist {
+      background: var(--dark);
+      border-radius: 10px;
+      padding: 36px 40px;
+      margin: 36px 0;
+    }
+
+    .checklist-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 20px;
+    }
+
+    .checklist ol {
+      list-style: none;
+      counter-reset: item;
+      padding: 0;
+    }
+
+    .checklist li {
+      counter-increment: item;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      font-size: 14.5px;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.5;
+    }
+
+    .checklist li:last-child { border-bottom: none; }
+
+    .checklist li::before {
+      content: counter(item);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      min-width: 26px;
+      background: rgba(200,117,51,0.2);
+      border: 1px solid rgba(200,117,51,0.4);
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--copper-lt);
+      margin-top: 1px;
+    }
+
+    .checklist em {
+      color: rgba(255,255,255,0.45);
+      font-style: italic;
+      font-size: 13.5px;
+    }
+
+    /* verdict box */
+    .verdict {
+      border: 2px solid var(--copper);
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin: 36px 0;
+      text-align: center;
+    }
+
+    .verdict p {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--copper);
+      margin: 0;
+    }
+
+    /* industry grid */
+    .industry-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 28px 0 36px;
+    }
+
+    .industry-card {
+      background: var(--bg-soft);
+      border: 1px solid var(--rule);
+      border-top: 3px solid var(--copper);
+      border-radius: 4px;
+      padding: 20px 22px;
+    }
+
+    .industry-card h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+
+    .industry-card p {
+      font-size: 14px;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.55;
+    }
+
+    /* CTA section */
+    .cta-section {
+      background: var(--dark);
+      border-radius: 12px;
+      padding: 48px 52px;
+      margin-top: 52px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--copper), var(--copper-lt));
+    }
+
+    .cta-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 16px;
+    }
+
+    .cta-title {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: normal;
+      color: #ffffff;
+      line-height: 1.25;
+      margin-bottom: 20px;
+    }
+
+    .cta-body {
+      font-size: 15px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.65;
+      margin-bottom: 32px;
+    }
+
+    .cta-services {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .cta-service {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px;
+      padding: 16px 18px;
+    }
+
+    .cta-service-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--copper-lt);
+      margin-bottom: 6px;
+      letter-spacing: 0.04em;
+    }
+
+    .cta-service-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .cta-contact {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 28px;
+    }
+
+    .cta-contact-text {
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.45);
+      flex: 1;
+    }
+
+    .cta-contact-link {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--copper-lt);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    /* footer */
+    .doc-footer {
+      margin-top: 52px;
+      padding-top: 20px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .doc-footer-left {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .doc-footer-right {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* print hint banner */
+    .print-hint {
+      background: #fdf6ee;
+      border: 1px solid #e8c99a;
+      border-radius: 6px;
+      padding: 12px 20px;
+      font-size: 13px;
+      color: #3D2A0F;
+      text-align: center;
+      margin: 24px auto;
+      max-width: 760px;
+    }
+
+    @media print {
+      .print-hint { display: none; }
+    }
+
+    /* ── Responsive fallback ── */
+    @media (max-width: 700px) {
+      .cover-title { font-size: 36px; }
+      .cover-inner { padding: 40px 32px; }
+      .doc { padding: 48px 32px; }
+      .industry-grid { grid-template-columns: 1fr; }
+      .cta-services { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Print hint (screen only) -->
+  <div class="print-hint no-print">
+    📄 To save as PDF: <strong>File → Print → Save as PDF</strong> (set Margins to "None" or "Minimum" for best results)
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       COVER PAGE
+  ══════════════════════════════════════════ -->
+  <div class="cover">
+    <div class="cover-flame-bar"></div>
+    <div class="cover-inner">
+
+      <div class="cover-logo">Fireside Labs <span>/ Research &amp; Advisory</span></div>
+
+      <div class="cover-content">
+        <div class="cover-label">Enterprise AI Security · White Paper</div>
+
+        <h1 class="cover-title">
+          Your Data Is<br/>
+          <em>Leaving the Building</em>
+        </h1>
+
+        <p class="cover-subtitle">
+          A practical guide to AI privacy for regulated industries —
+          how shadow IT is quietly moving your most sensitive data
+          onto third-party servers, and exactly what you do about it.
+        </p>
+
+        <div class="cover-divider"></div>
+
+        <p class="cover-meta">
+          Healthcare &nbsp;·&nbsp; Financial Services &nbsp;·&nbsp; Legal &nbsp;·&nbsp; Enterprise Technology
+        </p>
+      </div>
+
+      <div class="cover-footer">
+        <div class="cover-footer-left">
+          firesidelabs.ai &nbsp;·&nbsp; j.nguyen@firesidelabs.ai
+        </div>
+        <div class="cover-footer-right">
+          © 2025 Fireside Labs. All rights reserved.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       BODY PAGES
+  ══════════════════════════════════════════ -->
+  <div class="doc">
+
+    <div class="running-header">
+      <div class="running-logo">Fireside Labs</div>
+      <div class="running-title">Your Data Is Leaving the Building</div>
+    </div>
+
+    <!-- Intro -->
+    <h1>Your Data Is Leaving the Building</h1>
+    <p class="doc-subtitle">A Practical Guide to AI Privacy for Regulated Industries</p>
+
+    <p>
+      Fear is a powerful, clarifying motivator. Right now, in boardrooms spanning Wall Street,
+      major healthcare networks, and global law firms, the same quiet panic is setting in. Every
+      CFO and Chief Risk Officer is asking the exact same question:
+    </p>
+
+    <div class="pull-quote">
+      <p>"When my employees type our proprietary data into ChatGPT — where is it actually going?"</p>
+    </div>
+
+    <p>
+      This is not unfounded corporate paranoia. We are living through the greatest crisis of data
+      lineage since the invention of the public cloud. Employees, eager to save time and work
+      faster, are funneling your company's most sensitive information into external AI systems
+      through what security teams call "Shadow IT" — tools adopted organically, without IT
+      oversight, often with zero contractual protections in place.
+    </p>
+
+    <p>
+      This is the practical, sobering guide to understanding exactly how AI data leaks happen,
+      why they are fatal in regulated industries, and how you actually plug the hole.
+    </p>
+
+
+    <!-- Section 1 -->
+    <h2>The Anatomy of an AI Leak</h2>
+
+    <p>
+      Let's walk through what actually happens the moment you use a cloud-based AI tool.
+    </p>
+
+    <p>
+      Your top M&amp;A lawyer pastes a 50-page confidential acquisition summary into a public
+      AI tool and asks it to "summarize the potential liabilities." The moment she hits Enter,
+      that document leaves your secured corporate boundary. It travels across the public internet
+      to a third-party server — often owned by one of the tech giants — and gets processed by
+      infrastructure you did not vet, did not negotiate with, and do not control.
+    </p>
+
+    <p>
+      <strong>At best:</strong> the data is processed, an answer is generated, and the underlying
+      text is theoretically discarded. <em>Theoretically.</em> Unless you have negotiated a costly,
+      custom enterprise agreement, that assurance is often not contractually guaranteed.
+    </p>
+
+    <p>
+      <strong>At worst</strong> — which is standard practice for consumer-tier services — your data
+      is permanently stored in the vendor's logs. It is reviewed by third-party human contractors
+      whose job is to read prompts for "quality assurance." And those prompts, along with their
+      contents, are used to train the next version of the public AI model.
+    </p>
+
+    <div class="callout">
+      <div class="callout-label">The bottom line</div>
+      <p>
+        Your proprietary M&amp;A strategy — complete with internal code names and financial
+        liabilities — could theoretically become part of the subconscious memory of a global
+        chatbot available to anyone with a browser.
+      </p>
+    </div>
+
+
+    <!-- Section 2 -->
+    <h2>The Compliance Nightmare in Regulated Industries</h2>
+
+    <p>
+      If you are selling shoes, perhaps you don't care if a cloud server sees your inventory
+      list. But if you operate in a regulated industry, this dynamic is radioactive. The exposure
+      isn't just reputational — it is legal, and the consequences are existential.
+    </p>
+
+    <div class="industry-grid">
+
+      <div class="industry-card">
+        <h3>Healthcare (HIPAA)</h3>
+        <p>
+          Sending PII or Protected Health Information to an unvetted cloud endpoint is an
+          instant HIPAA violation. Signing a standard Business Associate Agreement with a
+          cloud provider does <em>not</em> bulletproof you if their training pipelines
+          inadvertently cache patient symptoms and histories.
+        </p>
+      </div>
+
+      <div class="industry-card">
+        <h3>Legal (Attorney-Client Privilege)</h3>
+        <p>
+          Privilege is broken the moment a third party gains access to communications without
+          a legally sound wall. If a cloud provider's terms of service allow logging prompts
+          for "service improvement," you have invited a stranger into the war room.
+          Privilege is dead.
+        </p>
+      </div>
+
+      <div class="industry-card">
+        <h3>Finance (SEC / FINRA)</h3>
+        <p>
+          Financial institutions must maintain auditable trails of material non-public
+          information. Moving sensitive algorithmic strategies into a black-box cloud API
+          makes data lineage nearly impossible to verify during a regulatory audit.
+        </p>
+      </div>
+
+      <div class="industry-card">
+        <h3>Any Industry with Trade Secrets</h3>
+        <p>
+          Proprietary pricing models, product roadmaps, client lists, salary data — none
+          of this requires HIPAA or SEC oversight to be catastrophically damaging if it
+          surfaces through a public AI model's training corpus.
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- Case Study -->
+    <h3>Real-World Case Study: The Exposed Budget Engine</h3>
+
+    <p>
+      Consider a healthcare brand running a highly complex Bayesian Media Mix Model to
+      allocate millions in ad spend across service lines. The core dataset includes exact
+      lead acquisition costs, revenue figures, and localized conversions — the most closely
+      guarded economic levers of the business.
+    </p>
+
+    <p>
+      A well-intentioned analyst passes this dataset into a public "Data Analyst" AI module
+      to speed up the weekly report. In under a minute, the keys to the kingdom have crossed
+      the firewall. By switching to a Local-First architecture, that same analyst gets all
+      the analytical power of world-class AI — with zero data ever touching an external
+      server.
+    </p>
+
+
+    <!-- Section 3: Real Incidents -->
+    <h2>This Is Already Happening: Real Breaches, Real Companies</h2>
+
+    <p>
+      This isn't a theoretical threat. The leaks are already happening — and they've hit
+      some of the most sophisticated technology organizations on the planet.
+    </p>
+
+    <h3>Samsung Semiconductor — April 2023</h3>
+    <p>
+      This is the case that ended the debate. Within a single 20-day window, Samsung
+      engineers committed three separate data-leaking incidents via ChatGPT. The first
+      engineer pasted proprietary semiconductor source code directly into ChatGPT and
+      asked it to identify bugs. The second uploaded confidential internal meeting notes
+      for transcription. The third submitted more source code for optimization
+      suggestions.
+    </p>
+    <p>
+      All three engineers thought they were just being productive. None of them realized
+      they had just handed Samsung's most closely guarded intellectual property to an
+      external model that could, in principle, incorporate it into future training runs.
+      Samsung banned ChatGPT internally within weeks — after the damage was done.
+    </p>
+
+    <div class="callout">
+      <div class="callout-label">Key Takeaway</div>
+      <p>
+        Samsung is one of the most security-conscious technology companies on earth. They
+        had entire teams dedicated to IP protection. It still happened three times in
+        twenty days — because the employees weren't malicious. They were just trying to
+        do their jobs faster.
+      </p>
+    </div>
+
+    <h3>Amazon Web Services — Early 2023</h3>
+    <p>
+      Amazon's own lawyers circulated an internal memo warning employees after discovering
+      that ChatGPT responses had begun returning content that "closely resembled"
+      confidential Amazon internal data. The company that builds cloud infrastructure
+      for the rest of the world had to warn its own people that their data might have
+      already leaked into a competitor's model.
+    </p>
+
+    <h3>The Banking Sector — Mass Restrictions, 2023</h3>
+    <p>
+      JPMorgan Chase, Citigroup, Bank of America, Goldman Sachs, and Deutsche Bank all
+      imposed restrictions or outright bans on employee use of ChatGPT within the same
+      six-month window. These weren't paranoid overreactions. These were institutions
+      whose lawyers understand exactly what "data used for model training" means in the
+      context of SEC regulations, material non-public information, and client
+      confidentiality agreements.
+    </p>
+
+    <h3>Italy's Regulator Bans ChatGPT — March 2023</h3>
+    <p>
+      Italy's data protection authority, the Garante, temporarily banned ChatGPT
+      outright across the entire country in March 2023, citing GDPR violations in how
+      OpenAI collected and processed user data. The ban was only lifted after OpenAI
+      implemented new data controls and disclosures — a rare moment where a government
+      body moved faster than the companies using the tool.
+    </p>
+
+    <p>
+      Apple, Verizon, and dozens of other major enterprises followed with their own
+      internal restrictions through 2023. The pattern is consistent: organizations
+      discover the risk, panic, and ban — rather than building the right architecture
+      from the start.
+    </p>
+
+    <!-- Section 4: Checklist -->
+    <h2>The "Is Your AI Leaking?" Audit</h2>
+
+    <p>
+      Go into the office tomorrow and put these five questions to your IT, Engineering, or
+      Security teams. They are simple yes/no questions. The answers will tell you everything.
+    </p>
+
+    <div class="checklist">
+      <div class="checklist-title">5-Question Security Audit</div>
+      <ol>
+        <li>
+          Do we have an enforceable, hard block on consumer-grade AI tools — the public
+          versions of ChatGPT, Claude, and Gemini — on our corporate networks?
+        </li>
+        <li>
+          For the cloud AI APIs we <em>do</em> officially condone, do we have signed custom
+          enterprise agreements explicitly forbidding any form of model training, telemetry
+          collection, or human review of our data?
+        </li>
+        <li>
+          If an AI provider experiences a cybersecurity breach tomorrow, do we have the
+          internal telemetry to know exactly which documents our employees sent to their
+          API over the last 90 days?
+        </li>
+        <li>
+          Are we currently relying on employees to manually "redact" or "anonymize"
+          sensitive information before uploading documents to AI tools?
+          <em>(They won't do it perfectly. A mistake will be made.)</em>
+        </li>
+        <li>
+          Do we currently have the hardware and infrastructure to run AI models entirely
+          within our own firewalls?
+        </li>
+      </ol>
+    </div>
+
+    <div class="verdict">
+      <p>
+        If your team struggles to answer any of these, or answers "No" to more than one —
+        your data is already leaving the building.
+        It is not a matter of <em>if</em> a breach occurs. It is a matter of when.
+      </p>
+    </div>
+
+
+    <!-- Section 4: Solution -->
+    <h2>The Solution: Local-First Enterprise AI</h2>
+
+    <p>
+      The enterprise answer to this problem is not ignoring AI. Burying your head in the
+      sand only guarantees that your competitors crush you through operational efficiency
+      while you stand still. The answer is deploying <strong>Local-First AI</strong>.
+    </p>
+
+    <p>
+      A few years ago, running state-of-the-art AI required massive racks of million-dollar
+      supercomputers. Today, thanks to open-source models — Meta's Llama, Qwen, Mistral —
+      and dramatic advances in model quantization, you can run world-class intelligence
+      directly on servers inside your own data center or a private, dedicated cloud
+      instance (VPC) that you fully control.
+    </p>
+
+    <p>
+      "Local-first" means the AI brain lives entirely inside your house. The data never
+      travels over the public internet. It never hits a vendor's API gateway. It never gets
+      stored to train next year's public model. You get all the transformative capabilities
+      of generative AI — summarization, classification, reasoning, creative problem solving —
+      with the exact same security posture as your most locked-down internal intranet.
+    </p>
+
+    <div class="pull-quote">
+      <p>
+        You wouldn't store your company treasury in a transparent glass box on a public
+        sidewalk, hoping no one stops to look at it. Don't do it with your corporate knowledge.
+      </p>
+    </div>
+
+    <p>
+      Stop renting intelligence to vendors whose business interests don't align with yours.
+      Sever the external APIs. Bring the intelligence home.
+    </p>
+
+
+    <!-- CTA -->
+    <div class="cta-section">
+
+      <div class="cta-label">About Fireside Labs</div>
+
+      <h2 class="cta-title" style="margin-top:0; border:none; display:block; color:#fff; font-size:26px;">
+        We Build the Infrastructure That Keeps Your Data Yours
+      </h2>
+
+      <p class="cta-body">
+        Fireside Labs specializes in deploying private, on-premises and VPC-hosted AI systems
+        for enterprises in regulated industries. We handle everything from infrastructure
+        architecture to model selection, fine-tuning, and ongoing optimization — so your
+        teams get world-class AI capabilities without surrendering a single byte of sensitive
+        data to a third party.
+      </p>
+
+      <div class="cta-services">
+
+        <div class="cta-service">
+          <div class="cta-service-name">AI Readiness Assessment</div>
+          <p class="cta-service-desc">
+            We audit your current AI exposure and identify exactly where your data is at risk.
+          </p>
+        </div>
+
+        <div class="cta-service">
+          <div class="cta-service-name">Local-First Deployment</div>
+          <p class="cta-service-desc">
+            End-to-end design and deployment of private AI systems within your security boundary.
+          </p>
+        </div>
+
+        <div class="cta-service">
+          <div class="cta-service-name">Custom Model Development</div>
+          <p class="cta-service-desc">
+            Fine-tuned, domain-specific models trained on your data — never shared, never exposed.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="cta-contact">
+        <p class="cta-contact-text">
+          Ready to lock down your AI infrastructure? Let's talk about what a local-first
+          architecture looks like for your organization.
+        </p>
+        <a class="cta-contact-link" href="mailto:j.nguyen@firesidelabs.ai">
+          j.nguyen@firesidelabs.ai →
+        </a>
+      </div>
+
+    </div>
+
+
+    <!-- Footer -->
+    <div class="doc-footer">
+      <div class="doc-footer-left">
+        Fireside Labs &nbsp;·&nbsp; firesidelabs.ai &nbsp;·&nbsp; © 2025
+      </div>
+      <div class="doc-footer-right">
+        This document is for informational purposes only and does not constitute legal or
+        compliance advice.
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

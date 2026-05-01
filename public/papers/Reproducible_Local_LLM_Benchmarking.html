@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reproducible Local LLM Benchmarking — Fireside Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --copper:   #C87533;
+      --copper-lt:#D9924E;
+      --dark:     #0A0A0A;
+      --ink:      #1A1A1A;
+      --muted:    #6B6B6B;
+      --rule:     #E8E3DC;
+      --bg:       #FFFFFF;
+      --bg-soft:  #FAF8F5;
+      --mono:     'JetBrains Mono', 'Courier New', monospace;
+      --sans:     'Inter', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    html { font-size: 16px; }
+    body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    @page { size: letter; margin: 0; }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    /* ── COVER ── */
+    .cover {
+      width: 100%; min-height: 100vh;
+      background: var(--dark);
+      display: flex; flex-direction: column;
+      position: relative; overflow: hidden;
+      page-break-after: always;
+    }
+    .cover-flame-bar {
+      height: 6px;
+      background: linear-gradient(90deg, var(--copper) 0%, var(--copper-lt) 100%);
+    }
+    .cover-inner {
+      flex: 1; display: flex; flex-direction: column;
+      padding: 60px 72px; position: relative; z-index: 2;
+    }
+    .cover::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 110% 0%, rgba(200,117,51,0.2) 0%, transparent 60%),
+                  radial-gradient(ellipse at -10% 100%, rgba(200,117,51,0.1) 0%, transparent 50%);
+      z-index: 1;
+    }
+    .cover-logo {
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper);
+    }
+    .cover-logo span { color: rgba(255,255,255,0.45); font-weight: 400; }
+    .cover-content { margin-top: auto; margin-bottom: auto; padding: 60px 0 40px; max-width: 700px; }
+    .cover-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--copper); margin-bottom: 24px;
+    }
+    .cover-eyebrow {
+      font-size: 13px; color: rgba(255,255,255,0.4);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .cover-title {
+      font-family: var(--mono); font-size: 58px;
+      font-weight: normal; line-height: 1.08; color: #fff; margin-bottom: 20px;
+    }
+    .cover-title em { font-style: italic; color: var(--copper-lt); }
+    .cover-subtitle {
+      font-size: 18px; color: rgba(255,255,255,0.55);
+      line-height: 1.55; margin-bottom: 48px; max-width: 560px;
+    }
+    .cover-divider {
+      width: 48px; height: 3px;
+      background: var(--copper); border-radius: 2px; margin-bottom: 36px;
+    }
+    .cover-meta { font-size: 13px; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; }
+    .cover-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; margin-top: auto;
+    }
+    .cover-footer div { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+    /* ── BODY ── */
+    .doc { max-width: 760px; margin: 0 auto; padding: 72px 72px 80px; }
+
+    .running-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 16px; border-bottom: 1px solid var(--rule); margin-bottom: 52px;
+    }
+    .running-logo { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .running-title { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+
+    h1 { font-family: var(--mono); font-size: 36px; font-weight: normal; line-height: 1.2; color: var(--dark); margin-bottom: 8px; }
+    .doc-subtitle { font-size: 16px; color: var(--muted); margin-bottom: 40px; line-height: 1.5; }
+
+    h2 {
+      font-family: var(--mono); font-size: 24px; font-weight: normal;
+      color: var(--dark); margin-top: 56px; margin-bottom: 16px;
+      padding-bottom: 10px; border-bottom: 2px solid var(--copper); display: inline-block;
+    }
+    h3 {
+      font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--copper); margin-top: 32px; margin-bottom: 10px;
+    }
+
+    p { margin-bottom: 16px; font-size: 15.5px; color: #2c2c3e; }
+    em { font-style: italic; }
+    strong { font-weight: 700; color: var(--dark); }
+
+    /* pull quote */
+    .pull-quote {
+      border-left: 4px solid var(--copper); background: var(--bg-soft);
+      padding: 20px 28px; margin: 36px 0; border-radius: 0 6px 6px 0;
+    }
+    .pull-quote p {
+      font-family: var(--mono); font-size: 18px; line-height: 1.5;
+      color: var(--dark); font-style: italic; margin: 0;
+    }
+
+    /* hierarchy card */
+    .hierarchy-card {
+      border: 1px solid var(--rule); border-left: 4px solid var(--copper);
+      border-radius: 6px; padding: 24px 28px; margin: 28px 0;
+    }
+    .hierarchy-level {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--copper); margin-bottom: 8px;
+    }
+    .hierarchy-title { font-family: var(--mono); font-size: 18px; color: var(--dark); margin-bottom: 10px; }
+    .hierarchy-body { font-size: 14px; color: #2c2c3e; line-height: 1.6; margin: 0; }
+
+    /* callout */
+    .callout {
+      background: #fdf6ee; border: 1px solid #e8c99a;
+      border-radius: 8px; padding: 24px 28px; margin: 36px 0;
+    }
+    .callout-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--copper); margin-bottom: 10px;
+    }
+    .callout p { font-size: 14.5px; margin: 0; color: #3D2A0F; line-height: 1.6; }
+
+    /* data grid */
+    .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 28px 0 36px; }
+    .data-card {
+      background: var(--bg-soft); border: 1px solid var(--rule);
+      border-radius: 6px; padding: 20px 22px;
+    }
+    .data-label { font-size: 10px; font-weight: 700; color: var(--copper); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+    .data-value { font-family: var(--mono); font-size: 24px; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
+    .data-card p { font-size: 13.5px; color: var(--muted); margin: 0; line-height: 1.5; }
+
+    /* comparison table */
+    .compare-table { width: 100%; border-collapse: collapse; margin: 28px 0 36px; font-size: 14px; }
+    .compare-table th {
+      background: var(--dark); color: #fff; padding: 12px 16px;
+      text-align: left; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700;
+    }
+    .compare-table th:first-child { border-radius: 6px 0 0 0; }
+    .compare-table th:last-child { border-radius: 0 6px 0 0; }
+    .compare-table td { padding: 12px 16px; border-bottom: 1px solid var(--rule); color: #2c2c3e; vertical-align: top; }
+    .compare-table tr:nth-child(even) td { background: var(--bg-soft); }
+    .code-block {
+      background: var(--dark); color: #e8e8e8;
+      padding: 16px 20px; border-radius: 6px; margin: 20px 0;
+      font-family: var(--mono); font-size: 13px; line-height: 1.5;
+      overflow-x: auto;
+    }
+
+    /* verdict */
+    .verdict {
+      border: 2px solid var(--copper); border-radius: 8px;
+      padding: 24px 28px; margin: 36px 0; text-align: center;
+    }
+    .verdict p { font-size: 17px; font-weight: 700; color: var(--copper); margin: 0; line-height: 1.5; }
+
+    /* CTA */
+    .cta-section {
+      background: var(--dark); border-radius: 12px;
+      padding: 48px 52px; margin-top: 52px;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 4px; background: linear-gradient(90deg, #C87533, #D9924E);
+    }
+    .cta-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--copper); margin-bottom: 16px;
+    }
+    .cta-title {
+      font-family: var(--mono); font-size: 28px; font-weight: normal;
+      color: #fff; line-height: 1.25; margin-bottom: 20px;
+    }
+    .cta-body { font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.65; margin-bottom: 32px; }
+    .cta-services { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+    .cta-service {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px; padding: 16px 18px;
+    }
+    .cta-service-name { font-size: 12px; font-weight: 700; color: var(--copper-lt); margin-bottom: 6px; letter-spacing: 0.04em; }
+    .cta-service-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; margin: 0; }
+    .cta-contact {
+      display: flex; align-items: center; gap: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px;
+    }
+    .cta-contact-text { font-size: 13.5px; color: rgba(255,255,255,0.45); flex: 1; }
+    .cta-contact-link {
+      font-size: 14px; font-weight: 700; color: var(--copper-lt);
+      text-decoration: none; letter-spacing: 0.02em; white-space: nowrap;
+    }
+
+    .doc-footer {
+      margin-top: 52px; padding-top: 20px; border-top: 1px solid var(--rule);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .doc-footer div { font-size: 11px; color: var(--muted); }
+
+    .print-hint {
+      background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 6px;
+      padding: 12px 20px; font-size: 13px; color: #92400e;
+      text-align: center; margin: 24px auto; max-width: 760px;
+    }
+    @media print { .print-hint { display: none; } }
+
+    @media (max-width: 700px) {
+      .cover-title { font-size: 36px; }
+      .cover-inner, .doc { padding: 40px 32px; }
+      .data-grid, .cta-services { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-hint no-print">
+    📄 To save as PDF: <strong>File → Print → Save as PDF</strong> — set Margins to "None" for best results
+  </div>
+
+  <!-- ══════════════════ COVER ══════════════════ -->
+  <div class="cover">
+    <div class="cover-flame-bar"></div>
+    <div class="cover-inner">
+      <div class="cover-logo">Fireside Labs <span>/ Research &amp; Advisory</span></div>
+
+      <div class="cover-content">
+        <div class="cover-label">Infrastructure &amp; Benchmarking · White Paper</div>
+        <div class="cover-eyebrow">The Reproducibility Hierarchy</div>
+
+        <h1 class="cover-title">
+          Reproducible Local<br/>
+          <em>LLM Benchmarking</em>
+        </h1>
+
+        <p class="cover-subtitle">
+          A practical guide to understanding where inference drift comes from, and concrete
+          techniques to eliminate it. Validated across a 3-node GPU cluster running 25 models.
+        </p>
+
+        <div class="cover-divider"></div>
+        <p class="cover-meta">For engineers, CTOs, and teams building local inference infrastructure</p>
+      </div>
+
+      <div class="cover-footer">
+        <div>firesidelabs.ai &nbsp;·&nbsp; j.nguyen@firesidelabs.ai</div>
+        <div>© 2025 Fireside Labs. All rights reserved.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ BODY ══════════════════ -->
+  <div class="doc">
+    <div class="running-header">
+      <div class="running-logo">Fireside Labs</div>
+      <div class="running-title">Reproducible Local LLM Benchmarking</div>
+    </div>
+
+    <h1>Reproducible Local LLM Benchmarking</h1>
+    <p class="doc-subtitle">A Practical Guide for Local Inference Teams</p>
+
+    <p>
+      Local LLM benchmarking should be reproducible. Instead, most teams discover it isn't — not
+      because models are unpredictable, but because the infrastructure underneath them is.
+    </p>
+
+    <p>
+      Run a benchmark on Monday, get results. Run it again on Friday. The numbers don't match.
+      Not by a little. Sometimes by 5–10 percentage points. You blame the model. You blame the
+      hardware. You run it three more times and now you have three different answers.
+    </p>
+
+    <p>
+      The problem isn't that models are unpredictable. The problem is that we're not measuring
+      models — we're measuring infrastructure, and we don't have enough visibility into what's
+      actually happening.
+    </p>
+
+    <div class="pull-quote">
+      <p>
+        Without reproducible benchmarks, you can't compare models reliably, trust your optimizations,
+        or debug failures. Everything becomes suspect.
+      </p>
+    </div>
+
+    <p>
+      This paper documents the <strong>reproducibility hierarchy</strong> — a five-level framework
+      for understanding where drift comes from in local inference. We validate it empirically across
+      a 3-node RTX 5090 cluster running 25 models, demonstrating reproducibility within ±0.5 percentage
+      points across independent runs.
+    </p>
+
+    <p>
+      The techniques are straightforward: binary verification, per-host isolation, dynamic timeouts,
+      per-question logging, and hybrid caching. They cost nothing to implement. They eliminate the
+      silent failures that plague local-inference workflows.
+    </p>
+
+    <!-- SECTION 1 -->
+    <h2>The Reproducibility Hierarchy</h2>
+
+    <p>
+      Reproducibility isn't binary. It's a spectrum with five levels. Understanding which level you're
+      at determines what else you can trust.
+    </p>
+
+    <div class="hierarchy-card">
+      <div class="hierarchy-level">Level 1</div>
+      <div class="hierarchy-title">Model File Identity</div>
+      <p class="hierarchy-body">
+        The same model name can hide multiple different files. SHA256 verification is non-negotiable.
+        Without it, nothing downstream matters.
+      </p>
+    </div>
+
+    <div class="hierarchy-card">
+      <div class="hierarchy-level">Level 2</div>
+      <div class="hierarchy-title">Binary (Compilation) Parity</div>
+      <p class="hierarchy-body">
+        Two identical model files can produce different results if the inference engine changed.
+        A compiler flag, library version, or bug fix can shift performance by 5–9 points.
+      </p>
+    </div>
+
+    <div class="hierarchy-card">
+      <div class="hierarchy-level">Level 3</div>
+      <div class="hierarchy-title">Hardware SKU Parity</div>
+      <p class="hierarchy-body">
+        Every chip has manufacturing variations. Run the same benchmark on multiple "identical"
+        nodes and measure drift. Healthy parity is ±0.5pt. Larger drift signals something upstream is wrong.
+      </p>
+    </div>
+
+    <div class="hierarchy-card">
+      <div class="hierarchy-level">Level 4</div>
+      <div class="hierarchy-title">Silicon Consistency (Driver &amp; Firmware)</div>
+      <p class="hierarchy-body">
+        GPU driver versions, BIOS, and thermal states all affect performance. A driver version difference
+        alone can account for 0.8–1.2pt drift. Log these for every benchmark run.
+      </p>
+    </div>
+
+    <div class="hierarchy-card">
+      <div class="hierarchy-level">Level 5</div>
+      <div class="hierarchy-title">Environmental Consistency</div>
+      <p class="hierarchy-body">
+        Background processes, cache states, and system load introduce noise you can't eliminate — only measure.
+        Run benchmarks on dedicated, quiet hardware. Log system metrics alongside results.
+      </p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Why This Hierarchy Matters</div>
+      <p>
+        Each level depends on the ones below it. If you haven't locked the binary (Level 2),
+        measuring hardware drift (Level 3) is meaningless. If you haven't verified model files (Level 1),
+        you don't know what you're testing. The hierarchy forces discipline.
+      </p>
+    </div>
+
+    <!-- SECTION 2 -->
+    <h2>The Foundry Harness: Putting It Into Practice</h2>
+
+    <p>
+      With the hierarchy in mind, we designed the <strong>Foundry harness</strong> — an inference
+      orchestration framework that enforces reproducibility at every level.
+    </p>
+
+    <h3>Core Principles</h3>
+
+    <p>
+      <strong>Binary Locking:</strong> Every run freezes the exact binary used in its metadata.
+      We maintain a <code>CANONICAL_HASHES.json</code> that marks specific builds as "golden" for
+      cross-run comparison.
+    </p>
+
+    <p>
+      <strong>Per-Host Output Paths:</strong> Early versions used shared output directories.
+      Multiple nodes writing to the same place caused silent race conditions — the last write won,
+      and we lost data from earlier runs. Now each node writes to its own dated, host-specific directory.
+    </p>
+
+    <p>
+      <strong>Dynamic Per-Request Timeouts:</strong> A fixed timeout (240 seconds) is wrong for
+      all models except one. Smaller models finish in 2 seconds. Large models need 45+ seconds.
+      We implement <code>auto_timeout(model_params, benchmark_type)</code> that scales appropriately.
+    </p>
+
+    <p>
+      <strong>Per-Question JSONL Logging:</strong> Most benchmarking pipelines save results as
+      bulk JSON or CSV. This loses information. We log every question with its full output, token
+      counts, latency, and correctness judgment. This enables distillation, debugging, and analysis.
+    </p>
+
+    <p>
+      <strong>Hybrid Local Cache:</strong> Model files are large (4–30GB). Transferring across
+      a network for every run is slow. We use local NVMe cache on each node, with checksums to
+      verify cache hits. First run takes time to fetch. Subsequent runs start in seconds.
+    </p>
+
+    <!-- SECTION 3 -->
+    <h2>Empirical Validation: 3-Node Cluster</h2>
+
+    <p>
+      We validated the framework across a 3-node GPU cluster (Node-A, Node-B, Node-C) running 25
+      different models on three benchmarks: MMLU, HumanEval, and 500Q.
+    </p>
+
+    <p>
+      Our 3-node cluster — Node-A, Node-B, and Node-C — each has an RTX 5090 with 32GB VRAM.
+    </p>
+
+    <div class="data-grid">
+      <div class="data-card">
+        <div class="data-label">Hardware</div>
+        <div class="data-value">3× RTX 5090</div>
+        <p>32GB VRAM each, Intel i9-14900K, Ubuntu 22.04</p>
+      </div>
+      <div class="data-card">
+        <div class="data-label">Parity Achieved</div>
+        <div class="data-value">±0.5pt</div>
+        <p>18 of 25 models within acceptable drift margin</p>
+      </div>
+    </div>
+
+    <p>
+      We measured drift across Node-A and Node-C on 25 models:
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>Node-A (500Q)</th>
+          <th>Node-C (500Q)</th>
+          <th>Δ</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Qwen3-8B</strong></td>
+          <td>85.5%</td>
+          <td>85.1%</td>
+          <td>±0.4pt</td>
+          <td>✓ Clean</td>
+        </tr>
+        <tr>
+          <td><strong>Gemma-4-31B</strong></td>
+          <td>96.8%</td>
+          <td>96.4%</td>
+          <td>±0.4pt</td>
+          <td>✓ Clean</td>
+        </tr>
+        <tr>
+          <td><strong>DeepSeek-R1-Distill-8B</strong></td>
+          <td>83.0%</td>
+          <td>82.8%</td>
+          <td>±0.2pt</td>
+          <td>✓ Clean</td>
+        </tr>
+        <tr>
+          <td colspan="5" style="text-align:center; font-size:12px; color:#888; padding:8px;">
+            [18 of 25 models show ±0.5pt parity; 7 models show larger drift, attributed to driver version differences]
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      When drift exceeds ±0.5pt, investigation is warranted. We discovered that Node-C was
+      running NVIDIA driver 591.55 while Node-A ran 596.21. Once the driver was updated, parity
+      improved to ±0.3pt across the board.
+    </p>
+
+    <!-- SECTION 4 -->
+    <h2>Key Contributions</h2>
+
+    <h3>1. Dynamic Timeout Scaling</h3>
+    <p>
+      A fixed 240-second timeout suppresses Gemma-4-31B's HumanEval score from 95.1% to 89.6%
+      (5.5pt loss) because 12 of 111 questions exceed the timeout window. Dynamic timeouts
+      calibrated to model size recover the full capability.
+    </p>
+
+    <h3>2. Per-Question Logging</h3>
+    <p>
+      Instead of bulk JSON, we log each question with its full output, token counts, latency,
+      and correctness judgment. This enables distillation (extract failed questions for retraining),
+      debugging, and analysis. A dataset of 25 models × 5 benchmarks = 250K records at ~2KB each
+      (500MB total). Trivial by modern standards. The value is immense.
+    </p>
+
+    <h3>3. Contamination Probing</h3>
+    <p>
+      We built the letter-shuffle contamination probe (see Paper 2) into the harness as a mandatory
+      validation pass. Any model showing >5pt sensitivity to letter position is flagged as unreliable.
+    </p>
+
+    <!-- SECTION 5 -->
+    <h2>Practical Recommendations</h2>
+
+    <h3>1. Lock the Binary</h3>
+    <p>
+      Before you run any benchmark, freeze the exact version of your inference engine. Document
+      it in metadata. If you upgrade, re-run benchmarks. Don't pretend old results are valid.
+    </p>
+
+    <h3>2. Use Per-Host Isolated Paths</h3>
+    <p>
+      If running across multiple machines, give each one its own output directory. Use date-based
+      subdirectories. Never use shared directories with last-writer-wins semantics.
+    </p>
+
+    <h3>3. Implement Dynamic Timeouts</h3>
+    <p>
+      Fixed timeouts are lies. Calculate based on model size and task complexity. Report which
+      questions timed out. If >1% of questions timeout, re-run with higher timeout.
+    </p>
+
+    <h3>4. Log Per-Question</h3>
+    <p>
+      Store the full details of every question: input, output, latency, reasoning trace, correctness.
+      Not bulk summaries. Individual question records enable distillation and debugging.
+    </p>
+
+    <h3>5. Validate with Contamination Probes</h3>
+    <p>
+      Add the letter-shuffle probe to your pipeline as a mandatory validation pass. Flag any model
+      showing ≥5pt sensitivity to letter position. These models are unreliable in production.
+    </p>
+
+    <div class="verdict">
+      <p>
+        With proper infrastructure — binary locking, per-host isolation, dynamic timeouts,
+        per-question logging, and contamination probing — local LLM benchmarking can be as
+        reproducible as you need it to be.
+      </p>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <div class="cta-label">About Fireside Labs</div>
+      <h2 class="cta-title" style="margin-top:0; border:none; display:block; color:#fff; font-size:26px;">
+        We Build Infrastructure for Trustworthy Inference
+      </h2>
+      <p class="cta-body">
+        Fireside Labs helps teams design, build, and deploy AI systems that are reproducible,
+        verifiable, and trustworthy. For organizations running local inference at scale, we provide
+        benchmarking infrastructure, reproducibility frameworks, and model evaluation pipelines that
+        eliminate the silent failures that plague most setups.
+      </p>
+
+      <div class="cta-services">
+        <div class="cta-service">
+          <div class="cta-service-name">Benchmarking Infrastructure</div>
+          <p class="cta-service-desc">
+            End-to-end harness design that enforces reproducibility at every level.
+          </p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Model Evaluation</div>
+          <p class="cta-service-desc">
+            Trustworthy testing pipelines with contamination detection and validation.
+          </p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Infrastructure Audit</div>
+          <p class="cta-service-desc">
+            Assess your current setup, identify drift sources, recommend improvements.
+          </p>
+        </div>
+      </div>
+
+      <div class="cta-contact">
+        <p class="cta-contact-text">
+          Ready to build trustworthy benchmarks? Let's start with a conversation.
+        </p>
+        <a class="cta-contact-link" href="mailto:j.nguyen@firesidelabs.ai">
+          j.nguyen@firesidelabs.ai →
+        </a>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>Fireside Labs &nbsp;·&nbsp; firesidelabs.ai &nbsp;·&nbsp; © 2025</div>
+      <div>This document is for informational purposes only.</div>
+    </div>
+
+  </div>
+</body>
+</html>

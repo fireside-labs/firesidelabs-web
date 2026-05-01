@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The New Intelligence — Fireside Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --copper:   #C87533;
+      --copper-lt:#D9924E;
+      --dark:     #0A0A0A;
+      --ink:      #1A1A1A;
+      --muted:    #6B6B6B;
+      --rule:     #E8E3DC;
+      --bg:       #FFFFFF;
+      --bg-soft:  #FAF8F5;
+      --mono:     'JetBrains Mono', 'Courier New', monospace;
+      --sans:     'Inter', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    html { font-size: 16px; }
+    body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    @page { size: letter; margin: 0; }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    /* ── COVER ── */
+    .cover {
+      width: 100%; min-height: 100vh;
+      background: var(--dark);
+      display: flex; flex-direction: column;
+      position: relative; overflow: hidden;
+      page-break-after: always;
+    }
+    .cover-flame-bar {
+      height: 6px;
+      background: linear-gradient(90deg, var(--copper) 0%, var(--copper-lt) 100%);
+    }
+    .cover-inner {
+      flex: 1; display: flex; flex-direction: column;
+      padding: 60px 72px; position: relative; z-index: 2;
+    }
+    .cover::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 110% 0%, rgba(200,117,51,0.2) 0%, transparent 60%),
+                  radial-gradient(ellipse at -10% 100%, rgba(200,117,51,0.1) 0%, transparent 50%);
+      z-index: 1;
+    }
+    .cover-logo {
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper);
+    }
+    .cover-logo span { color: rgba(255,255,255,0.45); font-weight: 400; }
+    .cover-content { margin-top: auto; margin-bottom: auto; padding: 60px 0 40px; max-width: 700px; }
+    .cover-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--copper); margin-bottom: 24px;
+    }
+    .cover-eyebrow {
+      font-size: 13px; color: rgba(255,255,255,0.4);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .cover-title {
+      font-family: var(--mono); font-size: 58px;
+      font-weight: normal; line-height: 1.08; color: #fff; margin-bottom: 20px;
+    }
+    .cover-title em { font-style: italic; color: var(--copper-lt); }
+    .cover-subtitle {
+      font-size: 18px; color: rgba(255,255,255,0.55);
+      line-height: 1.55; margin-bottom: 48px; max-width: 560px;
+    }
+    .cover-divider {
+      width: 48px; height: 3px;
+      background: var(--copper); border-radius: 2px; margin-bottom: 36px;
+    }
+    .cover-meta { font-size: 13px; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; }
+    .cover-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; margin-top: auto;
+    }
+    .cover-footer div { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+    /* ── BODY ── */
+    .doc { max-width: 760px; margin: 0 auto; padding: 72px 72px 80px; }
+
+    .running-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 16px; border-bottom: 1px solid var(--rule); margin-bottom: 52px;
+    }
+    .running-logo { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .running-title { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+
+    h1 { font-family: var(--mono); font-size: 36px; font-weight: normal; line-height: 1.2; color: var(--dark); margin-bottom: 8px; }
+    .doc-subtitle { font-size: 16px; color: var(--muted); margin-bottom: 40px; line-height: 1.5; }
+
+    h2 {
+      font-family: var(--mono); font-size: 24px; font-weight: normal;
+      color: var(--dark); margin-top: 56px; margin-bottom: 16px;
+      padding-bottom: 10px; border-bottom: 2px solid var(--copper); display: inline-block;
+    }
+    h3 {
+      font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--copper); margin-top: 32px; margin-bottom: 10px;
+    }
+
+    p { margin-bottom: 16px; font-size: 15.5px; color: #2c2c3e; }
+    em { font-style: italic; }
+    strong { font-weight: 700; color: var(--dark); }
+
+    /* pull quote */
+    .pull-quote {
+      border-left: 4px solid var(--copper); background: var(--bg-soft);
+      padding: 20px 28px; margin: 36px 0; border-radius: 0 6px 6px 0;
+    }
+    .pull-quote p {
+      font-family: var(--mono); font-size: 18px; line-height: 1.5;
+      color: var(--dark); font-style: italic; margin: 0;
+    }
+
+    /* era card */
+    .era-card {
+      border: 1px solid var(--rule); border-top: 3px solid var(--copper);
+      border-radius: 6px; padding: 24px 28px; margin: 28px 0;
+    }
+    .era-header {
+      display: flex; align-items: flex-start; gap: 16px; margin-bottom: 14px;
+    }
+    .era-badge {
+      background: var(--copper); color: #fff;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 3px; white-space: nowrap; margin-top: 3px;
+    }
+    .era-title { font-family: var(--mono); font-size: 20px; color: var(--dark); }
+    .era-analogy {
+      background: var(--bg-soft); border-radius: 4px;
+      padding: 12px 16px; margin-top: 12px;
+      font-size: 14px; color: var(--muted); font-style: italic; line-height: 1.5;
+    }
+    .era-analogy strong { color: var(--copper); font-style: normal; }
+
+    /* callout */
+    .callout {
+      background: #fdf6ee; border: 1px solid #e8c99a;
+      border-radius: 8px; padding: 24px 28px; margin: 36px 0;
+    }
+    .callout-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--copper); margin-bottom: 10px;
+    }
+    .callout p { font-size: 14.5px; margin: 0; color: #3D2A0F; line-height: 1.6; }
+
+    /* config grid */
+    .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 28px 0 36px; }
+    .config-card {
+      background: var(--bg-soft); border: 1px solid var(--rule);
+      border-radius: 6px; padding: 20px 22px;
+    }
+    .config-icon { font-size: 22px; margin-bottom: 10px; }
+    .config-name { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .config-ai { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--copper); margin-bottom: 8px; }
+    .config-card p { font-size: 13.5px; color: var(--muted); margin: 0; line-height: 1.5; }
+
+    /* comparison table */
+    .compare-table { width: 100%; border-collapse: collapse; margin: 28px 0 36px; font-size: 14px; }
+    .compare-table th {
+      background: var(--dark); color: #fff; padding: 12px 16px;
+      text-align: left; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700;
+    }
+    .compare-table th:first-child { border-radius: 6px 0 0 0; }
+    .compare-table th:last-child { border-radius: 0 6px 0 0; }
+    .compare-table td { padding: 12px 16px; border-bottom: 1px solid var(--rule); color: #2c2c3e; vertical-align: top; }
+    .compare-table tr:nth-child(even) td { background: var(--bg-soft); }
+    .compare-table .tag {
+      display: inline-block; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 8px; border-radius: 3px;
+    }
+    .tag-fire { background: #fff5ee; color: var(--copper); }
+    .tag-dark { background: #eeeef8; color: var(--dark); }
+
+    /* verdict */
+    .verdict {
+      border: 2px solid var(--copper); border-radius: 8px;
+      padding: 24px 28px; margin: 36px 0; text-align: center;
+    }
+    .verdict p { font-size: 17px; font-weight: 700; color: var(--copper); margin: 0; line-height: 1.5; }
+
+    /* timeline */
+    .timeline { margin: 28px 0 36px; position: relative; padding-left: 28px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 8px; top: 8px; bottom: 8px;
+      width: 2px; background: var(--rule);
+    }
+    .timeline-item { position: relative; margin-bottom: 28px; }
+    .timeline-item:last-child { margin-bottom: 0; }
+    .timeline-dot {
+      position: absolute; left: -24px; top: 4px;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--copper); border: 2px solid #fff;
+      box-shadow: 0 0 0 2px var(--copper);
+    }
+    .timeline-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--copper); margin-bottom: 4px;
+    }
+    .timeline-title { font-size: 15px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .timeline-body { font-size: 14px; color: var(--muted); line-height: 1.55; }
+
+    /* CTA */
+    .cta-section {
+      background: var(--dark); border-radius: 12px;
+      padding: 48px 52px; margin-top: 52px;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 4px; background: linear-gradient(90deg, #C87533, #D9924E);
+    }
+    .cta-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--copper); margin-bottom: 16px;
+    }
+    .cta-title {
+      font-family: var(--mono); font-size: 28px; font-weight: normal;
+      color: #fff; line-height: 1.25; margin-bottom: 20px;
+    }
+    .cta-body { font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.65; margin-bottom: 32px; }
+    .cta-services { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+    .cta-service {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px; padding: 16px 18px;
+    }
+    .cta-service-name { font-size: 12px; font-weight: 700; color: var(--copper-lt); margin-bottom: 6px; letter-spacing: 0.04em; }
+    .cta-service-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; margin: 0; }
+    .cta-contact {
+      display: flex; align-items: center; gap: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px;
+    }
+    .cta-contact-text { font-size: 13.5px; color: rgba(255,255,255,0.45); flex: 1; }
+    .cta-contact-link {
+      font-size: 14px; font-weight: 700; color: var(--copper-lt);
+      text-decoration: none; letter-spacing: 0.02em; white-space: nowrap;
+    }
+
+    .doc-footer {
+      margin-top: 52px; padding-top: 20px; border-top: 1px solid var(--rule);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .doc-footer div { font-size: 11px; color: var(--muted); }
+
+    .print-hint {
+      background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 6px;
+      padding: 12px 20px; font-size: 13px; color: #92400e;
+      text-align: center; margin: 24px auto; max-width: 760px;
+    }
+    @media print { .print-hint { display: none; } }
+
+    @media (max-width: 700px) {
+      .cover-title { font-size: 36px; }
+      .cover-inner, .doc { padding: 40px 32px; }
+      .config-grid, .cta-services { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-hint no-print">
+    📄 To save as PDF: <strong>File → Print → Save as PDF</strong> — set Margins to "None" for best results
+  </div>
+
+  <!-- ══════════════════ COVER ══════════════════ -->
+  <div class="cover">
+    <div class="cover-flame-bar"></div>
+    <div class="cover-inner">
+      <div class="cover-logo">Fireside Labs <span>/ Research &amp; Advisory</span></div>
+
+      <div class="cover-content">
+        <div class="cover-label">Executive Intelligence Series · White Paper</div>
+        <div class="cover-eyebrow">A plain-English guide to AI</div>
+
+        <h1 class="cover-title">
+          The New<br/>
+          <em>Intelligence</em>
+        </h1>
+
+        <p class="cover-subtitle">
+          From early chatbots to self-driving workflows — how AI actually works,
+          why most companies are using the wrong tool for the job, and how to
+          think clearly about where it's all going.
+        </p>
+
+        <div class="cover-divider"></div>
+        <p class="cover-meta">For executives, operators, and anyone who wants to stop nodding along in meetings</p>
+      </div>
+
+      <div class="cover-footer">
+        <div>firesidelabs.ai &nbsp;·&nbsp; j.nguyen@firesidelabs.ai</div>
+        <div>© 2025 Fireside Labs. All rights reserved.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ BODY ══════════════════ -->
+  <div class="doc">
+    <div class="running-header">
+      <div class="running-logo">Fireside Labs</div>
+      <div class="running-title">The New Intelligence</div>
+    </div>
+
+    <h1>The New Intelligence</h1>
+    <p class="doc-subtitle">A Plain-English Guide to How AI Actually Works — and Where It's Going</p>
+
+    <p>
+      You've sat through the demos. You've heard the buzzwords. Someone in a recent
+      meeting said "large language model" and half the room nodded as if they understood,
+      and half quietly pulled out their phones to Google it under the table.
+    </p>
+    <p>
+      The problem isn't that AI is impossibly complicated. The problem is that almost
+      everyone explaining it has a reason to make it sound complicated — it makes them
+      feel indispensable, or it sells a product, or it justifies a budget.
+    </p>
+    <p>
+      This paper has one job: to give you a clear, honest mental model for what AI
+      actually is, how it has evolved, and — most importantly — what that means for
+      the decisions you're being asked to make right now. No math. No jargon. No agenda
+      except your clarity.
+    </p>
+
+    <div class="pull-quote">
+      <p>
+        Think about AI the same way you think about cars. Everyone needs transportation.
+        Not everyone needs to drive 200 mph.
+      </p>
+    </div>
+
+    <p>
+      That one analogy will carry you further than a thousand slide decks. Let's build
+      on it.
+    </p>
+
+
+    <!-- SECTION 1 -->
+    <h2>Where It All Started: The Bus Era</h2>
+
+    <p>
+      Before the modern AI revolution, the technology looked very different from what
+      you see today. Early AI systems were essentially elaborate sets of rules written
+      by hand. A programmer would sit down and write: <em>if the customer says "refund,"
+      route them to billing. If they say "broken," route them to support.</em>
+    </p>
+    <p>
+      It worked, barely. These systems were brittle. The moment a customer phrased
+      something slightly differently — "my item arrived damaged" instead of "broken" —
+      the whole thing fell apart. The AI wasn't thinking. It was pattern-matching
+      against a list someone typed in 2011.
+    </p>
+
+    <div class="era-card">
+      <div class="era-header">
+        <div class="era-badge">Era 1</div>
+        <div class="era-title">Rule-Based AI — The City Bus</div>
+      </div>
+      <p style="margin:0; font-size:15px; color:#2c2c3e;">
+        Reliable on fixed routes. Useless the moment you need to go somewhere
+        that isn't on the map. Everyone rides the same vehicle with the same
+        stops. There is no customization. There is no judgment.
+      </p>
+      <div class="era-analogy">
+        <strong>The analogy:</strong> Public transit. Gets you somewhere, but only where it already
+        decided to go — on its schedule, not yours. You adapt to it; it never adapts to you.
+      </div>
+    </div>
+
+    <p>
+      The rule-based era dominated for decades. Then, in the 2010s, something changed.
+      Rather than writing rules by hand, researchers discovered you could show a machine
+      millions of examples and let it figure out the patterns itself. This was the birth
+      of modern machine learning — and it changed everything.
+    </p>
+
+
+    <!-- SECTION 2 -->
+    <h2>The First Cars: Dense Language Models</h2>
+
+    <p>
+      Around 2017, a new architecture called the <strong>Transformer</strong> arrived —
+      and it was the Model T moment for AI. Suddenly, you could train a single system on
+      enormous amounts of text and it would develop something that looked, remarkably,
+      like understanding. It could answer questions, summarize documents, write code,
+      translate languages — all from the same model.
+    </p>
+    <p>
+      These were called <strong>dense models</strong>. Every time you asked a question,
+      the entire network fired — all of its billions of parameters activating to produce
+      an answer. GPT-3 in 2020. Then GPT-4. These were astounding demonstrations of
+      capability, and they set off the AI arms race we're still living through today.
+    </p>
+
+    <div class="era-card">
+      <div class="era-header">
+        <div class="era-badge">Era 2</div>
+        <div class="era-title">Dense Models — The First Cars</div>
+      </div>
+      <p style="margin:0; font-size:15px; color:#2c2c3e;">
+        Revolutionary. Genuinely transformative. Also expensive, fuel-hungry,
+        and built with one configuration for everyone. The whole engine fires
+        on every single trip — whether you're going three blocks or three hundred miles.
+      </p>
+      <div class="era-analogy">
+        <strong>The analogy:</strong> The first automobile. Incredible compared to what came before.
+        But it drinks fuel constantly, there's only one model available, and you
+        get zero say in how it's configured.
+      </div>
+    </div>
+
+    <p>
+      The bill for running dense models at scale was staggering. Every query to GPT-4
+      activates hundreds of billions of parameters. Do that millions of times a day,
+      and you're burning through cloud compute costs that would make your CFO faint.
+      Clearly, something had to change.
+    </p>
+
+
+    <!-- SECTION 3 -->
+    <h2>The Hybrid Engine: Mixture of Experts</h2>
+
+    <p>
+      Engineers noticed something important: a dense model uses every part of itself
+      to answer every question, even when most of that capacity is irrelevant. Ask it
+      to translate French, and the parts of the model that learned about cooking
+      or quantum physics still fire, contributing nothing useful, burning compute
+      the whole time.
+    </p>
+    <p>
+      The solution was elegant: what if, instead of one giant model that does everything,
+      you built a model made up of many specialized "experts" — and a smart router that
+      sends each question to only the experts it actually needs?
+    </p>
+    <p>
+      This is called a <strong>Mixture of Experts</strong> architecture, and it's behind
+      some of the most powerful AI systems available today. The same or greater
+      capability, at a fraction of the operating cost, because only the relevant
+      specialists activate for any given task.
+    </p>
+
+    <div class="era-card">
+      <div class="era-header">
+        <div class="era-badge">Era 3</div>
+        <div class="era-title">Mixture of Experts — The Hybrid Engine</div>
+      </div>
+      <p style="margin:0; font-size:15px; color:#2c2c3e;">
+        Same horsepower when you need it. Smart enough to run on electric when
+        you don't. The car figures out what the trip actually requires and
+        deploys only that much energy.
+      </p>
+      <div class="era-analogy">
+        <strong>The analogy:</strong> A hybrid vehicle. You don't lose any capability — you gain
+        efficiency. The engine isn't less powerful; it's smarter about when to fire.
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Why This Matters for Your Budget</div>
+      <p>
+        One of the most common mistakes organizations make is paying Ferrari-level
+        compute costs for tasks that a well-configured compact would handle just as well.
+        Understanding model architecture is, in practical terms, a cost management issue.
+        The companies that get this right spend 60–80% less on AI infrastructure than
+        those that don't.
+      </p>
+    </div>
+
+
+    <!-- SECTION 4 -->
+    <h2>Your Car, Your Configuration</h2>
+
+    <p>
+      Here's where the car analogy gets really useful — and where most vendor pitches
+      completely miss the point.
+    </p>
+    <p>
+      Nobody buys a car based purely on top speed. You buy a car based on your life.
+      Are you commuting solo on a highway? Hauling equipment to job sites? Driving kids
+      to school in bad weather? The right vehicle for a contractor with a truck bed full
+      of tools looks completely different from the right vehicle for a family of five
+      in Minnesota.
+    </p>
+    <p>
+      AI works exactly the same way. A general-purpose model — even a brilliant one —
+      knows everything about everything in general, and nothing specific about your
+      business, your industry, your terminology, or your workflows. That gap is where
+      value gets lost.
+    </p>
+
+    <div class="config-grid">
+      <div class="config-card">
+        <div class="config-icon">☕</div>
+        <div class="config-name">Cup Holders</div>
+        <div class="config-ai">Integrations</div>
+        <p>The small things that make daily use frictionless — connecting your AI
+        to Salesforce, your EHR, your internal wiki, your ticketing system.
+        Sounds minor. Completely determines whether people actually use it.</p>
+      </div>
+      <div class="config-card">
+        <div class="config-icon">🪑</div>
+        <div class="config-name">The Car Seat</div>
+        <div class="config-ai">Compliance Requirements</div>
+        <p>You cannot legally drive without it if you have that passenger.
+        HIPAA, SOC 2, FINRA, attorney-client privilege — these aren't
+        optional features. They're mandatory fixtures that define the
+        entire architecture.</p>
+      </div>
+      <div class="config-card">
+        <div class="config-icon">🛡️</div>
+        <div class="config-name">Safety Features</div>
+        <div class="config-ai">Data Privacy &amp; Security</div>
+        <p>Some buyers don't think about this until after the accident.
+        Where does your data go? Who can see it? Does it stay inside
+        your walls? These aren't add-ons — they're structural decisions
+        made at the beginning, not the end.</p>
+      </div>
+      <div class="config-card">
+        <div class="config-icon">🗺️</div>
+        <div class="config-name">Built-in Navigation</div>
+        <div class="config-ai">Domain Knowledge</div>
+        <p>A general AI knows the highways. A fine-tuned model knows
+        your neighborhood — your product names, your internal processes,
+        your customers' language. The difference in usefulness is not
+        marginal. It's enormous.</p>
+      </div>
+    </div>
+
+    <p>
+      The process of teaching a general AI model your specific business is called
+      <strong>fine-tuning</strong>. Think of it as factory-installing the configuration
+      that matters for your roads. A model fine-tuned on your data doesn't just know
+      more — it thinks differently, more like a trained member of your team than a
+      brilliant stranger who just walked in.
+    </p>
+    <p>
+      There's also a complementary technique called <strong>Retrieval Augmented
+      Generation (RAG)</strong> — which is less like factory settings and more like
+      giving the car real-time GPS. The model doesn't memorize your documents; instead,
+      it knows how to find and read the right ones exactly when it needs them. The
+      knowledge stays current, because it's always reading from your live systems
+      rather than a frozen snapshot.
+    </p>
+
+    <div class="pull-quote">
+      <p>
+        Nobody needs to drive 150 mph. What you need is 65–80 mph, reliably,
+        safely, with your specific gear in the trunk — and ideally, a car that
+        knows your commute.
+      </p>
+    </div>
+
+
+    <!-- SECTION 5 -->
+    <h2>The Self-Driving Era: Agentic AI</h2>
+
+    <p>
+      Everything we've discussed so far — dense models, efficient architectures,
+      fine-tuning, retrieval — describes AI as a very capable question-answering system.
+      You ask something, it answers. You provide a document, it summarizes. The human
+      is always the driver.
+    </p>
+    <p>
+      The next phase changes that relationship fundamentally. <strong>Agentic AI</strong>
+      doesn't just respond to you — it acts on your behalf. You give it a destination,
+      and it handles the navigation, the lane changes, the detours, and the parking.
+    </p>
+    <p>
+      In practice, an AI agent can: browse your internal systems to gather information,
+      draft and send communications, write and execute code, trigger workflows in other
+      software, supervise other AI sub-agents handling parallel tasks, and report back
+      when the job is done — or flag when it needs a human call.
+    </p>
+
+    <div class="era-card">
+      <div class="era-header">
+        <div class="era-badge">Era 4</div>
+        <div class="era-title">Agentic AI — Self-Driving</div>
+      </div>
+      <p style="margin:0; font-size:15px; color:#2c2c3e;">
+        You tell it the destination. It handles everything else. The human
+        is no longer the driver on every trip — they're the person who
+        decides where the organization needs to go.
+      </p>
+      <div class="era-analogy">
+        <strong>The analogy:</strong> Autonomous vehicles. You're not removed from the picture —
+        your judgment and destination-setting have never mattered more. But the
+        operational driving is delegated to a system that doesn't get tired,
+        distracted, or bored.
+      </div>
+    </div>
+
+    <p>
+      This is not science fiction. The most forward-looking enterprises are already
+      deploying agents that handle multi-step workflows autonomously — from ingesting
+      and triaging inbound contracts, to running competitive analysis pipelines, to
+      managing the operational grunt work that currently consumes your highest-paid
+      people's least valuable hours.
+    </p>
+
+    <div class="callout">
+      <div class="callout-label">The Important Caveat</div>
+      <p>
+        Self-driving cars still need clear roads, good maps, and a human who can
+        take the wheel when conditions are unusual. Agentic AI is the same. The
+        companies succeeding with it aren't removing humans from the loop — they're
+        repositioning humans to handle judgment calls while the agent handles execution.
+        The goal is leverage, not replacement.
+      </p>
+    </div>
+
+
+    <!-- SECTION 6 -->
+    <h2>Where We Are Now: The Full Picture</h2>
+
+    <p>
+      Here's what the landscape looks like today, mapped onto the framework we've built:
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>The Technology</th>
+          <th>The Car Analogy</th>
+          <th>What It's Good For</th>
+          <th>Common Mistake</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>General Cloud AI</strong><br/><span style="font-size:12px;color:#888;">(ChatGPT, Claude, Gemini)</span></td>
+          <td><span class="tag tag-dark">Rental car</span></td>
+          <td>Quick tasks, drafting, exploration, low-stakes work</td>
+          <td>Feeding it confidential data, or expecting it to know your business</td>
+        </tr>
+        <tr>
+          <td><strong>Dense Models</strong><br/><span style="font-size:12px;color:#888;">(GPT-4 class)</span></td>
+          <td><span class="tag tag-dark">Ferrari</span></td>
+          <td>Complex reasoning, novel problems, creative work</td>
+          <td>Using Ferrari-level compute for tasks that don't require it — the bill adds up fast</td>
+        </tr>
+        <tr>
+          <td><strong>Mixture of Experts</strong><br/><span style="font-size:12px;color:#888;">(routes each query to a domain-specialist sub-model)</span></td>
+          <td><span class="tag tag-fire">Hybrid</span></td>
+          <td>High-volume production workloads where cost and speed matter</td>
+          <td>Assuming smaller = less capable. A well-architected MoE often beats a dense model at the same task</td>
+        </tr>
+        <tr>
+          <td><strong>Fine-Tuned Models</strong></td>
+          <td><span class="tag tag-fire">Custom build</span></td>
+          <td>Domain-specific tasks — your industry, your data, your workflows</td>
+          <td>Skipping this step and wondering why the AI "doesn't understand our business"</td>
+        </tr>
+        <tr>
+          <td><strong>Agentic Systems</strong></td>
+          <td><span class="tag tag-fire">Self-driving</span></td>
+          <td>Multi-step workflows, automation at scale, 24/7 operations</td>
+          <td>Deploying agents without clear guardrails — or waiting too long to start experimenting</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <!-- SECTION 7 -->
+    <h2>The Most Expensive Mistake in Enterprise AI</h2>
+
+    <p>
+      There is one mistake we see more consistently than any other: companies assume
+      that the most powerful, most expensive, most famous AI model is the right choice
+      for their use case. It almost never is.
+    </p>
+    <p>
+      A smaller model, trained on your specific domain, will outperform a massive
+      general model on your specific tasks — reliably, repeatedly, and at a fraction
+      of the cost. This isn't a hypothesis. It's been demonstrated across industry
+      after industry, from healthcare to legal to financial services.
+    </p>
+    <p>
+      The fantasy is that you buy access to the most powerful AI in the world, point
+      it at your business, and watch it transform operations overnight. The reality
+      is that raw intelligence without context produces confident-sounding nonsense.
+      A brilliant specialist who doesn't know your patient's history is dangerous, not helpful.
+    </p>
+
+    <div class="verdict">
+      <p>
+        The companies winning with AI aren't the ones with the biggest models.<br/>
+        They're the ones with the best-configured systems.
+      </p>
+    </div>
+
+    <p>
+      Configuration beats raw power. Fit beats scale. A vehicle built for your roads
+      beats a Formula One car driven on a dirt track every single time.
+    </p>
+
+
+    <!-- SECTION 8 -->
+    <h2>What to Do With All of This</h2>
+
+    <p>
+      If you've made it this far, you now have a cleaner mental model of AI than the
+      majority of executives making AI decisions at major enterprises today. That's not
+      an exaggeration. Most decision-makers are operating on marketing language and
+      demo impressions. You have a framework.
+    </p>
+    <p>
+      Here's how to use it:
+    </p>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-label">First</div>
+        <div class="timeline-title">Audit what's actually happening in your organization right now</div>
+        <div class="timeline-body">
+          Which AI tools are your employees using today — officially and unofficially?
+          What data are they feeding into them? You may already have a data exposure
+          problem you don't know about yet.
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-label">Second</div>
+        <div class="timeline-title">Define your actual use case before you pick a model</div>
+        <div class="timeline-body">
+          What specific job does the AI need to do? Who are your passengers — and do any
+          of them require a car seat? What roads are you driving on? The answers determine
+          the architecture, not the other way around.
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-title">Think about ownership, not just access</div>
+        <div class="timeline-label">Third</div>
+        <div class="timeline-body">
+          Renting a Ferrari forever is more expensive than building the right car for
+          your driveway. As AI becomes core infrastructure, the economics of ownership
+          versus API access shift dramatically — especially once you factor in data
+          privacy, customization, and the compounding value of a model that learns
+          your business over time.
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-label">Fourth</div>
+        <div class="timeline-title">Start experimenting with agents — carefully</div>
+        <div class="timeline-body">
+          Agentic AI is not a future technology. It is available now and the gap between
+          companies that are learning it and companies that aren't is widening every
+          quarter. You don't need to bet the farm on it today. But you need people
+          learning to drive.
+        </div>
+      </div>
+    </div>
+
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <div class="cta-label">About Fireside Labs</div>
+      <h2 class="cta-title" style="margin-top:0; border:none; display:block; color:#fff; font-size:26px;">
+        We Figure Out What Vehicle You Actually Need — Then We Build It
+      </h2>
+      <p class="cta-body">
+        Fireside Labs works with enterprises to design, build, and deploy AI systems
+        that are right-sized for the job. We don't sell you the biggest model. We assess
+        your roads, your passengers, and your destination — and we build the configuration
+        that outperforms the Ferrari on your specific track, at a cost that makes sense
+        for the long term.
+      </p>
+
+      <div class="cta-services">
+        <div class="cta-service">
+          <div class="cta-service-name">AI Strategy &amp; Roadmap</div>
+          <p class="cta-service-desc">
+            A clear architecture decision before you spend a dollar on implementation.
+          </p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Custom Model Development</div>
+          <p class="cta-service-desc">
+            Fine-tuned, domain-specific models built on your data, deployed in your environment.
+          </p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Agentic Workflow Design</div>
+          <p class="cta-service-desc">
+            End-to-end automation systems that take over the execution while your team
+            focuses on judgment.
+          </p>
+        </div>
+      </div>
+
+      <div class="cta-contact">
+        <p class="cta-contact-text">
+          Ready to figure out what the right configuration looks like for your organization?
+          Let's start with a conversation.
+        </p>
+        <a class="cta-contact-link" href="mailto:j.nguyen@firesidelabs.ai">
+          j.nguyen@firesidelabs.ai →
+        </a>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>Fireside Labs &nbsp;·&nbsp; firesidelabs.ai &nbsp;·&nbsp; © 2025</div>
+      <div>This document is for informational purposes only.</div>
+    </div>
+
+  </div>
+</body>
+</html>

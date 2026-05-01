@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HTTP Timeouts as Silent Benchmark Sabotage — Fireside Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --copper:#C87533; --copper-lt:#D9924E; --dark:#0A0A0A; --ink:#1A1A1A; --muted:#6B6B6B; --rule:#E8E3DC; --bg:#FFFFFF; --bg-soft:#FAF8F5; --mono:'JetBrains Mono','Courier New',monospace; --sans:'Inter','Helvetica Neue',Arial,sans-serif; }
+    html { font-size: 16px; } body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    @page { size: letter; margin: 0; } @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } .no-print { display: none !important; } a { color: inherit; text-decoration: none; } }
+    .cover { width: 100%; min-height: 100vh; background: var(--dark); display: flex; flex-direction: column; position: relative; overflow: hidden; page-break-after: always; }
+    .cover-flame-bar { height: 6px; background: linear-gradient(90deg, var(--copper) 0%, var(--copper-lt) 100%); }
+    .cover-inner { flex: 1; display: flex; flex-direction: column; padding: 60px 72px; position: relative; z-index: 2; }
+    .cover::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 110% 0%, rgba(200,117,51,0.2) 0%, transparent 60%), radial-gradient(ellipse at -10% 100%, rgba(200,117,51,0.1) 0%, transparent 50%); z-index: 1; }
+    .cover-logo { font-size: 13px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); } .cover-logo span { color: rgba(255,255,255,0.45); font-weight: 400; }
+    .cover-content { margin-top: auto; margin-bottom: auto; padding: 60px 0 40px; max-width: 700px; }
+    .cover-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 24px; }
+    .cover-eyebrow { font-size: 13px; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+    .cover-title { font-family: var(--mono); font-size: 58px; font-weight: normal; line-height: 1.08; color: #fff; margin-bottom: 20px; }
+    .cover-title em { font-style: italic; color: var(--copper-lt); }
+    .cover-subtitle { font-size: 18px; color: rgba(255,255,255,0.55); line-height: 1.55; margin-bottom: 48px; max-width: 560px; }
+    .cover-divider { width: 48px; height: 3px; background: var(--copper); border-radius: 2px; margin-bottom: 36px; }
+    .cover-meta { font-size: 13px; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; }
+    .cover-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; margin-top: auto; }
+    .cover-footer div { font-size: 12px; color: rgba(255,255,255,0.3); }
+    .doc { max-width: 760px; margin: 0 auto; padding: 72px 72px 80px; }
+    .running-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--rule); margin-bottom: 52px; }
+    .running-logo { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .running-title { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+    h1 { font-family: var(--mono); font-size: 36px; font-weight: normal; line-height: 1.2; color: var(--dark); margin-bottom: 8px; }
+    .doc-subtitle { font-size: 16px; color: var(--muted); margin-bottom: 40px; line-height: 1.5; }
+    h2 { font-family: var(--mono); font-size: 24px; font-weight: normal; color: var(--dark); margin-top: 56px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--copper); display: inline-block; }
+    h3 { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--copper); margin-top: 32px; margin-bottom: 10px; }
+    p { margin-bottom: 16px; font-size: 15.5px; color: #2c2c3e; }
+    em { font-style: italic; } strong { font-weight: 700; color: var(--dark); }
+    .pull-quote { border-left: 4px solid var(--copper); background: var(--bg-soft); padding: 20px 28px; margin: 36px 0; border-radius: 0 6px 6px 0; }
+    .pull-quote p { font-family: var(--mono); font-size: 18px; line-height: 1.5; color: var(--dark); font-style: italic; margin: 0; }
+    .callout { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 8px; padding: 24px 28px; margin: 36px 0; }
+    .callout-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 10px; }
+    .callout p { font-size: 14.5px; margin: 0; color: #3D2A0F; line-height: 1.6; }
+    .code-box { background: var(--dark); color: #e8e8e8; padding: 16px 20px; border-radius: 6px; margin: 20px 0; font-family: var(--mono); font-size: 13px; overflow-x: auto; }
+    .compare-table { width: 100%; border-collapse: collapse; margin: 28px 0 36px; font-size: 14px; }
+    .compare-table th { background: var(--dark); color: #fff; padding: 12px 16px; text-align: left; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
+    .compare-table th:first-child { border-radius: 6px 0 0 0; } .compare-table th:last-child { border-radius: 0 6px 0 0; }
+    .compare-table td { padding: 12px 16px; border-bottom: 1px solid var(--rule); color: #2c2c3e; } .compare-table tr:nth-child(even) td { background: var(--bg-soft); }
+    .compare-table .alert td { background: #ffebee; }
+    .verdict { border: 2px solid var(--copper); border-radius: 8px; padding: 24px 28px; margin: 36px 0; text-align: center; }
+    .verdict p { font-size: 17px; font-weight: 700; color: var(--copper); margin: 0; line-height: 1.5; }
+    .cta-section { background: var(--dark); border-radius: 12px; padding: 48px 52px; margin-top: 52px; position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #C87533, #D9924E); }
+    .cta-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 16px; }
+    .cta-title { font-family: var(--mono); font-size: 28px; font-weight: normal; color: #fff; line-height: 1.25; margin-bottom: 20px; }
+    .cta-body { font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.65; margin-bottom: 32px; }
+    .cta-services { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+    .cta-service { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 16px 18px; }
+    .cta-service-name { font-size: 12px; font-weight: 700; color: var(--copper-lt); margin-bottom: 6px; letter-spacing: 0.04em; }
+    .cta-service-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; margin: 0; }
+    .cta-contact { display: flex; align-items: center; gap: 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px; }
+    .cta-contact-text { font-size: 13.5px; color: rgba(255,255,255,0.45); flex: 1; }
+    .cta-contact-link { font-size: 14px; font-weight: 700; color: var(--copper-lt); text-decoration: none; letter-spacing: 0.02em; white-space: nowrap; }
+    .doc-footer { margin-top: 52px; padding-top: 20px; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; }
+    .doc-footer div { font-size: 11px; color: var(--muted); }
+    .print-hint { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 6px; padding: 12px 20px; font-size: 13px; color: #92400e; text-align: center; margin: 24px auto; max-width: 760px; }
+    @media print { .print-hint { display: none; } }
+    @media (max-width: 700px) { .cover-title { font-size: 36px; } .cover-inner, .doc { padding: 40px 32px; } .cta-services { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="print-hint no-print">📄 To save as PDF: <strong>File → Print → Save as PDF</strong></div>
+  <div class="cover">
+    <div class="cover-flame-bar"></div>
+    <div class="cover-inner">
+      <div class="cover-logo">Fireside Labs <span>/ Research &amp; Advisory</span></div>
+      <div class="cover-content">
+        <div class="cover-label">Benchmarking Methods · Technical Note</div>
+        <h1 class="cover-title">HTTP Timeouts<br/>as <em>Silent Sabotage</em></h1>
+        <p class="cover-subtitle">How fixed timeouts systematically suppress large model performance by 5–15 percentage points.</p>
+        <div class="cover-divider"></div>
+        <p class="cover-meta">For engineers, CTOs, and benchmarking framework maintainers</p>
+      </div>
+      <div class="cover-footer">
+        <div>firesidelabs.ai &nbsp;·&nbsp; j.nguyen@firesidelabs.ai</div>
+        <div>© 2025 Fireside Labs. All rights reserved.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc">
+    <div class="running-header">
+      <div class="running-logo">Fireside Labs</div>
+      <div class="running-title">HTTP Timeouts as Silent Benchmark Sabotage</div>
+    </div>
+
+    <h1>HTTP Timeouts as Silent Benchmark Sabotage</h1>
+    <p class="doc-subtitle">How Fixed Timeouts Silently Tank Model Scores</p>
+
+    <p>A common pattern in LLM benchmarking: set a fixed HTTP timeout (e.g., 240 seconds) and call it done. This ruins your benchmarks.</p>
+
+    <p>A fixed 240-second timeout means models that respond in 2 seconds waste time, while models that need 45 seconds get killed. You measure timeout behavior, not model capability.</p>
+
+    <div class="pull-quote">
+      <p>
+        A model that scores 89.6% under fixed 240s timeout actually scores 95.1%
+        when given an appropriate per-model timeout. The difference: 5.5 percentage points
+        of performance artificially suppressed.
+      </p>
+    </div>
+
+    <h2>The Problem</h2>
+
+    <h3>Why It Happens</h3>
+    <p>When running a benchmark, you set an HTTP socket timeout. If no response arrives within the timeout window, the request fails. A 240-second timeout seems safe — most responses come back faster. But:</p>
+
+    <p><strong>Large models need more time.</strong> Gemma-4-31B running complex reasoning on HumanEval needs 45–60 seconds per question. At a 45-second timeout, 12 of 111 questions fail. Questions that timeout are counted as failures, just like wrong answers. But they're not model failures — they're infrastructure failures.</p>
+
+    <p><strong>Concurrency adds delay.</strong> In production, running 25 models across 3 nodes with shared infrastructure creates queue buildup. Network jitter, inference queue delays, GPU context switching can push effective per-request latency past any fixed ceiling.</p>
+
+    <div class="callout">
+      <div class="callout-label">The Real Story</div>
+      <p>
+        When we ran 25 models concurrently and hit 12 timeouts on Gemma-4-31B, the max observed
+        latency in isolation was 44.8 seconds. So how did questions time out at 240 seconds? Because
+        the 240-second timer started before the request even reached the GPU. Under concurrent load,
+        the effective timeout was more like 45–60 seconds per question. The problem: we didn't know this
+        was happening. Timeouts were silent.
+      </p>
+    </div>
+
+    <h2>The Numbers</h2>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>Fixed 240s</th>
+          <th>Dynamic Timeout</th>
+          <th>Hidden Cost</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Gemma-4-31B</strong></td>
+          <td>89.6%</td>
+          <td>95.1%</td>
+          <td><strong>+5.5pt</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Prune-5pct</strong></td>
+          <td>81.7%</td>
+          <td>95.1%</td>
+          <td><strong>+13.4pt</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Prune-7pct</strong></td>
+          <td>80.5%</td>
+          <td>93.3%</td>
+          <td><strong>+12.8pt</strong></td>
+        </tr>
+        <tr>
+          <td>Gemma-2-27b</td>
+          <td>69.5%</td>
+          <td>70.7%</td>
+          <td>+1.2pt</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>The timeout was suppressing scores by 5–15 percentage points.</p>
+
+    <h2>The Solution: Dynamic Timeouts</h2>
+
+    <p>Implement <code>auto_timeout(model_params, benchmark_type)</code> that scales timeout based on model size and task complexity.</p>
+
+    <div class="code-box">
+def auto_timeout(model_params_b: int, benchmark_type: str) -> int:
+    base_latency = {
+        'mmlu': 2.0,
+        'humaneval': 15.0,
+        'gsm8k': 8.0,
+    }
+    latency = base_latency[benchmark_type] * (model_params_b / 7.0)
+    timeout = latency * 3.5  # safety margin
+    return max(10, min(300, int(timeout)))
+    </div>
+
+    <p><strong>Examples:</strong> auto_timeout(7B, 'mmlu') = 7s, auto_timeout(31B, 'humaneval') = 232s</p>
+
+    <h2>Practical Recommendations</h2>
+
+    <p><strong>1. Implement Dynamic Timeouts:</strong> Fixed timeouts are lies. Calculate based on model size and task complexity.</p>
+
+    <p><strong>2. Make Timeouts Visible:</strong> Report in metadata: how many questions timed out, what percentage, what the score would be if timed-out questions were excluded.</p>
+
+    <p><strong>3. Monitor for Timeouts:</strong> If >1% of questions timeout, increase timeout and re-run. Timeouts are a signal something is wrong.</p>
+
+    <p><strong>4. Stress-Test at Realistic Load:</strong> Test benchmarks under realistic concurrency. Infrastructure contention will increase effective latency.</p>
+
+    <div class="verdict">
+      <p>
+        Fixed HTTP timeouts suppress reported accuracy by 5–15 percentage points on reasoning benchmarks.
+        The fix is straightforward and costs nothing. Use dynamic timeouts. Report timeout incidents.
+      </p>
+    </div>
+
+    <div class="cta-section">
+      <div class="cta-label">About Fireside Labs</div>
+      <h2 class="cta-title" style="margin-top:0; border:none; display:block; color:#fff; font-size:26px;">Benchmarking Infrastructure That Doesn't Lie</h2>
+      <p class="cta-body">Fireside Labs helps teams audit and improve their benchmarking pipelines. From timeout strategy to concurrency testing to transparency in reporting, we ensure your benchmarks measure what you think they measure.</p>
+      <div class="cta-services">
+        <div class="cta-service">
+          <div class="cta-service-name">Pipeline Audit</div>
+          <p class="cta-service-desc">Review timeout strategy, concurrency handling, metadata logging.</p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Framework Design</div>
+          <p class="cta-service-desc">Build a benchmarking harness with dynamic timeouts and transparent reporting.</p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Stress Testing</div>
+          <p class="cta-service-desc">Test your pipeline under realistic load to catch concurrency issues.</p>
+        </div>
+      </div>
+      <div class="cta-contact">
+        <p class="cta-contact-text">Ready to fix your timeout strategy? Let's talk.</p>
+        <a class="cta-contact-link" href="mailto:j.nguyen@firesidelabs.ai">j.nguyen@firesidelabs.ai →</a>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>Fireside Labs &nbsp;·&nbsp; firesidelabs.ai &nbsp;·&nbsp; © 2025</div>
+      <div>This document is for informational purposes only.</div>
+    </div>
+  </div>
+</body>
+</html>

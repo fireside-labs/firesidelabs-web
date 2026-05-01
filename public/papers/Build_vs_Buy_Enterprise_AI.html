@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Build vs. Buy — Fireside Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --copper:   #C87533;
+      --copper-lt:#D9924E;
+      --dark:     #0A0A0A;
+      --ink:      #1A1A1A;
+      --muted:    #6B6B6B;
+      --rule:     #E8E3DC;
+      --bg:       #FFFFFF;
+      --bg-soft:  #FAF8F5;
+      --mono:     'JetBrains Mono', 'Courier New', monospace;
+      --sans:     'Inter', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    html { font-size: 16px; }
+    body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    @page { size: letter; margin: 0; }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    /* ── COVER ── */
+    .cover {
+      width: 100%; min-height: 100vh; background: var(--dark);
+      display: flex; flex-direction: column;
+      position: relative; overflow: hidden; page-break-after: always;
+    }
+    .cover-flame-bar { height: 6px; background: linear-gradient(90deg, #C87533, #D9924E); }
+    .cover-inner { flex: 1; display: flex; flex-direction: column; padding: 60px 72px; position: relative; z-index: 2; }
+    .cover::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 110% 0%, rgba(200,117,51,0.2) 0%, transparent 60%),
+                  radial-gradient(ellipse at -10% 100%, rgba(200,117,51,0.1) 0%, transparent 50%);
+      z-index: 1;
+    }
+    .cover-logo { font-size: 13px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .cover-logo span { color: rgba(255,255,255,0.4); font-weight: 400; }
+    .cover-content { margin-top: auto; margin-bottom: auto; padding: 60px 0 40px; max-width: 700px; }
+    .cover-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 24px; }
+    .cover-title { font-family: var(--mono); font-size: 56px; font-weight: 600; line-height: 1.08; color: #fff; margin-bottom: 20px; }
+    .cover-title em { font-style: italic; color: var(--copper-lt); font-weight: 400; }
+    .cover-subtitle { font-size: 18px; color: rgba(255,255,255,0.55); line-height: 1.55; margin-bottom: 48px; max-width: 560px; }
+    .cover-divider { width: 48px; height: 3px; background: var(--copper); border-radius: 2px; margin-bottom: 36px; }
+    .cover-meta { font-size: 13px; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; }
+    .cover-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; margin-top: auto; }
+    .cover-footer div { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+    /* ── BODY ── */
+    .doc { max-width: 760px; margin: 0 auto; padding: 72px 72px 80px; }
+    .running-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--rule); margin-bottom: 52px; }
+    .running-logo { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .running-title { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+
+    h1 { font-family: var(--mono); font-size: 34px; font-weight: 600; line-height: 1.2; color: var(--dark); margin-bottom: 8px; }
+    .doc-subtitle { font-size: 16px; color: var(--muted); margin-bottom: 40px; line-height: 1.5; }
+    h2 { font-family: var(--mono); font-size: 22px; font-weight: 600; color: var(--dark); margin-top: 56px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--copper); display: inline-block; }
+    h3 { font-size: 13px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--copper); margin-top: 32px; margin-bottom: 10px; }
+    p { margin-bottom: 16px; font-size: 15.5px; color: #2c2c2c; }
+    em { font-style: italic; }
+    strong { font-weight: 600; color: var(--dark); }
+
+    .pull-quote { border-left: 4px solid var(--copper); background: var(--bg-soft); padding: 20px 28px; margin: 36px 0; border-radius: 0 6px 6px 0; }
+    .pull-quote p { font-family: var(--mono); font-size: 17px; line-height: 1.5; color: var(--dark); font-style: italic; margin: 0; }
+
+    /* stage cards */
+    .stages { display: flex; flex-direction: column; gap: 16px; margin: 28px 0 36px; }
+    .stage-card { display: flex; gap: 20px; align-items: flex-start; padding: 20px 24px; border: 1px solid var(--rule); border-radius: 6px; background: var(--bg-soft); }
+    .stage-card.active { border-color: var(--copper); background: #fdf6ee; }
+    .stage-num { font-family: var(--mono); font-size: 28px; font-weight: 600; color: var(--copper); opacity: 0.35; line-height: 1; min-width: 36px; margin-top: 2px; }
+    .stage-card.active .stage-num { opacity: 1; }
+    .stage-title { font-size: 14px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .stage-body { font-size: 14px; color: var(--muted); line-height: 1.55; margin: 0; }
+    .stage-tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; background: rgba(200,117,51,0.15); color: var(--copper); margin-bottom: 6px; }
+
+    /* when to buy */
+    .buy-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 24px 0 36px; }
+    .buy-card { background: var(--bg-soft); border: 1px solid var(--rule); border-radius: 6px; padding: 18px 20px; }
+    .buy-card-label { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--copper); margin-bottom: 8px; }
+    .buy-card p { font-size: 13.5px; color: var(--muted); margin: 0; line-height: 1.5; }
+
+    /* warning signs */
+    .warnings { display: flex; flex-direction: column; gap: 0; margin: 24px 0 36px; border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+    .warning-item { display: flex; gap: 0; border-bottom: 1px solid var(--rule); }
+    .warning-item:last-child { border-bottom: none; }
+    .warning-num { font-family: var(--mono); font-size: 13px; font-weight: 600; color: #fff; background: var(--dark); padding: 20px 18px; min-width: 52px; display: flex; align-items: flex-start; justify-content: center; padding-top: 22px; }
+    .warning-content { padding: 20px 24px; flex: 1; }
+    .warning-title { font-size: 14px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .warning-body { font-size: 14px; color: var(--muted); line-height: 1.55; margin: 0; }
+
+    /* flowchart */
+    .flowchart { background: var(--dark); border-radius: 10px; padding: 36px 40px; margin: 28px 0 36px; }
+    .flowchart-title { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); margin-bottom: 28px; }
+    .flow-step { position: relative; padding-left: 32px; margin-bottom: 20px; }
+    .flow-step:last-child { margin-bottom: 0; }
+    .flow-step::before { content: ''; position: absolute; left: 10px; top: 28px; bottom: -20px; width: 1px; background: rgba(255,255,255,0.1); }
+    .flow-step:last-child::before { display: none; }
+    .flow-dot { position: absolute; left: 4px; top: 5px; width: 13px; height: 13px; border-radius: 50%; background: var(--copper); }
+    .flow-q { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9); margin-bottom: 8px; }
+    .flow-answers { display: flex; gap: 12px; flex-wrap: wrap; }
+    .flow-answer { font-size: 12.5px; padding: 5px 12px; border-radius: 4px; }
+    .flow-answer.build { background: rgba(200,117,51,0.2); border: 1px solid rgba(200,117,51,0.4); color: var(--copper-lt); font-weight: 600; }
+    .flow-answer.proceed { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.5); }
+    .flow-answer.buy { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.7); font-weight: 600; }
+
+    /* cost comparison */
+    .cost-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0 36px; }
+    .cost-card { border-radius: 8px; padding: 24px 26px; }
+    .cost-card.buy-side { background: var(--bg-soft); border: 1px solid var(--rule); }
+    .cost-card.build-side { background: var(--dark); border: 1px solid rgba(200,117,51,0.3); }
+    .cost-header { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; }
+    .cost-card.buy-side .cost-header { color: var(--muted); }
+    .cost-card.build-side .cost-header { color: var(--copper); }
+    .cost-model { font-family: var(--mono); font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+    .cost-card.buy-side .cost-model { color: var(--dark); }
+    .cost-card.build-side .cost-model { color: #fff; }
+    .cost-hidden { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+    .cost-card.buy-side .cost-hidden { color: #c0392b; }
+    .cost-card.build-side .cost-hidden { color: var(--copper); }
+    .cost-desc { font-size: 13.5px; line-height: 1.55; margin: 0; }
+    .cost-card.buy-side .cost-desc { color: var(--muted); }
+    .cost-card.build-side .cost-desc { color: rgba(255,255,255,0.55); }
+
+    .callout { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 8px; padding: 24px 28px; margin: 36px 0; }
+    .callout-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 10px; }
+    .callout p { font-size: 14.5px; margin: 0; color: #3D2A0F; line-height: 1.6; }
+
+    /* cost table */
+    .cost-table-wrap { margin: 28px 0 36px; overflow-x: auto; }
+    .cost-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .cost-table thead tr { background: var(--dark); }
+    .cost-table th { padding: 11px 16px; text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.7); white-space: nowrap; }
+    .cost-table th:first-child { border-radius: 6px 0 0 0; }
+    .cost-table th:last-child { border-radius: 0 6px 0 0; }
+    .cost-table td { padding: 12px 16px; border-bottom: 1px solid var(--rule); vertical-align: middle; color: #2c2c2c; }
+    .cost-table tr:nth-child(even) td { background: var(--bg-soft); }
+    .cost-table tr.winner td { background: #fdf6ee; font-weight: 600; }
+    .cost-table tr.winner td:first-child { border-left: 3px solid var(--copper); }
+    .cost-table .num { font-family: var(--mono); font-size: 13px; }
+    .cost-table .bad { color: #c0392b; font-weight: 600; font-family: var(--mono); font-size: 13px; }
+    .cost-table .good { color: #27ae60; font-weight: 600; font-family: var(--mono); font-size: 13px; }
+    .cost-table .warn { color: var(--copper); font-family: var(--mono); font-size: 13px; }
+    .accuracy-bar-wrap { display: flex; align-items: center; gap: 10px; }
+    .accuracy-bar-bg { flex: 1; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; max-width: 100px; }
+    .accuracy-bar-fill { height: 100%; border-radius: 3px; background: var(--copper); }
+    .accuracy-label { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+    .verdict { border: 2px solid var(--copper); border-radius: 8px; padding: 24px 28px; margin: 36px 0; text-align: center; }
+    .verdict p { font-size: 17px; font-weight: 600; color: var(--copper); margin: 0; line-height: 1.5; font-family: var(--mono); }
+
+    /* CTA */
+    .cta-section { background: var(--dark); border-radius: 12px; padding: 48px 52px; margin-top: 52px; position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #C87533, #D9924E); }
+    .cta-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 16px; }
+    .cta-title { font-family: var(--mono); font-size: 24px; font-weight: 600; color: #fff; line-height: 1.3; margin-bottom: 20px; }
+    .cta-body { font-size: 15px; color: rgba(255,255,255,0.6); line-height: 1.65; margin-bottom: 32px; }
+    .cta-services { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+    .cta-service { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 16px 18px; }
+    .cta-service-name { font-size: 12px; font-weight: 700; color: var(--copper-lt); margin-bottom: 6px; letter-spacing: 0.04em; }
+    .cta-service-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.5; margin: 0; }
+    .cta-contact { display: flex; align-items: center; gap: 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px; }
+    .cta-contact-text { font-size: 13.5px; color: rgba(255,255,255,0.4); flex: 1; }
+    .cta-contact-link { font-size: 14px; font-weight: 700; color: var(--copper-lt); text-decoration: none; letter-spacing: 0.02em; white-space: nowrap; }
+
+    .doc-footer { margin-top: 52px; padding-top: 20px; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; }
+    .doc-footer div { font-size: 11px; color: var(--muted); }
+
+    .print-hint { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 6px; padding: 12px 20px; font-size: 13px; color: #3D2A0F; text-align: center; margin: 24px auto; max-width: 760px; }
+    @media print { .print-hint { display: none; } }
+    @media (max-width: 700px) {
+      .cover-title { font-size: 36px; }
+      .cover-inner, .doc { padding: 40px 32px; }
+      .buy-grid, .cost-compare, .cta-services { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-hint no-print">
+    📄 To save as PDF: <strong>File → Print → Save as PDF</strong> — set Margins to "None" for best results
+  </div>
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-flame-bar"></div>
+    <div class="cover-inner">
+      <div class="cover-logo">Fireside Labs <span>/ Research &amp; Advisory</span></div>
+      <div class="cover-content">
+        <div class="cover-label">Enterprise AI Strategy · White Paper</div>
+        <h1 class="cover-title">Build vs. <em>Buy</em></h1>
+        <p class="cover-subtitle">
+          An honest, battle-tested guide to the most important architectural
+          decision in enterprise AI — when off-the-shelf tools are exactly right,
+          and when they'll quietly bankrupt you.
+        </p>
+        <div class="cover-divider"></div>
+        <p class="cover-meta">For CTOs, CIOs, VPs of Engineering, and anyone holding the bag</p>
+      </div>
+      <div class="cover-footer">
+        <div>firesidelabs.ai &nbsp;·&nbsp; j.nguyen@firesidelabs.ai</div>
+        <div>© 2025 Fireside Labs. All rights reserved.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="doc">
+    <div class="running-header">
+      <div class="running-logo">Fireside Labs</div>
+      <div class="running-title">Build vs. Buy: An Honest Guide to Enterprise AI</div>
+    </div>
+
+    <h1>Build vs. Buy</h1>
+    <p class="doc-subtitle">An Honest Guide to Enterprise AI — When Off-the-Shelf Works, and When It Doesn't</p>
+
+    <p>
+      Let's cut through the noise. Every CTO, CIO, and VP of Engineering today is wrestling
+      with a fundamental, high-stakes question: do we plug into a vendor's API, or do we roll
+      up our sleeves and build a custom system?
+    </p>
+    <p>
+      The pressure from the board is relentless. The dev team is already using ChatGPT on the
+      side. Marketing bought a subscription no one in IT vetted. Meanwhile, you're left holding
+      the bag — trying to build an architecture that actually generates business value without
+      bankrupting the company or putting your data at risk.
+    </p>
+    <p>
+      This is an honest, battle-tested guide to making the right call. No marketing fluff.
+      No vendor agenda. Just the reality of enterprise AI.
+    </p>
+
+    <div class="pull-quote">
+      <p>
+        Buying an API is like taking an Uber. If you only need to go to the airport once
+        a month, owning a car makes no financial sense. Until it does.
+      </p>
+    </div>
+
+
+    <!-- Section 1 -->
+    <h2>Where Are You Right Now?</h2>
+    <p>
+      Look at any enterprise today and you'll find them squarely in one of three stages.
+      Be honest about which one describes your organization — the right answer changes
+      everything that follows.
+    </p>
+
+    <div class="stages">
+      <div class="stage-card">
+        <div class="stage-num">01</div>
+        <div>
+          <div class="stage-tag">Haven't Started</div>
+          <div class="stage-title">Analysis Paralysis</div>
+          <p class="stage-body">
+            You're reading the headlines. The board is asking for the "AI Strategy."
+            But you haven't deployed a single tool. The landscape changes so fast that
+            by the time you finish vetting a vendor, their technology already feels
+            obsolete. You're paralyzed by the fear of choosing the wrong path.
+          </p>
+        </div>
+      </div>
+      <div class="stage-card">
+        <div class="stage-num">02</div>
+        <div>
+          <div class="stage-tag">Experimenting</div>
+          <div class="stage-title">The "We're Doing AI" Phase</div>
+          <p class="stage-body">
+            You bought a dozen Copilot licenses. Developers are building Slack bots
+            with OpenAI APIs. It feels exciting. But the ROI is fuzzy. Tools aren't
+            integrated into core business logic. You're renting intelligence, and
+            you have a false sense of security about its scalability.
+            <strong>80% of companies live here.</strong>
+          </p>
+        </div>
+      </div>
+      <div class="stage-card active">
+        <div class="stage-num">03</div>
+        <div>
+          <div class="stage-tag">Struggling</div>
+          <div class="stage-title">The Reality Check</div>
+          <p class="stage-body">
+            You tried to build a production workflow around a vendor API and now
+            you're feeling the pain. Cloud API bills are exploding. The system
+            hallucinates on edge cases. Compliance is screaming. You thought
+            you could plug-and-play. You ended up in an unscalable mess.
+            <strong>If you're here, it's time to reassess.</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Section 2 -->
+    <h2>When Buying Is the Right Answer</h2>
+
+    <p>
+      Before we become critics, let's give credit where it's due. Off-the-shelf cloud
+      AI tools are genuinely remarkable for a specific class of problem. If your goal
+      is drafting sales emails, summarizing public documents, or generating boilerplate
+      code — <strong>just buy the tool</strong>. Don't over-engineer it.
+    </p>
+
+    <div class="buy-grid">
+      <div class="buy-card">
+        <div class="buy-card-label">Low Stakes</div>
+        <p>A hallucination produces an awkward email, not a lawsuit. The cost of being wrong is low and recoverable.</p>
+      </div>
+      <div class="buy-card">
+        <div class="buy-card-label">Generic Tasks</div>
+        <p>"Summarize this PDF" is something any model does well. You don't need a custom engine to draft a meeting recap.</p>
+      </div>
+      <div class="buy-card">
+        <div class="buy-card-label">Low Volume</div>
+        <p>If you're not processing millions of events per day, the API economics work in your favor. Enjoy the Uber.</p>
+      </div>
+    </div>
+
+    <p>
+      The mistake isn't using APIs. The mistake is using them past the point where
+      they stop making sense — and not knowing where that line is.
+    </p>
+
+
+    <!-- Section 3 -->
+    <h2>The 4 Warning Signs You Need to Build</h2>
+
+    <p>
+      Off-the-shelf APIs stop being magical the moment you try to do something
+      uniquely valuable to your specific business. Here are the four red flags
+      that mean it's time to build.
+    </p>
+
+    <div class="warnings">
+      <div class="warning-item">
+        <div class="warning-num">01</div>
+        <div class="warning-content">
+          <div class="warning-title">Data Sensitivity</div>
+          <p class="warning-body">
+            If you're handling HIPAA records, attorney-client documents, or core IP,
+            you cannot send that data over the public internet to a third-party server.
+            Vendor privacy clauses provide legal comfort, not architectural security.
+            True security is physical. If a data leak would end your company, a
+            black-box API is a catastrophic risk.
+          </p>
+        </div>
+      </div>
+      <div class="warning-item">
+        <div class="warning-num">02</div>
+        <div class="warning-content">
+          <div class="warning-title">Domain Accuracy</div>
+          <p class="warning-body">
+            A general-purpose model is like a very smart generalist who's read
+            everything but practiced nothing. It speaks about medicine, tax law,
+            and logistics convincingly — and confidently gets the subtle parts wrong.
+            If being "mostly right" is unacceptable in your domain, you must
+            fine-tune a custom system. Generic AI hallucinating in a high-stakes
+            context isn't a bug. It's the architecture.
+          </p>
+        </div>
+      </div>
+      <div class="warning-item">
+        <div class="warning-num">03</div>
+        <div class="warning-content">
+          <div class="warning-title">Vendor Lock-In</div>
+          <p class="warning-body">
+            Building your core product on someone else's AI model is like building
+            your headquarters on rented land where the landlord can rewrite the
+            laws of physics every quarter. Prices can jump 300%. A model update
+            can silently break your edge cases. If AI is your core differentiator,
+            you must own the engine — not lease it indefinitely from a competitor.
+          </p>
+        </div>
+      </div>
+      <div class="warning-item">
+        <div class="warning-num">04</div>
+        <div class="warning-content">
+          <div class="warning-title">Scale &amp; The Cloud Tax</div>
+          <p class="warning-body">
+            Per-token API pricing looks cheap at low volume. At scale, it becomes
+            a silent budget killer. If you need AI to process every call transcript,
+            every document, every transaction — every single day — the math changes
+            violently. The API tax compounds fast.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Real Numbers: 250,000 Minutes of Calls Per Month</h3>
+    <p>
+      A mid-sized enterprise sales floor needs to transcribe and run intelligence
+      — playbook compliance, conversion tracking — on 250,000 minutes of recorded
+      calls every month. Here's what that actually costs across the major cloud
+      providers, versus running an open-source model on owned hardware.
+    </p>
+
+    <div class="cost-table-wrap">
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Provider / Approach</th>
+            <th>Transcription Rate</th>
+            <th>Monthly Cost</th>
+            <th>Annual Cost</th>
+            <th>Accuracy (general audio)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Google Speech-to-Text</strong><br/><span style="font-size:12px;color:#888;">+ BigQuery LLM analysis</span></td>
+            <td class="num">$0.024 / min</td>
+            <td class="bad">$6,000+</td>
+            <td class="bad">$72,000+</td>
+            <td>
+              <div class="accuracy-bar-wrap">
+                <div class="accuracy-bar-bg"><div class="accuracy-bar-fill" style="width:72%"></div></div>
+                <span class="accuracy-label">~72–80%*</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>AWS Transcribe</strong><br/><span style="font-size:12px;color:#888;">+ Bedrock LLM</span></td>
+            <td class="num">$0.024 / min</td>
+            <td class="bad">$6,000+</td>
+            <td class="bad">$72,000+</td>
+            <td>
+              <div class="accuracy-bar-wrap">
+                <div class="accuracy-bar-bg"><div class="accuracy-bar-fill" style="width:82%"></div></div>
+                <span class="accuracy-label">~82–88%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Azure Cognitive Speech</strong><br/><span style="font-size:12px;color:#888;">+ OpenAI via Azure</span></td>
+            <td class="num">$0.016 / min</td>
+            <td class="warn">$4,000</td>
+            <td class="warn">$48,000</td>
+            <td>
+              <div class="accuracy-bar-wrap">
+                <div class="accuracy-bar-bg"><div class="accuracy-bar-fill" style="width:86%"></div></div>
+                <span class="accuracy-label">~86–90%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>OpenAI Whisper API</strong><br/><span style="font-size:12px;color:#888;">+ GPT-4o</span></td>
+            <td class="num">$0.006 / min</td>
+            <td class="warn">$1,500+</td>
+            <td class="warn">$18,000+</td>
+            <td>
+              <div class="accuracy-bar-wrap">
+                <div class="accuracy-bar-bg"><div class="accuracy-bar-fill" style="width:92%"></div></div>
+                <span class="accuracy-label">~92–95%</span>
+              </div>
+            </td>
+          </tr>
+          <tr class="winner">
+            <td><strong>Local Whisper + Local LLM</strong><br/><span style="font-size:12px;color:#888;">Open-source, owned hardware</span></td>
+            <td class="num">~$0.00 / min†</td>
+            <td class="good">~$0</td>
+            <td class="good">~$0†</td>
+            <td>
+              <div class="accuracy-bar-wrap">
+                <div class="accuracy-bar-bg"><div class="accuracy-bar-fill" style="width:98%; background: #27ae60;"></div></div>
+                <span class="accuracy-label">96–98%‡</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="font-size:13px; color:var(--muted); margin-top:-20px; margin-bottom:28px; line-height:1.6;">
+      * Google Speech-to-Text with downstream BigQuery LLM pipelines performs particularly poorly on domain-specific terminology,
+      sales jargon, and multi-speaker calls — often returning character-level errors that corrupt downstream analysis entirely.
+      In practice, teams relying on this stack report effective accuracy closer to 65–72% on real enterprise call audio.<br/>
+      † After one-time hardware investment of approximately $15,000–$25,000 for a GPU server. Marginal per-minute cost is effectively zero thereafter.<br/>
+      ‡ Fine-tuned Whisper on domain-specific call data. Publicly benchmarked; improves further with continued fine-tuning on your corpus.
+    </p>
+
+    <div class="callout">
+      <div class="callout-label">The Bottom Line on Transcription</div>
+      <p>
+        Moving from Google STT + BigQuery to a locally-hosted Whisper deployment
+        doesn't just cut costs from $72,000 a year to near-zero — it typically
+        <strong>improves accuracy by 20–30 percentage points</strong> on real enterprise audio,
+        because the model can be fine-tuned on your actual call corpus rather than
+        performing against a generic benchmark. Less cost. Better results. Data never leaves your walls.
+      </p>
+    </div>
+
+
+    <!-- Section 4 -->
+    <h2>The Decision Framework</h2>
+
+    <p>
+      Ask yourself these three questions in order. The answer will be clear.
+    </p>
+
+    <div class="flowchart">
+      <div class="flowchart-title">CTO's Decision Flowchart</div>
+
+      <div class="flow-step">
+        <div class="flow-dot"></div>
+        <div class="flow-q">Is your data highly sensitive or regulated?</div>
+        <div class="flow-answers">
+          <span class="flow-answer build">Yes → Build custom. Local / on-premise.</span>
+          <span class="flow-answer proceed">No → continue ↓</span>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-dot"></div>
+        <div class="flow-q">Does the task require deep niche expertise where "mostly right" isn't acceptable?</div>
+        <div class="flow-answers">
+          <span class="flow-answer build">Yes → Build custom. Fine-tuned models.</span>
+          <span class="flow-answer proceed">No → continue ↓</span>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-dot"></div>
+        <div class="flow-q">Will you process high-volume interactions where per-transaction fees erode margins?</div>
+        <div class="flow-answers">
+          <span class="flow-answer build">Yes → Build custom. Amortize compute costs.</span>
+          <span class="flow-answer buy">No → Buy off-the-shelf. You've earned it.</span>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Section 5 -->
+    <h2>The Hardware Renaissance</h2>
+
+    <p>
+      For fifteen years, the prevailing wisdom was simple: <em>never buy hardware.</em>
+      Servers go obsolete in 18 months. Rent from AWS. Pay only for what you use.
+      That logic was correct for an era of bursty, unpredictable compute needs.
+    </p>
+    <p>
+      AI has broken that math entirely.
+    </p>
+    <p>
+      AI workloads don't burst. They hum. Constantly. At maximum capacity. The
+      "pay only for what you use" model becomes "pay the maximum, forever." At
+      that point, renting is the worst possible financial decision.
+    </p>
+
+    <div class="cost-compare">
+      <div class="cost-card buy-side">
+        <div class="cost-header">When You Buy (Rent the API)</div>
+        <div class="cost-model">OpEx Cloud Bill</div>
+        <div class="cost-hidden">⚠ The Hidden Cost</div>
+        <p class="cost-desc">
+          Looks like fractions of a cent per transaction. But at scale, running
+          24/7, this compounds into five or six figures per month. You never
+          own anything. Every dollar spent is gone. And the price is set by
+          someone else.
+        </p>
+      </div>
+      <div class="cost-card build-side">
+        <div class="cost-header">When You Build (Own the Hardware)</div>
+        <div class="cost-model">CapEx Investment</div>
+        <div class="cost-hidden">↑ The Hidden Upside</div>
+        <p class="cost-desc">
+          Frightening for executives conditioned to OpEx thinking. But once
+          the servers are running, marginal cost per transaction drops to near
+          zero. You own the asset. It appreciates in capability as you fine-tune
+          it. The economics invert completely at scale.
+        </p>
+      </div>
+    </div>
+
+
+    <!-- Bottom Line -->
+    <h2>The Bottom Line</h2>
+
+    <p>
+      Start by buying. Use off-the-shelf tools to prove the concept. Give it to a
+      small team, figure out if the workflow actually generates value, and move fast.
+      There is nothing wrong with renting the Uber when you're still figuring out
+      where you're going.
+    </p>
+    <p>
+      But the moment that concept proves to be a core driver of value — the moment
+      it scales, touches sensitive data, or requires real accuracy — you must be
+      prepared to transition. The most competitive enterprises over the next decade
+      won't be the ones that accessed the biggest AI. They'll be the ones that
+      owned the most relevant intelligence.
+    </p>
+
+    <div class="verdict">
+      <p>Own your intelligence.<br/>Don't rent it forever from your competitors.</p>
+    </div>
+
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <div class="cta-label">About Fireside Labs</div>
+      <div class="cta-title">We've Been on Both Sides of This Decision. We'll Tell You the Truth.</div>
+      <p class="cta-body">
+        Fireside Labs helps enterprises navigate the build vs. buy decision with
+        honest architecture assessments — not a pitch for a product we happen to sell.
+        When buying makes sense, we'll tell you. When building is the right call,
+        we design and deploy the system from the ground up: infrastructure, model
+        selection, fine-tuning, and ongoing optimization, all inside your own walls.
+      </p>
+      <div class="cta-services">
+        <div class="cta-service">
+          <div class="cta-service-name">Architecture Assessment</div>
+          <p class="cta-service-desc">An honest audit of your current setup and a clear recommendation before you spend.</p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Local-First Deployment</div>
+          <p class="cta-service-desc">End-to-end design and build of on-premise or private VPC AI infrastructure.</p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Migration Strategy</div>
+          <p class="cta-service-desc">Moving from API dependency to owned infrastructure without breaking production.</p>
+        </div>
+      </div>
+      <div class="cta-contact">
+        <p class="cta-contact-text">Ready to make the call? Let's walk through the decision framework together.</p>
+        <a class="cta-contact-link" href="mailto:j.nguyen@firesidelabs.ai">j.nguyen@firesidelabs.ai →</a>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>Fireside Labs &nbsp;·&nbsp; firesidelabs.ai &nbsp;·&nbsp; © 2025</div>
+      <div>This document is for informational purposes only.</div>
+    </div>
+  </div>
+
+</body>
+</html>

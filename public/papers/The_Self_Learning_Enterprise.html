@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Self-Learning Enterprise — Fireside Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --copper:   #C87533;
+      --copper-lt:#D9924E;
+      --dark:     #0A0A0A;
+      --ink:      #1A1A1A;
+      --muted:    #6B6B6B;
+      --rule:     #E8E3DC;
+      --bg:       #FFFFFF;
+      --bg-soft:  #FAF8F5;
+      --mono:     'JetBrains Mono', 'Courier New', monospace;
+      --sans:     'Inter', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    html { font-size: 16px; }
+    body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    @page { size: letter; margin: 0; }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    /* ── COVER ── */
+    .cover {
+      width: 100%; min-height: 100vh; background: var(--dark);
+      display: flex; flex-direction: column;
+      position: relative; overflow: hidden; page-break-after: always;
+    }
+    .cover-flame-bar { height: 6px; background: linear-gradient(90deg, #C87533, #D9924E); }
+    .cover-inner { flex: 1; display: flex; flex-direction: column; padding: 60px 72px; position: relative; z-index: 2; }
+    .cover::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 110% 0%, rgba(200,117,51,0.2) 0%, transparent 60%),
+                  radial-gradient(ellipse at -10% 100%, rgba(200,117,51,0.1) 0%, transparent 50%);
+      z-index: 1;
+    }
+    .cover-logo { font-size: 13px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .cover-logo span { color: rgba(255,255,255,0.4); font-weight: 400; }
+    .cover-content { margin-top: auto; margin-bottom: auto; padding: 60px 0 40px; max-width: 700px; }
+    .cover-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 24px; }
+    .cover-title { font-family: var(--mono); font-size: 52px; font-weight: 600; line-height: 1.1; color: #fff; margin-bottom: 20px; }
+    .cover-title em { font-style: italic; color: var(--copper-lt); font-weight: 400; }
+    .cover-subtitle { font-size: 18px; color: rgba(255,255,255,0.55); line-height: 1.55; margin-bottom: 48px; max-width: 560px; }
+    .cover-divider { width: 48px; height: 3px; background: var(--copper); border-radius: 2px; margin-bottom: 36px; }
+    .cover-meta { font-size: 13px; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; }
+    .cover-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; margin-top: auto; }
+    .cover-footer div { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+    /* ── BODY ── */
+    .doc { max-width: 760px; margin: 0 auto; padding: 72px 72px 80px; }
+    .running-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--rule); margin-bottom: 52px; }
+    .running-logo { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .running-title { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+
+    h1 { font-family: var(--mono); font-size: 34px; font-weight: 600; line-height: 1.2; color: var(--dark); margin-bottom: 8px; }
+    .doc-subtitle { font-size: 16px; color: var(--muted); margin-bottom: 40px; line-height: 1.5; }
+    h2 { font-family: var(--mono); font-size: 22px; font-weight: 600; color: var(--dark); margin-top: 56px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--copper); display: inline-block; }
+    h3 { font-size: 13px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--copper); margin-top: 32px; margin-bottom: 10px; }
+    p { margin-bottom: 16px; font-size: 15.5px; color: #2c2c2c; }
+    em { font-style: italic; }
+    strong { font-weight: 600; color: var(--dark); }
+
+    .pull-quote { border-left: 4px solid var(--copper); background: var(--bg-soft); padding: 20px 28px; margin: 36px 0; border-radius: 0 6px 6px 0; }
+    .pull-quote p { font-family: var(--mono); font-size: 17px; line-height: 1.55; color: var(--dark); font-style: italic; margin: 0; }
+
+    .callout { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 8px; padding: 24px 28px; margin: 36px 0; }
+    .callout-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 10px; }
+    .callout p { font-size: 14.5px; margin: 0; color: #3D2A0F; line-height: 1.6; }
+
+    /* contrast callout */
+    .contrast { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 28px 0 36px; border-radius: 8px; overflow: hidden; border: 1px solid var(--rule); }
+    .contrast-side { padding: 24px 26px; }
+    .contrast-side.static { background: var(--bg-soft); border-right: 1px solid var(--rule); }
+    .contrast-side.smart { background: var(--dark); }
+    .contrast-label { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 14px; }
+    .contrast-side.static .contrast-label { color: var(--muted); }
+    .contrast-side.smart .contrast-label { color: var(--copper); }
+    .contrast-item { margin-bottom: 12px; }
+    .contrast-item:last-child { margin-bottom: 0; }
+    .contrast-item-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 3px; }
+    .contrast-side.static .contrast-item-label { color: var(--ink); }
+    .contrast-side.smart .contrast-item-label { color: var(--copper-lt); }
+    .contrast-item-body { font-size: 13.5px; line-height: 1.5; }
+    .contrast-side.static .contrast-item-body { color: var(--muted); }
+    .contrast-side.smart .contrast-item-body { color: rgba(255,255,255,0.55); }
+
+    /* improvement timeline */
+    .improvement { background: var(--dark); border-radius: 10px; padding: 36px 40px; margin: 28px 0 36px; }
+    .improvement-title { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); margin-bottom: 28px; }
+    .improvement-track { display: flex; flex-direction: column; gap: 0; }
+    .week-row { display: flex; align-items: stretch; gap: 0; }
+    .week-label { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--copper); min-width: 80px; padding: 16px 16px 16px 0; border-right: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; }
+    .week-content { flex: 1; padding: 16px 0 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .week-row:last-child .week-content { border-bottom: none; }
+    .week-accuracy { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+    .week-bar-wrap { flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+    .week-bar { height: 100%; background: linear-gradient(90deg, #C87533, #D9924E); border-radius: 3px; transition: width 0.3s; }
+    .week-pct { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--copper-lt); min-width: 36px; text-align: right; }
+    .week-desc { font-size: 13.5px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+    /* three conditions */
+    .conditions { display: flex; flex-direction: column; gap: 16px; margin: 24px 0 36px; }
+    .condition-card { display: flex; gap: 20px; padding: 20px 24px; border: 1px solid var(--rule); border-radius: 6px; background: var(--bg-soft); align-items: flex-start; }
+    .condition-num { font-family: var(--mono); font-size: 32px; font-weight: 600; color: var(--copper); line-height: 1; min-width: 40px; }
+    .condition-title { font-size: 14px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .condition-body { font-size: 14px; color: var(--muted); line-height: 1.55; margin: 0; }
+
+    .verdict { border: 2px solid var(--copper); border-radius: 8px; padding: 24px 28px; margin: 36px 0; text-align: center; }
+    .verdict p { font-size: 16px; font-weight: 600; color: var(--copper); margin: 0; line-height: 1.6; font-family: var(--mono); }
+
+    /* CTA */
+    .cta-section { background: var(--dark); border-radius: 12px; padding: 48px 52px; margin-top: 52px; position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #C87533, #D9924E); }
+    .cta-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 16px; }
+    .cta-title { font-family: var(--mono); font-size: 24px; font-weight: 600; color: #fff; line-height: 1.3; margin-bottom: 20px; }
+    .cta-body { font-size: 15px; color: rgba(255,255,255,0.6); line-height: 1.65; margin-bottom: 32px; }
+    .cta-services { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+    .cta-service { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 16px 18px; }
+    .cta-service-name { font-size: 12px; font-weight: 700; color: var(--copper-lt); margin-bottom: 6px; letter-spacing: 0.04em; }
+    .cta-service-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.5; margin: 0; }
+    .cta-contact { display: flex; align-items: center; gap: 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px; }
+    .cta-contact-text { font-size: 13.5px; color: rgba(255,255,255,0.4); flex: 1; }
+    .cta-contact-link { font-size: 14px; font-weight: 700; color: var(--copper-lt); text-decoration: none; letter-spacing: 0.02em; white-space: nowrap; }
+
+    .doc-footer { margin-top: 52px; padding-top: 20px; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; }
+    .doc-footer div { font-size: 11px; color: var(--muted); }
+
+    .print-hint { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 6px; padding: 12px 20px; font-size: 13px; color: #3D2A0F; text-align: center; margin: 24px auto; max-width: 760px; }
+    @media print { .print-hint { display: none; } }
+    @media (max-width: 700px) {
+      .cover-title { font-size: 36px; }
+      .cover-inner, .doc { padding: 40px 32px; }
+      .contrast, .cta-services { grid-template-columns: 1fr; }
+      .contrast-side.static { border-right: none; border-bottom: 1px solid var(--rule); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-hint no-print">
+    📄 To save as PDF: <strong>File → Print → Save as PDF</strong> — set Margins to "None" for best results
+  </div>
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-flame-bar"></div>
+    <div class="cover-inner">
+      <div class="cover-logo">Fireside Labs <span>/ Research &amp; Advisory</span></div>
+      <div class="cover-content">
+        <div class="cover-label">Enterprise AI Architecture · White Paper</div>
+        <h1 class="cover-title">The Self-Learning <em>Enterprise</em></h1>
+        <p class="cover-subtitle">
+          How AI systems that improve from every interaction are replacing static tools —
+          and why your employees are already sitting on the training data that makes it possible.
+        </p>
+        <div class="cover-divider"></div>
+        <p class="cover-meta">For operations leaders, product owners, and anyone tired of AI that stops getting smarter</p>
+      </div>
+      <div class="cover-footer">
+        <div>firesidelabs.ai &nbsp;·&nbsp; j.nguyen@firesidelabs.ai</div>
+        <div>© 2025 Fireside Labs. All rights reserved.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="doc">
+    <div class="running-header">
+      <div class="running-logo">Fireside Labs</div>
+      <div class="running-title">The Self-Learning Enterprise</div>
+    </div>
+
+    <h1>The Self-Learning Enterprise</h1>
+    <p class="doc-subtitle">How AI Systems That Improve From Every Interaction Are Replacing Static Tools</p>
+
+    <p>
+      Think about the software you use every day. What happens when you hit a bug, an
+      unintuitive workflow, a system that just doesn't understand what you need? You
+      create a workaround. You curse the screen, click three extra buttons, and move on.
+      The software doesn't know you struggled. It certainly won't be smarter tomorrow.
+    </p>
+    <p>
+      Traditional AI, ironically, works exactly the same way.
+    </p>
+    <p>
+      We've all used a "dumb" AI. You ask your company's internal chatbot a process
+      question. It delivers an outdated, hallucinated answer. You sigh, close the window,
+      and go ask a coworker. A month later, a new hire asks the same question. The chatbot
+      confidently delivers the exact same wrong answer. Nothing learned. Nothing changed.
+    </p>
+
+    <div class="pull-quote">
+      <p>
+        This is the fatal flaw of static AI tools. They are frozen
+        in the moment they were deployed. Your business is not.
+      </p>
+    </div>
+
+    <p>
+      What the world's most forward-thinking companies are building today is something
+      different: <strong>self-learning systems</strong> — living AI infrastructure that
+      gets measurably smarter every single time your employees do their jobs.
+    </p>
+
+
+    <!-- Section 1 -->
+    <h2>Why Static AI Plateaus After Day One</h2>
+
+    <p>
+      When you deploy a standard AI system — even one powered by an expensive, capable
+      model — its intelligence peaks on launch day. It was trained on historical data.
+      But your business is not historical.
+    </p>
+    <p>
+      The moment you launch a new product, alter a procedure, encounter a new edge case,
+      or experience a market shift, the AI begins to act confused. It's answering questions
+      about a business that no longer exists.
+    </p>
+    <p>
+      Fixing a static AI means pulling the fire alarm. Your engineers scrape the logs,
+      manually identify failures, rewrite prompts, adjust the vector databases, and push
+      a sprawling version update. It's slow, expensive, and completely unscalable.
+      And while they're doing that, your employees have already decided the AI is "stupid"
+      — a verdict that, once made, is nearly impossible to reverse.
+    </p>
+
+    <div class="callout">
+      <div class="callout-label">The Compounding Problem</div>
+      <p>
+        The longer a static AI stays deployed without retraining, the worse the gap
+        between what it knows and what your business actually looks like. It doesn't
+        just fail to improve — it actively gets less accurate over time as your world
+        moves on without it.
+      </p>
+    </div>
+
+
+    <!-- Section 2 -->
+    <h2>The Human-in-the-Loop Engine</h2>
+
+    <p>
+      The antidote is an architecture called <strong>Human-in-the-Loop (HITL)</strong>.
+      But forget the engineering term for a moment. Think about what it actually means
+      for your business.
+    </p>
+    <p>
+      Imagine bowling with bumpers — except every time your ball hits the bumper,
+      the bumper studies the exact physics of your throw and reshapes itself to keep
+      your next ball dead center. The system learns the specifics of <em>you</em>
+      from every interaction.
+    </p>
+    <p>
+      Here's how it works in practice. A claims associate is working through a
+      backlog of inbound insurance claims. Beside her screen, an AI assistant reads
+      the same claim data and suggests a routing classification:
+      "Escalate," "Standard Review," "Auto-Approve."
+    </p>
+    <p>
+      If the AI is right, she clicks Approve and moves on. If it's wrong, she corrects
+      it — "Standard Review," not "Escalate" — and moves on.
+    </p>
+    <p>
+      In a conventional system, that correction fixes one record and vanishes.
+      In a self-learning system, that correction is capital. Overnight, it flows back
+      into the training loop. The model adjusts its internal understanding: <em>"When
+      a claim presents with these specific coverage flags and dollar threshold, we route
+      to Standard Review, not Escalate."</em> Nobody scheduled a retraining sprint.
+      Nobody wrote a ticket. Your domain expert just did her job, and the machine
+      got smarter.
+    </p>
+
+    <div class="pull-quote">
+      <p>
+        The "data exhaust" of your employees' daily decisions becomes
+        the fuel that trains the machine. Your best people are already
+        building the training set. You just haven't captured it yet.
+      </p>
+    </div>
+
+    <h3>Real-World Case Study: Claims Routing Intelligence</h3>
+    <p>
+      A mid-market operations team processing thousands of inbound claims per week
+      deploys a static AI to route documents based on keyword triggers. It works, barely,
+      and quickly plateaus — flagging the wrong claims for escalation, missing edge cases
+      the senior adjusters catch instantly, and requiring constant manual overrides.
+    </p>
+    <p>
+      They replace it with a self-learning system. Every override, every manual
+      reroute, every senior adjuster correction flows silently back into the training
+      loop. Within six weeks, the AI isn't just routing — it's anticipating. It has
+      absorbed the subtle pattern recognition of the team's most experienced adjusters:
+      the specific combinations of claim type, dollar threshold, and coverage language
+      that signal a legitimate escalation versus a routine case. No engineer wrote those
+      rules. The senior adjusters wrote them, one correction at a time, just by doing
+      their jobs.
+    </p>
+
+
+    <!-- Section 3 -->
+    <h2>The Velocity of Improvement</h2>
+
+    <p>
+      Self-learning systems don't require perfection on launch day. They require
+      one thing: a mechanism that captures corrections flawlessly. The accuracy
+      comes in the weeks that follow.
+    </p>
+
+    <div class="improvement">
+      <div class="improvement-title">Accuracy Trajectory — Self-Learning Deployment</div>
+      <div class="improvement-track">
+        <div class="week-row">
+          <div class="week-label">Week 1</div>
+          <div class="week-content">
+            <div class="week-accuracy">
+              <div class="week-bar-wrap"><div class="week-bar" style="width:70%"></div></div>
+              <div class="week-pct">70%</div>
+            </div>
+            <div class="week-desc">The system launches. Employees grumble, but it's integrated into their interface. They correct the 30% of errors as part of their normal workflow. Every correction is captured silently.</div>
+          </div>
+        </div>
+        <div class="week-row">
+          <div class="week-label">Week 3</div>
+          <div class="week-content">
+            <div class="week-accuracy">
+              <div class="week-bar-wrap"><div class="week-bar" style="width:85%"></div></div>
+              <div class="week-pct">85%</div>
+            </div>
+            <div class="week-desc">Two weeks of corrections have fed nightly training cycles. Edge cases are absorbed. Repetitive tasks start disappearing. Employees begin to notice.</div>
+          </div>
+        </div>
+        <div class="week-row">
+          <div class="week-label">Week 6</div>
+          <div class="week-content">
+            <div class="week-accuracy">
+              <div class="week-bar-wrap"><div class="week-bar" style="width:95%"></div></div>
+              <div class="week-pct">95%</div>
+            </div>
+            <div class="week-desc">The system predicts the correct action before the human finishes reading. It has internalized the unspoken intuition of your best people. It doesn't feel like a tool anymore. It feels like a teammate.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Section 4 -->
+    <h2>Static vs. Self-Learning: The Full Picture</h2>
+
+    <div class="contrast">
+      <div class="contrast-side static">
+        <div class="contrast-label">The Static AI Tool</div>
+        <div class="contrast-item">
+          <div class="contrast-item-label">Maintenance</div>
+          <div class="contrast-item-body">Requires manual engineering overhauls, scheduled data dumps, and expensive retraining sprints.</div>
+        </div>
+        <div class="contrast-item">
+          <div class="contrast-item-label">Accuracy Over Time</div>
+          <div class="contrast-item-body">Degrades quietly as the real world diverges from the frozen training snapshot.</div>
+        </div>
+        <div class="contrast-item">
+          <div class="contrast-item-label">Employee Perception</div>
+          <div class="contrast-item-body">A fragile tool that gets in the way when reality gets complicated. Trust, once lost, rarely recovers.</div>
+        </div>
+        <div class="contrast-item">
+          <div class="contrast-item-label">Financial Nature</div>
+          <div class="contrast-item-body">A depreciating sunk cost. You pay to maintain it, and it gets less valuable every month.</div>
+        </div>
+      </div>
+      <div class="contrast-side smart">
+        <div class="contrast-label">The Self-Learning System</div>
+        <div class="contrast-item">
+          <div class="contrast-item-label">Maintenance</div>
+          <div class="contrast-item-body">Learns automatically and organically from daily worker actions — clicks, edits, corrections — without engineering intervention.</div>
+        </div>
+        <div class="contrast-item">
+          <div class="contrast-item-label">Accuracy Over Time</div>
+          <div class="contrast-item-body">Improves relentlessly, every day, as it absorbs more real-world human context from your specific organization.</div>
+        </div>
+        <div class="contrast-item">
+          <div class="contrast-item-label">Employee Perception</div>
+          <div class="contrast-item-body">An invisible partner that seems to read their mind. Trust builds as the system earns it, interaction by interaction.</div>
+        </div>
+        <div class="contrast-item">
+          <div class="contrast-item-label">Financial Nature</div>
+          <div class="contrast-item-body">An appreciating asset. Every interaction makes it more accurate, more valuable, and harder for a competitor to replicate.</div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Section 5 -->
+    <h2>Do You Have the Right Conditions?</h2>
+
+    <p>
+      Not every workflow needs a self-learning system. You don't need one to
+      schedule calendar invites. But if your organization has the following three
+      ingredients, you are sitting on a goldmine — and every day without this
+      architecture is value left on the table.
+    </p>
+
+    <div class="conditions">
+      <div class="condition-card">
+        <div class="condition-num">1</div>
+        <div>
+          <div class="condition-title">High-Volume Decisions</div>
+          <p class="condition-body">
+            Your employees are making similar structured decisions dozens, hundreds,
+            or thousands of times per day. The more repetition, the faster the
+            system learns and the faster it returns value.
+          </p>
+        </div>
+      </div>
+      <div class="condition-card">
+        <div class="condition-num">2</div>
+        <div>
+          <div class="condition-title">Clear Feedback Loops</div>
+          <p class="condition-body">
+            It's immediately obvious when a decision is right or wrong — a claim is
+            approved, a document is routed correctly, an anomaly is flagged or cleared.
+            Clear signal is what makes the learning possible.
+          </p>
+        </div>
+      </div>
+      <div class="condition-card">
+        <div class="condition-num">3</div>
+        <div>
+          <div class="condition-title">Implicit Domain Expertise</div>
+          <p class="condition-body">
+            The decisions require subtle professional judgment that a generic model
+            can't replicate — the tribal knowledge of your industry, your market,
+            your best people. This is exactly what the self-learning system is
+            designed to capture and preserve.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="verdict">
+      <p>
+        If you have those three conditions, stop deploying static chat windows.<br/>
+        You are holding a winning lottery ticket. Start building the engine that cashes it.
+      </p>
+    </div>
+
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <div class="cta-label">About Fireside Labs</div>
+      <div class="cta-title">We Build Systems That Get Smarter the Longer You Run Them</div>
+      <p class="cta-body">
+        Fireside Labs designs and deploys self-learning AI infrastructure — systems
+        where your employees' daily work becomes the training data that compounds
+        over time. We handle the full stack: architecture, feedback loop design,
+        model training pipelines, and integration into your existing workflows.
+        The result is an AI that belongs to your organization — one that a competitor
+        can't replicate by buying the same API.
+      </p>
+      <div class="cta-services">
+        <div class="cta-service">
+          <div class="cta-service-name">HITL Architecture Design</div>
+          <p class="cta-service-desc">Building the feedback loops that turn daily corrections into continuous model improvement.</p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Domain Fine-Tuning</div>
+          <p class="cta-service-desc">Teaching a model your industry's language, edge cases, and the judgment of your best people.</p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Workflow Integration</div>
+          <p class="cta-service-desc">Embedding AI into your existing systems so correction happens naturally, without extra steps.</p>
+        </div>
+      </div>
+      <div class="cta-contact">
+        <p class="cta-contact-text">Ready to turn your team's expertise into a compounding AI asset?</p>
+        <a class="cta-contact-link" href="mailto:j.nguyen@firesidelabs.ai">j.nguyen@firesidelabs.ai →</a>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>Fireside Labs &nbsp;·&nbsp; firesidelabs.ai &nbsp;·&nbsp; © 2025</div>
+      <div>This document is for informational purposes only.</div>
+    </div>
+  </div>
+
+</body>
+</html>

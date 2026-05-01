@@ -1,0 +1,44 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Vercel
+.vercel/
+
+# Secrets / local env
+.env
+.env.*
+!.env.example
+
+# Internal / OPSEC-sensitive — never push to GitHub
+NOTES.md
+design-proposals/
+papers-archive-unlinked/
+src.backup-pre-redesign/
+index.html.backup-pre-redesign
+
+# Local screenshots (regenerate-able; bloat the repo)
+*_desktop.png
+*_mobile.png

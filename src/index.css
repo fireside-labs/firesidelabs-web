@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* ─── Tailwind v4 Theme — Copper & Obsidian (locked) ─── */
+@theme {
+  --color-vanta: #0a0a0f;
+  --color-surface: #111116;
+  --color-surface-elevated: #1a1a22;
+  --color-border: #232330;
+  --color-border-subtle: #1a1a24;
+  --color-glass: rgba(255, 255, 255, 0.04);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+
+  /* Copper accent (semantic name 'indigo' kept for legacy class compatibility) */
+  --color-indigo: #C87533;
+  --color-indigo-dim: rgba(200, 117, 51, 0.15);
+  --color-indigo-glow: rgba(200, 117, 51, 0.4);
+  --color-cyan: #38BDF8;
+  --color-warning: #fb923c;
+  --color-danger: #f87171;
+  --color-success: #34d399;
+
+  --color-text-primary: #f0f0f5;
+  --color-text-secondary: #8888a0;
+  --color-text-muted: #7a7a8e;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+/* ─── Base ─── */
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-vanta);
+  color: var(--color-text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Premium Glassmorphism ─── */
+.glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border: 1px solid var(--color-glass-border);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.glass-elevated {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  backdrop-filter: blur(30px) saturate(1.8);
+  -webkit-backdrop-filter: blur(30px) saturate(1.8);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(200, 117, 51, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ─── Glow Effects (copper) ─── */
+.glow-indigo {
+  box-shadow:
+    0 0 15px rgba(200, 117, 51, 0.18),
+    0 0 45px rgba(200, 117, 51, 0.10),
+    0 0 80px rgba(200, 117, 51, 0.05);
+}
+
+.glow-indigo-strong {
+  box-shadow:
+    0 0 20px rgba(200, 117, 51, 0.32),
+    0 0 60px rgba(200, 117, 51, 0.16),
+    0 0 120px rgba(200, 117, 51, 0.08);
+}
+
+/* ─── Text Gradient (copper) ─── */
+.text-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #C87533 50%, #A85A20 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-warning {
+  background: linear-gradient(135deg, #fbbf24 0%, #f87171 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Ambient Glow Backgrounds ─── */
+.ambient-glow {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-vanta);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-indigo);
+}
+
+/* ─── Selection ─── */
+::selection {
+  background: rgba(200, 117, 51, 0.3);
+  color: #fff;
+}
+
+
+/* ─── Keyboard focus ─── */
+*:focus {
+  outline: none;
+}
+*:focus-visible {
+  outline: 2px solid var(--color-indigo);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─── Skip-link helper ─── */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--color-vanta);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-indigo);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  z-index: 100;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

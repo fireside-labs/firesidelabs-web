@@ -3,21 +3,23 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Flame, Code, Download, Terminal, Shield, Cpu, FileCode, Copy, Check, Package } from 'lucide-react';
 
-// Foundry Runtime is in private beta. Until the public repo + binary ship,
-// download / repo / docs CTAs route to the contact form for early-access requests.
-const EARLY_ACCESS_PATH = '/contact';
+// v0.1.0 — signed MSI live on GitHub Releases.
+const DOWNLOAD_URL = 'https://github.com/fireside-labs/foundry-runtime/releases/download/v0.1.0/Foundry.Runtime_0.1.0_x64_en-US.msi';
+const REPO_URL = 'https://github.com/fireside-labs/foundry-runtime';
+const RELEASES_URL = 'https://github.com/fireside-labs/foundry-runtime/releases';
 
-const QUICKSTART = `# 1. Clone the runtime
-git clone https://github.com/firesidelabs/foundry-runtime
-cd foundry-runtime
+const QUICKSTART = `# 1. Download Foundry Runtime v0.1.0 (signed Windows installer)
+#    https://github.com/fireside-labs/foundry-runtime/releases/latest
 
-# 2. Bring up the runtime on your hardware
-./foundry up --model your-model.gguf --port 7860
+# 2. Double-click the .msi to install. Verified Publisher: Jordan Nguyen.
 
-# 3. Point your application at it
-curl http://localhost:7860/v1/completions \\
+# 3. Pick a model from the catalog on first launch — Foundry downloads
+#    a GGUF into ~/.foundry/models/ and starts the local inference server.
+
+# 4. Point any OpenAI-compatible client at the local endpoint:
+curl http://localhost:8080/v1/chat/completions \\
   -H "Content-Type: application/json" \\
-  -d '{"prompt": "...", "max_tokens": 256}'`;
+  -d '{"model": "local", "messages": [{"role":"user","content":"..."}]}'`;
 
 const FoundryPage = () => {
   const [copied, setCopied] = useState(false);
@@ -56,25 +58,27 @@ const FoundryPage = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-            <Link to={EARLY_ACCESS_PATH}>
+            <a href={DOWNLOAD_URL} target="_blank" rel="noopener noreferrer">
               <motion.button
                 whileHover={{ scale: 1.02, boxShadow: '0 0 30px rgba(200, 117, 51, 0.4)' }}
                 whileTap={{ scale: 0.98 }}
                 className="group inline-flex items-center gap-3 px-8 py-4 bg-indigo text-black font-semibold rounded-xl text-sm tracking-wide uppercase transition-all duration-300 glow-indigo cursor-pointer"
               >
                 <Download size={18} />
-                Request Early Access
+                Download for Windows
                 <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
               </motion.button>
-            </Link>
-            <Link to={EARLY_ACCESS_PATH} className="inline-flex items-center gap-2 px-6 py-3 glass rounded-xl text-sm font-semibold tracking-wide uppercase text-text-primary hover:border-[#C87533]/30 transition-all duration-300 cursor-pointer">
+            </a>
+            <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 glass rounded-xl text-sm font-semibold tracking-wide uppercase text-text-primary hover:border-[#C87533]/30 transition-all duration-300 cursor-pointer">
               <Code size={16} />
-              Request the Repo
-            </Link>
+              View on GitHub
+            </a>
           </div>
 
           <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-2 mt-6 font-mono text-[10px] tracking-widest text-text-muted uppercase">
-            <span>Private beta</span>
+            <span>v0.1.0 · Windows x64</span>
+            <span aria-hidden className="text-text-muted/40">·</span>
+            <span>20 MB · Signed</span>
             <span aria-hidden className="text-text-muted/40">·</span>
             <span>Built on llama.cpp</span>
           </div>
@@ -163,10 +167,14 @@ const FoundryPage = () => {
         </motion.div>
 
         <p className="font-mono text-[11px] text-text-muted mt-3 text-center">
-          Full docs released alongside the public binary.{' '}
-          <Link to={EARLY_ACCESS_PATH} className="text-[#C87533] hover:underline">
-            Request early access
-          </Link>
+          Full docs in the{' '}
+          <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="text-[#C87533] hover:underline">
+            GitHub repo
+          </a>
+          {' · '}
+          <a href={RELEASES_URL} target="_blank" rel="noopener noreferrer" className="text-[#C87533] hover:underline">
+            All releases
+          </a>
         </p>
       </section>
 

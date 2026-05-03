@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Flame, Code, Download, Terminal, Shield, Cpu, FileCode, Copy, Check, Package } from 'lucide-react';
+import { ArrowRight, Flame, Code, HardDriveDownload, Terminal, Shield, Cpu, FileCode, Copy, Check, Package } from 'lucide-react';
 
 // v0.1.0 — signed MSI live on GitHub Releases.
 const DOWNLOAD_URL = 'https://github.com/fireside-labs/foundry-runtime/releases/download/v0.1.0/Foundry.Runtime_0.1.0_x64_en-US.msi';
@@ -64,7 +64,7 @@ const FoundryPage = () => {
                 whileTap={{ scale: 0.98 }}
                 className="group inline-flex items-center gap-3 px-8 py-4 bg-indigo text-black font-semibold rounded-xl text-sm tracking-wide uppercase transition-all duration-300 glow-indigo cursor-pointer"
               >
-                <Download size={18} />
+                <HardDriveDownload size={18} />
                 Download for Windows
                 <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
               </motion.button>

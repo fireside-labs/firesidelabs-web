@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { Flame } from 'lucide-react';
+import { Flame, Cpu } from 'lucide-react';
 import { EmberParticles } from './EmberParticles';
 
 const ACCENT = '#C87533';
@@ -69,6 +69,27 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                 {item.label}
               </Link>
             ))}
+            <Link to="/foundry">
+              <motion.div
+                whileHover={{ scale: 1.03, boxShadow: '0 0 20px rgba(200, 117, 51, 0.25)' }}
+                whileTap={{ scale: 0.97 }}
+                className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold tracking-wide uppercase border cursor-pointer transition-all duration-300"
+                style={{ borderColor: 'rgba(200, 117, 51, 0.5)', color: ACCENT }}
+              >
+                <span className="relative flex h-1.5 w-1.5">
+                  <span
+                    className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                    style={{ backgroundColor: ACCENT }}
+                  />
+                  <span
+                    className="relative inline-flex rounded-full h-1.5 w-1.5"
+                    style={{ backgroundColor: ACCENT }}
+                  />
+                </span>
+                <Cpu size={14} />
+                Test Local AI
+              </motion.div>
+            </Link>
             <Link to="/contact">
               <motion.button
                 whileHover={{ scale: 1.03 }}

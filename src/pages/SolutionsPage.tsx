@@ -20,7 +20,7 @@ const solutions: Solution[] = [
     title: 'Conversation Intelligence',
     emoji: '🎙️',
     problem: 'Your team handles hundreds of calls a day. You have no idea what\'s being said, which ones are going well, and which ones are costing you money.',
-    description: 'We build systems that automatically analyze every conversation and surface what matters — coaching gaps, compliance risks, missed revenue.',
+    description: 'We build systems that automatically analyze every conversation and surface what matters: coaching gaps, compliance risks, missed revenue.',
     diagram: [
       { label: 'Calls', icon: '📞' },
       { label: 'Transcription', icon: '📝' },
@@ -29,7 +29,7 @@ const solutions: Solution[] = [
     ],
     industries: [
       { icon: '🏥', name: 'Healthcare', useCase: 'Ensure every patient call follows compliance protocols' },
-      { icon: '⚖️', name: 'Legal', useCase: 'Know which intake calls are losing potential clients — and why' },
+      { icon: '⚖️', name: 'Legal', useCase: 'Know which intake calls are losing potential clients—and why' },
       { icon: '💰', name: 'Financial Services', useCase: 'Monitor advisor conversations for regulatory exposure' },
       { icon: '📞', name: 'Sales Teams', useCase: 'Find the exact moment qualified leads disengage' },
     ],
@@ -38,7 +38,7 @@ const solutions: Solution[] = [
     title: 'Content Automation',
     emoji: '🎬',
     problem: 'Your marketing team spends hours manually producing each piece of content. Editing, approvals, and rendering bottleneck everything.',
-    description: 'We build platforms that let non-technical staff produce professional content in minutes — with AI-powered voice, intelligent media search, and automated rendering.',
+    description: 'We build platforms that let non-technical staff produce professional content in minutes, with AI-powered voice, intelligent media search, and automated rendering.',
     diagram: [
       { label: 'Brief', icon: '🎯' },
       { label: 'Voice + Media', icon: '🎤' },
@@ -54,7 +54,7 @@ const solutions: Solution[] = [
   {
     title: 'Visual Intelligence & Search',
     emoji: '🔍',
-    problem: 'Your team manually digs through massive image or document libraries — millions of files. It takes hours. Results are inconsistent.',
+    problem: 'Your team manually digs through massive image or document libraries. Millions of files. It takes hours. Results are inconsistent.',
     description: 'We make your entire visual archive searchable by description and add predictive simulation to show outcomes before they happen.',
     diagram: [
       { label: '3M+ Images', icon: '📸' },
@@ -91,8 +91,8 @@ const solutions: Solution[] = [
   {
     title: 'Asset Indexing & Discovery',
     emoji: '📂',
-    problem: 'You have years of unstructured files — documents, videos, records — scattered across systems. Finding anything specific takes hours of digging.',
-    description: 'We index your entire library and make it instantly searchable by content, meaning, or metadata — turning chaos into a structured knowledge base.',
+    problem: 'You have years of unstructured files (documents, videos, records) scattered across systems. Finding anything specific takes hours of digging.',
+    description: 'We index your entire library and make it instantly searchable by content, meaning, or metadata—turning chaos into a structured knowledge base.',
     diagram: [
       { label: 'Unstructured Files', icon: '📂' },
       { label: 'Indexing', icon: '🏷️' },
@@ -109,7 +109,7 @@ const solutions: Solution[] = [
     title: 'Document Intelligence',
     emoji: '📄',
     problem: 'Your team manually reads through contracts, filings, or reports to extract the data they need. It\'s slow, error-prone, and doesn\'t scale.',
-    description: 'We build systems that automatically read, understand, and extract structured data from your documents — turning pages into actionable insights.',
+    description: 'We build systems that automatically read, understand, and extract structured data from your documents—turning pages into actionable insights.',
     diagram: [
       { label: 'Documents', icon: '📄' },
       { label: 'Extraction', icon: '🔬' },
@@ -153,7 +153,7 @@ const SolutionsPage = () => {
             Sometimes that's a domain-tuned model built from scratch. Sometimes it's calibrating
             the model you already have. Sometimes it's benchmarking your stack so you know what's
             actually working. Sometimes it's a full platform on your hardware. We start with your
-            problem, your data, and your environment — and build what fits. Nothing off-the-shelf.
+            problem, your data, and your environment—and build what fits. Nothing off-the-shelf.
           </p>
           <p className="text-sm text-text-muted max-w-2xl mx-auto leading-relaxed mt-6 font-mono tracking-wide">
             Below: patterns we've built before. Yours will be different.

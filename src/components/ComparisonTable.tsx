@@ -5,9 +5,9 @@ const rows = [
   {
     icon: TrendingUp,
     label: 'Results You Can Trust',
-    cloud: 'Outputs need constant human review — your team becomes the QA department',
+    cloud: 'Outputs need constant human review; your team becomes the QA department',
     cloudColor: 'text-warning',
-    foundry: 'Purpose-built for your domain — results go straight to production',
+    foundry: 'Purpose-built for your domain. Results go straight to production',
     foundryColor: 'text-success',
   },
   {
@@ -23,15 +23,15 @@ const rows = [
     label: 'Data Privacy',
     cloud: 'Your sensitive data gets sent to third-party cloud servers',
     cloudColor: 'text-danger',
-    foundry: 'Everything runs on YOUR systems — nothing ever leaves your building',
+    foundry: 'Everything runs on YOUR systems. Nothing ever leaves your building',
     foundryColor: 'text-success',
   },
   {
     icon: FileWarning,
     label: 'Control & Stability',
-    cloud: 'Vendor changes their product overnight — your workflows break',
+    cloud: 'Vendor changes their product overnight; your workflows break',
     cloudColor: 'text-warning',
-    foundry: 'You own the system completely — it only changes when YOU decide',
+    foundry: 'You own the system completely. It only changes when YOU decide',
     foundryColor: 'text-indigo',
   },
 ];
@@ -67,7 +67,7 @@ export const ComparisonTable = () => {
         </h2>
         <p className="text-lg text-text-secondary max-w-3xl leading-relaxed">
           Off-the-shelf AI sounds good in a demo. In production, your team spends more time 
-          checking its work than doing their own — and your sensitive data ends up on someone else's servers.
+          checking its work than doing their own—and your sensitive data ends up on someone else's servers.
         </p>
       </motion.div>
 

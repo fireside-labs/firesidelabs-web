@@ -5,21 +5,21 @@ const features = [
   {
     icon: ScanSearch,
     title: 'AI Strategy & Build',
-    description: 'We identify the processes costing you the most time and money, then build custom AI solutions that eliminate them — from automated call analysis to intelligent document processing.',
+    description: 'We identify the processes costing you the most time and money, then build custom AI solutions that eliminate them: from automated call analysis to intelligent document processing.',
     metric: 'FROM PROBLEM TO PRODUCTION',
     dotColor: 'bg-success',
   },
   {
     icon: Zap,
     title: 'Precision Calibration',
-    description: 'Already invested in AI but not seeing results? We diagnose exactly what\'s underperforming and recalibrate with precision — without starting over or disrupting your workflows.',
+    description: 'Already invested in AI but not seeing results? We diagnose exactly what\'s underperforming and recalibrate with precision, without starting over or disrupting your workflows.',
     metric: 'FIX WITHOUT STARTING OVER',
     dotColor: 'bg-indigo',
   },
   {
     icon: Lock,
     title: 'Embedded Architect',
-    description: 'Need ongoing AI leadership without building a full team? We embed directly with your organization — handling the technology so your people can focus on the business.',
+    description: 'Need ongoing AI leadership without building a full team? We embed directly with your organization, handling the technology so your people can focus on the business.',
     metric: 'YOUR AI TEAM, ON DEMAND',
     dotColor: 'bg-warning',
   },
@@ -56,7 +56,7 @@ export const FeatureGrid = () => {
           Build. Fix. Run.<br />Wherever you are, we meet you there.
         </h2>
         <p className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
-          Whether you're deploying AI for the first time or optimizing what you already have — 
+          Whether you're deploying AI for the first time or optimizing what you already have,
           we handle the hard part so your team can focus on the business.
         </p>
       </motion.div>

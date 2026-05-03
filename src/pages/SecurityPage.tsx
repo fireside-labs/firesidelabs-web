@@ -32,7 +32,7 @@ const SecurityPage = () => {
             <span className="text-gradient">auditors.</span>
           </h1>
           <p className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
-            Most security pages list certifications. We list architectural commitments —
+            Most security pages list certifications. We list architectural commitments,
             because in our model, the work runs on your hardware, your data never crosses
             our infrastructure, and the runtime is open source. Certifications attest to
             controls. We eliminate the risks those controls exist to manage.
@@ -61,7 +61,7 @@ const SecurityPage = () => {
             {
               icon: Server,
               label: 'Your hardware',
-              body: 'Models, runtime, and inference all execute on infrastructure you own — on-premise, your private cloud, or air-gapped. We do not run a customer-facing cloud service.',
+              body: 'Models, runtime, and inference all execute on infrastructure you own: on-premise, your private cloud, or air-gapped. We do not run a customer-facing cloud service.',
             },
             {
               icon: Lock,
@@ -162,7 +162,7 @@ const SecurityPage = () => {
             We carry cyber liability and E&O insurance. We sign BAAs and DPAs. We engage
             independent third-party security review on request. If your procurement function
             requires a vendor-side cert and our architecture isn't enough, we're probably
-            not the right fit at your stage — and we'd rather tell you that now than after
+            not the right fit at your stage—and we'd rather tell you that now than after
             a 6-week sales cycle.
           </p>
           <p className="text-sm text-text-muted leading-relaxed max-w-3xl">
@@ -315,7 +315,7 @@ const SecurityPage = () => {
           </h2>
           <p className="text-sm text-text-secondary leading-relaxed mb-4 max-w-3xl">
             Suspected vulnerability, irregular behavior in the runtime, or any security
-            concern — email <a href={'mailto:' + SECURITY_CONTACT} className="text-[#C87533] hover:underline">{SECURITY_CONTACT}</a> with subject <span className="font-mono text-[12px] text-text-primary">[security]</span>. Initial response within
+            concern: email <a href={'mailto:' + SECURITY_CONTACT} className="text-[#C87533] hover:underline">{SECURITY_CONTACT}</a> with subject <span className="font-mono text-[12px] text-text-primary">[security]</span>. Initial response within
             one business day. We follow coordinated disclosure.
           </p>
         </motion.div>

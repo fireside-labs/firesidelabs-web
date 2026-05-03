@@ -19,7 +19,7 @@ const AUTHOR = 'Jordan Nguyen';
 const papers: Paper[] = [
   {
     title: 'Your Data Is Leaving the Building',
-    description: 'A practical guide to AI privacy for regulated industries — how cloud AI leaks happen, why they are fatal in HIPAA/legal/finance, and how to plug the hole.',
+    description: 'A practical guide to AI privacy for regulated industries: how cloud AI leaks happen, why they are fatal in HIPAA/legal/finance, and how to plug the hole.',
     tag: 'PRIVACY & COMPLIANCE',
     file: '/papers/Your_Data_Is_Leaving_The_Building.html',
     gated: false,
@@ -69,17 +69,17 @@ const papers: Paper[] = [
   },
   {
     title: 'HTTP Timeouts as Silent Sabotage',
-    description: 'How a single fixed timeout in an inference benchmark can suppress large-model scores by 5–15 percentage points — and why this single configuration choice quietly distorts most public leaderboards.',
+    description: 'How a single fixed timeout in an inference benchmark can suppress large-model scores by 5–15 percentage points—and why this single configuration choice quietly distorts most public leaderboards.',
     tag: 'BENCHMARKING METHODS',
     file: '/papers/HTTP_Timeouts_Silent_Sabotage.html',
     gated: false,
     date: 'Apr 2026',
     readTime: '8 min',
-    pullQuote: 'A 240-second timeout is wrong for every model. Smaller models finish in two seconds. Larger models, if you let them think, will spend forty-five — and arrive at the right answer. Cut them off and you have not measured a model; you have measured your patience.',
+    pullQuote: 'A 240-second timeout is wrong for every model. Smaller models finish in two seconds. Larger models, if you let them think, will spend forty-five—and arrive at the right answer. Cut them off and you have not measured a model; you have measured your patience.',
   },
   {
     title: 'Pruning Is Free at 5%',
-    description: 'A surprising empirical result: removing 5% of parameters from a 31B-parameter model produced no measurable accuracy loss across HumanEval, MMLU, and general knowledge benchmarks — while running faster and using less VRAM.',
+    description: 'A surprising empirical result: removing 5% of parameters from a 31B-parameter model produced no measurable accuracy loss across HumanEval, MMLU, and general knowledge benchmarks—while running faster and using less VRAM.',
     tag: 'APPLIED RESEARCH',
     file: '/papers/Pruning_Free_at_5_Percent.html',
     gated: false,
@@ -99,7 +99,7 @@ const papers: Paper[] = [
   },
   {
     title: 'Reproducible Local LLM Benchmarking',
-    description: 'A four-level hierarchy and a working harness for getting reproducible inference numbers across hardware, drivers, and binary versions — validated on a 3-node cluster running 25 models.',
+    description: 'A four-level hierarchy and a working harness for getting reproducible inference numbers across hardware, drivers, and binary versions, validated on a 3-node cluster running 25 models.',
     tag: 'METHODOLOGY',
     file: '/papers/Reproducible_Local_LLM_Benchmarking.html',
     gated: true,
@@ -246,7 +246,7 @@ const ResearchPage = () => {
                       className="inline-flex items-center gap-2 px-4 py-2 bg-indigo text-black rounded-lg text-xs font-semibold uppercase tracking-wide transition-all duration-300 cursor-pointer hover:shadow-[0_0_20px_rgba(200,117,51,0.3)]"
                     >
                       <Lock size={12} />
-                      Download — Free with Email
+                      Download · Free with Email
                     </button>
                   ) : (
                     <a

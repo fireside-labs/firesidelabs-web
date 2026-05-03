@@ -14,7 +14,7 @@ const tiles = [
     icon: Compass,
     audience: 'For CTOs Who Have To Be Right',
     title: 'Diagnose',
-    body: "A 60-second Confidence Audit that maps exactly where your AI fails on your domain — without accessing your data or your model weights.",
+    body: "A 60-second Confidence Audit that maps exactly where your AI fails on your domain, without accessing your data or your model weights.",
     cta: "Find What's Failing",
     href: 'mailto:hello@firesidelabs.ai?subject=Confidence%20Audit%20Request',
   },

@@ -22,11 +22,11 @@ const CalibrationPage = () => {
             <span className="text-gradient">Make it actually work.</span>
           </h1>
           <p className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed mb-4">
-            You already built and trained your AI. It's good — but not good enough for your domain.
+            You already built and trained your AI. It's good—but not good enough for your domain.
             We find the exact failure modes and fix them without starting over.
           </p>
           <p className="text-sm text-text-muted max-w-2xl mx-auto leading-relaxed font-mono tracking-wide">
-            Different from <Link to="/solutions" className="text-[#C87533] hover:underline">Solutions</Link> — that's where you start from zero. This page is where the model already exists.
+            Different from <Link to="/solutions" className="text-[#C87533] hover:underline">Solutions</Link>: that's where you start from zero. This page is where the model already exists.
           </p>
         </motion.div>
       </section>
@@ -38,7 +38,7 @@ const CalibrationPage = () => {
             {
               icon: TrendingUp,
               title: 'Diagnose',
-              description: 'We map exactly where your AI underperforms — which categories, which edge cases, which inputs cause failures.',
+              description: 'We map exactly where your AI underperforms: which categories, which edge cases, which inputs cause failures.',
             },
             {
               icon: Zap,
@@ -88,7 +88,7 @@ const CalibrationPage = () => {
             Before and after calibration.
           </h2>
           <p className="text-text-secondary max-w-lg mx-auto">
-            Real performance improvement across domain-specific tasks — without retraining the entire system.
+            Real performance improvement across domain-specific tasks, without retraining the entire system.
           </p>
         </motion.div>
         <AccuracyGraph />
@@ -116,8 +116,8 @@ const CalibrationPage = () => {
           {[
             { before: 'AI outputs need constant human review', after: 'Results go directly into production workflows' },
             { before: 'Edge cases cause unpredictable failures', after: 'Edge cases are identified and handled correctly' },
-            { before: 'Team doesn\'t trust the AI — workarounds everywhere', after: 'Team relies on the AI — saves hours per week' },
-            { before: 'Vendor lock-in — you can\'t switch without starting over', after: 'You own the system — full control, full portability' },
+            { before: 'Team doesn\'t trust the AI; workarounds everywhere', after: 'Team relies on the AI; saves hours per week' },
+            { before: 'Vendor lock-in; you can\'t switch without starting over', after: 'You own the system; full control, full portability' },
           ].map((row, i) => (
             <motion.div
               key={i}

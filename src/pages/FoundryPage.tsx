@@ -13,7 +13,7 @@ const QUICKSTART = `# 1. Download Foundry Runtime v0.1.0 (signed Windows install
 
 # 2. Double-click the .msi to install. Verified Publisher: Jordan Nguyen.
 
-# 3. Pick a model from the catalog on first launch — Foundry downloads
+# 3. Pick a model from the catalog on first launch. Foundry downloads
 #    a GGUF into ~/.foundry/models/ and starts the local inference server.
 
 # 4. Point any OpenAI-compatible client at the local endpoint:
@@ -119,7 +119,7 @@ const FoundryPage = () => {
               <div className="font-mono text-[10px] tracking-widest text-text-muted uppercase mb-2">03 / What it isn't</div>
               <p className="text-sm text-text-secondary leading-relaxed">
                 It isn't the model that beats your incumbent vendor on accuracy. That's a
-                custom build — domain-tuned, calibrated, your data, your hardware. Talk to
+                custom build: domain-tuned, calibrated, your data, your hardware. Talk to
                 us when you're ready.
               </p>
             </div>
@@ -235,7 +235,7 @@ const FoundryPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
-            { icon: Package, label: 'Inference engine', body: 'Local-inference engine built on top of llama.cpp — the open-source local-inference stack — with optimizations for quantization, tensor-parallel scheduling, and KV-cache reuse.' },
+            { icon: Package, label: 'Inference engine', body: 'Local-inference engine built on top of llama.cpp (the open-source local-inference stack) with optimizations for quantization, tensor-parallel scheduling, and KV-cache reuse.' },
             { icon: FileCode, label: 'OpenAI-compatible API', body: 'Drop-in /v1/completions and /v1/chat/completions endpoints. Your existing client code works.' },
             { icon: Shield, label: 'Audit log', body: 'Every prompt, every completion, hashed and signed. Tamper-evident, exportable to your SIEM.' },
             { icon: Terminal, label: 'Eval harness', body: 'The same evaluation tooling we use to benchmark models. Run it on your own held-out tasks.' },
@@ -275,7 +275,7 @@ const FoundryPage = () => {
             </div>
             <p className="text-sm text-text-secondary leading-relaxed">
               Foundry Runtime gets you to "yes, local AI is real on my hardware." It doesn't
-              get you to "yes, this AI is good at my job." That's a calibration engagement —
+              get you to "yes, this AI is good at my job." That's a calibration engagement:
               domain-tuned, benchmarked against your real tasks, deployed on your environment.
             </p>
           </div>
@@ -306,7 +306,7 @@ const FoundryPage = () => {
             Want help wiring it into your stack?
           </h2>
           <p className="text-text-secondary mb-6 max-w-xl mx-auto">
-            We do calibration engagements on top of Foundry Runtime — fixing
+            We do calibration engagements on top of Foundry Runtime: fixing
             domain-specific accuracy on the model you've already trained.
           </p>
           <Link to="/contact">

@@ -20,7 +20,7 @@ export const VerifyCallout = () => {
             <Terminal size={18} className="text-copper/60 mt-0.5 flex-shrink-0" />
             <div>
               <div className="font-mono text-[10px] text-text-muted tracking-[0.3em] uppercase mb-1">
-                For Engineers — Run It On Your Hardware
+                For Engineers · Run It On Your Hardware
               </div>
               <div className="text-sm text-text-secondary">
                 The Foundry Runtime is a free local-inference launcher. It is not a Fireside Labs service.

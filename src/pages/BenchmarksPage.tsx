@@ -32,7 +32,7 @@ const BenchmarksPage = () => {
             <span className="text-gradient">nobody else tests.</span>
           </h1>
           <p className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
-            Independent model evaluation across production-relevant tasks — routing, reasoning, tool use, and ambiguity handling. Updated regularly. No vendor sponsorships.
+            Independent model evaluation across production-relevant tasks: routing, reasoning, tool use, and ambiguity handling. Updated regularly. No vendor sponsorships.
           </p>
         </motion.div>
       </section>
@@ -92,23 +92,23 @@ const BenchmarksPage = () => {
             <ul className="space-y-4 text-sm text-text-secondary">
               <li className="flex gap-3">
                 <span className="text-red-400/60 flex-shrink-0">✗</span>
-                <span><strong className="text-text-primary">5-shot prompting</strong> — model gets 5 worked examples before answering. In production, your users do not provide examples.</span>
+                <span><strong className="text-text-primary">5-shot prompting</strong>: the model gets 5 worked examples before answering. In production, your users do not provide examples.</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-red-400/60 flex-shrink-0">✗</span>
-                <span><strong className="text-text-primary">Best-of-N scoring</strong> — run the same task 5 times, report the best result. Masks how often the model actually fails.</span>
+                <span><strong className="text-text-primary">Best-of-N scoring</strong>: run the same task 5 times, report the best result. Masks how often the model actually fails.</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-red-400/60 flex-shrink-0">✗</span>
-                <span><strong className="text-text-primary">Academic tasks</strong> — trivia, multiple choice, textbook problems. Not your domain. Not your edge cases.</span>
+                <span><strong className="text-text-primary">Academic tasks</strong>: trivia, multiple choice, textbook problems. Not your domain. Not your edge cases.</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-red-400/60 flex-shrink-0">✗</span>
-                <span><strong className="text-text-primary">No latency or cost</strong> — a model that takes 30 seconds per response does not show up as slow in MMLU scores.</span>
+                <span><strong className="text-text-primary">No latency or cost</strong>: a model that takes 30 seconds per response does not show up as slow in MMLU scores.</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-red-400/60 flex-shrink-0">✗</span>
-                <span><strong className="text-text-primary">Public dataset contamination</strong> — the questions, answers, and walkthroughs for popular benchmarks have been scraped into model training data. Scores often measure recall of a familiar format, not reasoning.</span>
+                <span><strong className="text-text-primary">Public dataset contamination</strong>: the questions, answers, and walkthroughs for popular benchmarks have been scraped into model training data. Scores often measure recall of a familiar format, not reasoning.</span>
               </li>
             </ul>
           </motion.div>
@@ -127,23 +127,23 @@ const BenchmarksPage = () => {
             <ul className="space-y-4 text-sm text-text-secondary">
               <li className="flex gap-3">
                 <span className="text-[#C87533] flex-shrink-0">✦</span>
-                <span><strong className="text-text-primary">1-shot, zero-example</strong> — model gets the task cold, exactly like production. No warm-up. No hints.</span>
+                <span><strong className="text-text-primary">1-shot, zero-example</strong>: the model gets the task cold, exactly like production. No warm-up. No hints.</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-[#C87533] flex-shrink-0">✦</span>
-                <span><strong className="text-text-primary">First-attempt scoring</strong> — we measure what happens the first time. Retries are tracked separately because they cost you money.</span>
+                <span><strong className="text-text-primary">First-attempt scoring</strong>: we measure what happens the first time. Retries are tracked separately because they cost you money.</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-[#C87533] flex-shrink-0">✦</span>
-                <span><strong className="text-text-primary">Production-grade tasks</strong> — tool calling, multi-step routing, ambiguous inputs. The exact scenarios where models break in the real world.</span>
+                <span><strong className="text-text-primary">Production-grade tasks</strong>: tool calling, multi-step routing, ambiguous inputs. The exact scenarios where models break in the real world.</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-[#C87533] flex-shrink-0">✦</span>
-                <span><strong className="text-text-primary">Latency + cost included</strong> — every result includes inference time and deployment tier. A fast bad model beats a slow good model at scale.</span>
+                <span><strong className="text-text-primary">Latency + cost included</strong>: every result includes inference time and deployment tier. A fast bad model beats a slow good model at scale.</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-[#C87533] flex-shrink-0">✦</span>
-                <span><strong className="text-text-primary">Held-out, private tasks</strong> — questions written internally and never published. Models cannot have seen them in training, so the score reflects real capability rather than memorized format.</span>
+                <span><strong className="text-text-primary">Held-out, private tasks</strong>: questions written internally and never published. Models cannot have seen them in training, so the score reflects real capability rather than memorized format.</span>
               </li>
             </ul>
           </motion.div>
@@ -225,10 +225,10 @@ const BenchmarksPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
           {[
-            { label: 'Routing', winner: 'Fireside Specialist', detail: '40/40 — only perfect score' },
-            { label: 'Reasoning', winner: 'Qwen3 (mid-class)', detail: '23/25 — ties cloud leader' },
-            { label: 'No-Tool', winner: 'Mistral (small-class)', detail: '20/20 — only perfect score' },
-            { label: 'Ambiguous', winner: 'Qwen3 + Stock mid', detail: '15/15 — beat all cloud tiers' },
+            { label: 'Routing', winner: 'Fireside Specialist', detail: '40/40, only perfect score' },
+            { label: 'Reasoning', winner: 'Qwen3 (mid-class)', detail: '23/25, ties cloud leader' },
+            { label: 'No-Tool', winner: 'Mistral (small-class)', detail: '20/20, only perfect score' },
+            { label: 'Ambiguous', winner: 'Qwen3 + Stock mid', detail: '15/15, beat all cloud tiers' },
           ].map((cat, i) => (
             <motion.div
               key={i}
@@ -260,7 +260,7 @@ const BenchmarksPage = () => {
             </div>
             <div>
               <h2 className="text-2xl font-bold">Benchmarking as a Service</h2>
-              <p className="text-text-muted text-sm">Know exactly what your model can and cannot do — before it costs you.</p>
+              <p className="text-text-muted text-sm">Know exactly what your model can and cannot do—before it costs you.</p>
             </div>
           </div>
 
@@ -268,7 +268,7 @@ const BenchmarksPage = () => {
             {[
               {
                 title: 'Custom Evaluation',
-                description: 'We build evaluation harnesses tailored to your exact production task — not generic benchmarks that tell you nothing about your use case.',
+                description: 'We build evaluation harnesses tailored to your exact production task, not generic benchmarks that tell you nothing about your use case.',
               },
               {
                 title: '10,000× Faster Testing',

@@ -19,7 +19,7 @@ export const SocialProof = () => {
           We don't just advise.<br />We build and deliver.
         </h2>
         <p className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
-          Every solution we deliver is purpose-built for your business — 
+          Every solution we deliver is purpose-built for your business:
           not a template, not a wrapper around someone else's product, not a slide deck.
         </p>
       </motion.div>
@@ -31,19 +31,19 @@ export const SocialProof = () => {
             icon: FlaskConical,
             stat: '2+ Years',
             label: 'Deep R&D',
-            detail: 'Original research and engineering — not reselling someone else\'s tools',
+            detail: 'Original research and engineering. Not reselling someone else\'s tools',
           },
           {
             icon: Scale,
             stat: 'Patent Pending',
             label: 'Original Methods',
-            detail: 'Built from original research — not a wrapper, not a retrain',
+            detail: 'Built from original research. Not a wrapper, not a retrain',
           },
           {
             icon: BookOpen,
             stat: 'High-Stakes',
             label: 'Deployments',
-            detail: 'Built for operations where an AI mistake has a real cost — accuracy is the baseline, not a feature',
+            detail: 'Built for operations where an AI mistake has a real cost; accuracy is the baseline, not a feature',
           },
         ].map((item, i) => (
           <motion.div
@@ -73,7 +73,7 @@ export const SocialProof = () => {
         <div>
           <h3 className="text-xl font-bold mb-2">See How We Work</h3>
           <p className="text-text-secondary text-sm max-w-lg">
-            A concise overview of our approach, security posture, and deployment process — 
+            A concise overview of our approach, security posture, and deployment process,
             available for qualified enterprise prospects.
           </p>
         </div>

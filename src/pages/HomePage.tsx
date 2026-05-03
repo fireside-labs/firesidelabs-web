@@ -3,6 +3,7 @@ import { LogoStrip } from '../components/LogoStrip';
 import { ComparisonTable } from '../components/ComparisonTable';
 import { FeatureGrid } from '../components/FeatureGrid';
 import { SocialProof } from '../components/SocialProof';
+import { FoundryBand } from '../components/FoundryBand';
 import { FinalCTA } from '../components/FinalCTA';
 
 const HomePage = () => {
@@ -22,6 +23,10 @@ const HomePage = () => {
         <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
       </div>
       <SocialProof />
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+      </div>
+      <FoundryBand />
       <div className="max-w-6xl mx-auto px-6">
         <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
       </div>

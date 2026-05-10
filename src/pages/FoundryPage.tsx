@@ -3,12 +3,12 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Flame, Code, HardDriveDownload, Terminal, Shield, Cpu, FileCode, Copy, Check, Package } from 'lucide-react';
 
-// v0.1.0 — signed MSI live on GitHub Releases.
-const DOWNLOAD_URL = 'https://github.com/fireside-labs/foundry-runtime/releases/download/v0.1.0/Foundry.Runtime_0.1.0_x64_en-US.msi';
+// v0.1.1 — signed MSI live on GitHub Releases.
+const DOWNLOAD_URL = 'https://github.com/fireside-labs/foundry-runtime/releases/download/v0.1.1/Foundry.Runtime_0.1.1_x64_en-US.msi';
 const REPO_URL = 'https://github.com/fireside-labs/foundry-runtime';
 const RELEASES_URL = 'https://github.com/fireside-labs/foundry-runtime/releases';
 
-const QUICKSTART = `# 1. Download Foundry Runtime v0.1.0 (signed Windows installer)
+const QUICKSTART = `# 1. Download Foundry Runtime v0.1.1 (signed Windows installer)
 #    https://github.com/fireside-labs/foundry-runtime/releases/latest
 
 # 2. Double-click the .msi to install. Verified Publisher: Jordan Nguyen.
@@ -76,7 +76,7 @@ const FoundryPage = () => {
           </div>
 
           <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-2 mt-6 font-mono text-[10px] tracking-widest text-text-muted uppercase">
-            <span>v0.1.0 · Windows x64</span>
+            <span>v0.1.1 · Windows x64</span>
             <span aria-hidden className="text-text-muted/40">·</span>
             <span>20 MB · Signed</span>
             <span aria-hidden className="text-text-muted/40">·</span>

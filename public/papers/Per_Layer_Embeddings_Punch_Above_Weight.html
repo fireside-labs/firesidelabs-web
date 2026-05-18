@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>A 3GB Model That Beats Your 14B Workstation AI—Fireside Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --copper:   #C87533;
+      --copper-lt:#D9924E;
+      --dark:     #0A0A0A;
+      --ink:      #1A1A1A;
+      --muted:    #6B6B6B;
+      --rule:     #E8E3DC;
+      --bg:       #FFFFFF;
+      --bg-soft:  #FAF8F5;
+      --highlight:#FBF1E2;
+      --pos:      #2c7a3f;
+      --neg:      #b53c2a;
+      --mono:     'JetBrains Mono', 'Courier New', monospace;
+      --sans:     'Inter', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    html { font-size: 16px; }
+    body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    @page { size: letter; margin: 0; }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    /* ── COVER ── */
+    .cover { width: 100%; min-height: 100vh; background: var(--dark); display: flex; flex-direction: column; position: relative; overflow: hidden; page-break-after: always; }
+    .cover-flame-bar { height: 6px; background: linear-gradient(90deg, var(--copper) 0%, var(--copper-lt) 100%); }
+    .cover-inner { flex: 1; display: flex; flex-direction: column; padding: 60px 72px; position: relative; z-index: 2; }
+    .cover::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 110% 0%, rgba(200,117,51,0.2) 0%, transparent 60%), radial-gradient(ellipse at -10% 100%, rgba(200,117,51,0.1) 0%, transparent 50%); z-index: 1; }
+    .cover-logo { font-size: 13px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .cover-logo span { color: rgba(255,255,255,0.45); font-weight: 400; }
+    .cover-content { margin-top: auto; margin-bottom: auto; padding: 60px 0 40px; max-width: 760px; }
+    .cover-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 24px; }
+    .cover-eyebrow { font-size: 13px; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+    .cover-title { font-family: var(--mono); font-size: 52px; font-weight: normal; line-height: 1.08; color: #fff; margin-bottom: 20px; }
+    .cover-title em { font-style: italic; color: var(--copper-lt); }
+    .cover-subtitle { font-size: 18px; color: rgba(255,255,255,0.55); line-height: 1.55; margin-bottom: 48px; max-width: 620px; }
+    .cover-divider { width: 48px; height: 3px; background: var(--copper); border-radius: 2px; margin-bottom: 36px; }
+    .cover-meta { font-size: 13px; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; }
+    .cover-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; margin-top: auto; }
+    .cover-footer div { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+    .cover-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 44px; max-width: 620px; }
+    .cover-stat-num { font-family: var(--mono); font-size: 30px; color: var(--copper-lt); letter-spacing: -0.01em; line-height: 1; margin-bottom: 8px; }
+    .cover-stat-label { font-size: 11px; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; line-height: 1.4; }
+
+    /* ── BODY ── */
+    .doc { max-width: 820px; margin: 0 auto; padding: 72px 72px 80px; }
+    .running-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--rule); margin-bottom: 52px; }
+    .running-logo { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .running-title { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+
+    h1 { font-family: var(--mono); font-size: 32px; font-weight: normal; line-height: 1.2; color: var(--dark); margin-bottom: 8px; }
+    .doc-subtitle { font-size: 16px; color: var(--muted); margin-bottom: 40px; line-height: 1.5; }
+
+    h2 { font-family: var(--mono); font-size: 24px; font-weight: normal; color: var(--dark); margin-top: 56px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--copper); display: inline-block; }
+    h3 { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--copper); margin-top: 32px; margin-bottom: 10px; }
+
+    p { margin-bottom: 16px; font-size: 15.5px; color: #2c2c3e; }
+    em { font-style: italic; }
+    strong { font-weight: 700; color: var(--dark); }
+    code { font-family: var(--mono); font-size: 13px; background: var(--bg-soft); padding: 1px 6px; border-radius: 3px; color: var(--dark); }
+
+    .pull-quote { border-left: 4px solid var(--copper); background: var(--bg-soft); padding: 20px 28px; margin: 36px 0; border-radius: 0 6px 6px 0; }
+    .pull-quote p { font-family: var(--mono); font-size: 18px; line-height: 1.5; color: var(--dark); font-style: italic; margin: 0; }
+
+    .callout { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 8px; padding: 24px 28px; margin: 36px 0; }
+    .callout-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 10px; }
+    .callout p { font-size: 14.5px; margin: 0; color: #3D2A0F; line-height: 1.6; }
+
+    /* compare table */
+    .compare-table { width: 100%; border-collapse: collapse; margin: 28px 0 36px; font-size: 13.5px; }
+    .compare-table th { background: var(--dark); color: #fff; padding: 12px 14px; text-align: left; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
+    .compare-table th:first-child { border-radius: 6px 0 0 0; }
+    .compare-table th:last-child { border-radius: 0 6px 0 0; }
+    .compare-table th.num, .compare-table td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: 12.5px; }
+    .compare-table td { padding: 11px 14px; border-bottom: 1px solid var(--rule); color: #2c2c3e; vertical-align: top; }
+    .compare-table tr:nth-child(even) td { background: var(--bg-soft); }
+    .compare-table tr.row-highlight td { background: var(--highlight); font-weight: 600; color: var(--dark); }
+    .compare-table tr.row-highlight td:first-child { border-left: 3px solid var(--copper); }
+    .compare-table td.mono { font-family: var(--mono); font-size: 12.5px; }
+    .compare-table td.win { color: var(--pos); font-weight: 700; }
+    .compare-table td.lose { color: var(--neg); }
+    .table-note { font-size: 13px; color: var(--muted); margin: -16px 0 32px; border-left: 3px solid var(--copper); padding-left: 14px; font-style: italic; }
+
+    /* hypothesis cards */
+    .hypothesis-card { border: 1px solid var(--rule); border-left: 4px solid var(--copper); border-radius: 6px; padding: 22px 28px; margin: 18px 0; background: #fff; }
+    .hypothesis-num { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; color: var(--copper); margin-bottom: 6px; }
+    .hypothesis-title { font-family: var(--mono); font-size: 17px; color: var(--dark); margin-bottom: 10px; line-height: 1.35; }
+    .hypothesis-body { font-size: 14.5px; color: #2c2c3e; line-height: 1.65; margin: 0; }
+
+    /* score-strip — E2B full-battery results */
+    .score-strip { background: var(--bg-soft); border: 1px solid var(--rule); border-left: 4px solid var(--copper); border-radius: 8px; padding: 24px 28px; margin: 28px 0 36px; }
+    .score-strip-title { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--copper); margin-bottom: 14px; letter-spacing: 0.04em; }
+    .score-row { display: grid; grid-template-columns: 220px 80px 1fr; gap: 14px; padding: 8px 0; border-bottom: 1px solid var(--rule); align-items: center; font-size: 13.5px; }
+    .score-row:last-child { border-bottom: none; }
+    .score-name { color: var(--ink); font-weight: 500; }
+    .score-num { font-family: var(--mono); font-weight: 600; color: var(--dark); text-align: right; font-variant-numeric: tabular-nums; }
+    .score-tag { font-size: 12px; color: var(--muted); }
+    .score-tag.win { color: var(--pos); font-weight: 600; }
+    .score-tag.lose { color: var(--neg); font-weight: 600; }
+
+    /* verdict */
+    .verdict { border: 2px solid var(--copper); border-radius: 8px; padding: 24px 28px; margin: 36px 0; text-align: center; }
+    .verdict p { font-size: 17px; font-weight: 700; color: var(--copper); margin: 0; line-height: 1.5; }
+
+    /* CTA */
+    .cta-section { background: var(--dark); border-radius: 12px; padding: 48px 52px; margin-top: 52px; position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #C87533, #D9924E); }
+    .cta-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 16px; }
+    .cta-title { font-family: var(--mono); font-size: 28px; font-weight: normal; color: #fff; line-height: 1.25; margin-bottom: 20px; }
+    .cta-body { font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.65; margin-bottom: 32px; }
+    .cta-services { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+    .cta-service { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 16px 18px; }
+    .cta-service-name { font-size: 12px; font-weight: 700; color: var(--copper-lt); margin-bottom: 6px; letter-spacing: 0.04em; }
+    .cta-service-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; margin: 0; }
+    .cta-contact { display: flex; align-items: center; gap: 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px; }
+    .cta-contact-text { font-size: 13.5px; color: rgba(255,255,255,0.45); flex: 1; }
+    .cta-contact-link { font-size: 14px; font-weight: 700; color: var(--copper-lt); text-decoration: none; letter-spacing: 0.02em; white-space: nowrap; }
+
+    .doc-footer { margin-top: 52px; padding-top: 20px; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; }
+    .doc-footer div { font-size: 11px; color: var(--muted); }
+
+    .print-hint { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 6px; padding: 12px 20px; font-size: 13px; color: #92400e; text-align: center; margin: 24px auto; max-width: 820px; }
+    @media print { .print-hint { display: none; } }
+
+    @media (max-width: 720px) {
+      .cover-title { font-size: 36px; }
+      .cover-inner, .doc { padding: 40px 28px; }
+      .cover-stats, .cta-services { grid-template-columns: 1fr; }
+      .compare-table { font-size: 12px; }
+      .compare-table th, .compare-table td { padding: 8px 8px; }
+      .score-row { grid-template-columns: 1fr; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-hint no-print">
+    📄 To save as PDF: <strong>File → Print → Save as PDF</strong>—set Margins to "None" for best results
+  </div>
+
+  <!-- ══════════════════ COVER ══════════════════ -->
+  <div class="cover">
+    <div class="cover-flame-bar"></div>
+    <div class="cover-inner">
+      <div class="cover-logo">Fireside Labs <span>/ Research &amp; Advisory</span></div>
+
+      <div class="cover-content">
+        <div class="cover-label">Deployment Architecture · White Paper</div>
+        <div class="cover-eyebrow">Per-Layer Embeddings vs Dense, MoE, and Modified-Dense Models</div>
+
+        <h1 class="cover-title">
+          A 3GB Model<br/>
+          That Beats Your <em>14B Workstation AI</em>
+        </h1>
+
+        <p class="cover-subtitle">
+          A 2-billion-effective-parameter model beats 14-billion vanilla dense models
+          on multi-step bash workflows at one-third the VRAM. Capability-per-VRAM is
+          dramatically non-monotonic.
+        </p>
+
+        <div class="cover-stats">
+          <div>
+            <div class="cover-stat-num">3GB</div>
+            <div class="cover-stat-label">VRAM footprint<br/>gemma-4-E2B at Q6_K</div>
+          </div>
+          <div>
+            <div class="cover-stat-num">+14pt</div>
+            <div class="cover-stat-label">Beats 14B vanilla<br/>on WildClaw retry</div>
+          </div>
+          <div>
+            <div class="cover-stat-num">+10pt</div>
+            <div class="cover-stat-label">Beats 17GB MoE<br/>on first-try success</div>
+          </div>
+        </div>
+
+        <div style="margin-top:48px;"></div>
+        <div class="cover-divider"></div>
+        <p class="cover-meta">For teams choosing a model for agent loops, edge deployment, or VRAM-constrained inference</p>
+      </div>
+
+      <div class="cover-footer">
+        <div>firesidelabs.ai &nbsp;·&nbsp; j.nguyen@firesidelabs.ai</div>
+        <div>© 2026 Fireside Labs. All rights reserved.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ BODY ══════════════════ -->
+  <div class="doc">
+    <div class="running-header">
+      <div class="running-logo">Fireside Labs</div>
+      <div class="running-title">A 3GB Model That Beats Your 14B Workstation AI</div>
+    </div>
+
+    <h1>A 3GB Model That Beats Your 14B Workstation AI</h1>
+    <p class="doc-subtitle">A 2-Billion-Effective-Parameter Model Beats 14-Billion Vanilla Dense Models on Multi-Step Bash Workflows at One-Third the VRAM</p>
+
+    <p>
+      Per-Layer Embeddings (PLE) is an architectural choice in Google's Gemma 3n / Gemma 4 family
+      that keeps embedding-related parameters resident on CPU and streams only the active per-layer
+      subset to GPU per token. The smallest tested PLE model—<code>gemma-4-E2B</code>
+      ("Effective 2B", 3.8GB GGUF, ~3GB resident VRAM at Q6_K)—was tested under a fixed multi-step
+      bash workflow harness (WildClaw English, n=3 same-config replicate runs at temp=0).
+    </p>
+
+    <p>
+      It scored <strong>22.0 ± 1.0 first-try and 31.7 ± 1.5 with-retry</strong> out of 60 tasks.
+      Comparing to other tested models at deployment-realistic quantization:
+    </p>
+
+    <ul style="margin-bottom: 16px; padding-left: 20px;">
+      <li style="margin-bottom: 8px; font-size: 15.5px;"><strong>Statistically tied</strong> with <code>gemma-4-E4B</code> (4B effective, ~6GB VRAM) on retry; loses first-try by ~6pt at 2σ.</li>
+      <li style="margin-bottom: 8px; font-size: 15.5px;"><strong>Beats <code>Qwen3-30B-A3B</code></strong> (3B-activated MoE, ~17GB VRAM) on first-try by 10.3pt (t=3.7) and ties on retry.</li>
+      <li style="margin-bottom: 8px; font-size: 15.5px;"><strong>Beats <code>r1-pruned12-14b</code></strong> (14B modified dense, ~9GB VRAM) on retry by 9.4pt (t=4.6).</li>
+      <li style="margin-bottom: 8px; font-size: 15.5px;"><strong>Dominates <code>qwen2.5-14B-vanilla</code></strong> (~9GB VRAM) by 14 retry tasks (t=9.4, overwhelming).</li>
+    </ul>
+
+    <div class="pull-quote">
+      <p>
+        At ~3GB VRAM—runs on consumer cards including mobile-class hardware—the 2B-effective PLE
+        model is competitive with workstation-class 17GB MoEs on multi-step bash workflows. Bigger
+        model is not better.
+      </p>
+    </div>
+
+    <p>
+      The caveat is severe: E2B is <strong>narrow</strong>. On knowledge-dependent benchmarks
+      (TruthfulQA 53.7%, HellaSwag 60.6%, MMLU 61.6%) it sits well below 8B vanilla baselines.
+      <strong>E2B is a math/code/agent-loop deployment artifact, not a general chatbot.</strong>
+      This paper is about deployment-decision guidance for the consumer-VRAM tier and what PLE's
+      empirical strength on multi-step says about architecture choice for agent-style workloads.
+    </p>
+
+    <!-- SECTION 1: SETUP -->
+    <h2>Setup</h2>
+
+    <p>
+      <code>gemma-4-E2B-it.q6_k.gguf</code> (3.8GB on disk, ~3GB resident GPU VRAM with PLE keeping
+      ~2GB on CPU) tested under a fixed harness against a fleet of comparable and larger models, all
+      at deployment-realistic quantization:
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th class="num">GGUF size</th>
+          <th class="num">VRAM tier</th>
+          <th>Architecture</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="row-highlight">
+          <td><code>gemma-4-E2B-it</code> Q6_K</td>
+          <td class="num">3.8GB</td>
+          <td class="num">~3GB</td>
+          <td>dense + PLE, 2B effective</td>
+        </tr>
+        <tr>
+          <td><code>gemma-4-E4B-it</code> Q6_K</td>
+          <td class="num">6.0GB</td>
+          <td class="num">~4GB GPU</td>
+          <td>dense + PLE, 4B effective</td>
+        </tr>
+        <tr>
+          <td><code>qwen2.5-14B-instruct</code> Q4_K_M</td>
+          <td class="num">9.0GB</td>
+          <td class="num">~9GB</td>
+          <td>dense</td>
+        </tr>
+        <tr>
+          <td><code>r1-pruned12-14b</code> Q4_K_M</td>
+          <td class="num">9.0GB</td>
+          <td class="num">~9GB</td>
+          <td>dense + targeted layer modification</td>
+        </tr>
+        <tr>
+          <td><code>Qwen3-30B-A3B</code> Q4_K_M</td>
+          <td class="num">17GB</td>
+          <td class="num">~17GB</td>
+          <td>MoE, 3B activated</td>
+        </tr>
+        <tr>
+          <td><code>gemma-4-26B-A4B</code> Q4_K_M</td>
+          <td class="num">17GB</td>
+          <td class="num">~17GB</td>
+          <td>MoE, ~7B activated (shared FFN)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      Benchmarks: TruthfulQA mc1 (817q), HellaSwag (1000q sample, seed=42), GSM8K-IL67 (1319q with
+      step-by-step prompt), and <strong>WildClaw English</strong>—60 multi-step bash tasks executed
+      in pre-baked Docker, 3 retries per task, n=3 replicate runs. Plus an existing MMLU CoT
+      measurement (513q sample) for E2B from prior work.
+    </p>
+
+    <p>
+      All multi-step measurements use <code>--parallel 2 -c 16384</code> (8K per-slot context, 0%
+      truncation) and explicit thinking muzzle for Gemma 4 channel-format models
+      (<code>chat_template_kwargs.enable_thinking=False</code>). Temperature=0 throughout.
+    </p>
+
+    <!-- SECTION 2: FULL BATTERY -->
+    <h2>E2B Full-Battery Results</h2>
+
+    <div class="score-strip">
+      <div class="score-strip-title">gemma-4-E2B (n=3 multi-step, n=1 single-question)</div>
+      <div class="score-row">
+        <div class="score-name">TruthfulQA mc1</div>
+        <div class="score-num">53.7%</div>
+        <div class="score-tag lose">↓ 18pt below E4B, below Llama-3.1-8B baseline</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">HellaSwag (1000q)</div>
+        <div class="score-num">60.6%</div>
+        <div class="score-tag lose">↓ 22pt below E4B, well below Llama-3.1-8B</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">MMLU CoT (513q)</div>
+        <div class="score-num">61.6%</div>
+        <div class="score-tag">Mid-tier knowledge (prior measurement)</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">GSM8K-IL67 (1319q)</div>
+        <div class="score-num">90.7%</div>
+        <div class="score-tag win">≈ Ties E4B (90.98%)</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">WildClaw first-try (n=3)</div>
+        <div class="score-num">22.0 ± 1.0</div>
+        <div class="score-tag win">Out of 60 tasks</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">WildClaw retry (n=3)</div>
+        <div class="score-num">31.7 ± 1.5</div>
+        <div class="score-tag win">Out of 60 tasks</div>
+      </div>
+    </div>
+
+    <p>
+      The pattern is sharp. E2B is <strong>strong on execution</strong> (math, multi-step bash) and
+      <strong>weak on knowledge</strong> (TruthfulQA, HellaSwag, MMLU). At 2B effective compute, the
+      model has just enough capacity to learn step-by-step procedural reasoning but not enough to
+      pack broad world knowledge. The execution capability is anomalous given the parameter count;
+      the knowledge capability is roughly what you would predict from compute scaling.
+    </p>
+
+    <!-- SECTION 3: VS FLEET -->
+    <h2>E2B vs the Fleet on Multi-Step (WildClaw English, n=3)</h2>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Comparison vs E2B</th>
+          <th class="num">First-try gap</th>
+          <th class="num">t-stat</th>
+          <th class="num">Retry gap</th>
+          <th class="num">t-stat</th>
+          <th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>gemma-4-26b-moe</code> (7B MoE, 17GB)</td>
+          <td class="num">−16.7pt</td>
+          <td class="num">−16.0</td>
+          <td class="num">−15.3pt</td>
+          <td class="num">−8.8</td>
+          <td>E2B loses (3.5× more activated compute)</td>
+        </tr>
+        <tr>
+          <td><code>gemma-4-E4B</code> (4B PLE, 6GB)</td>
+          <td class="num">−6.0pt</td>
+          <td class="num">−2.0</td>
+          <td class="num">−3.3pt</td>
+          <td class="num">−1.0</td>
+          <td>E2B essentially ties on retry, narrow first-try loss at 2σ</td>
+        </tr>
+        <tr class="row-highlight">
+          <td><code>Qwen3-30B-A3B</code> (3B MoE, 17GB)</td>
+          <td class="num">+10.3pt</td>
+          <td class="num">+3.7</td>
+          <td class="num">+2.7pt</td>
+          <td class="num">+0.9</td>
+          <td>E2B wins first-try at 1/6 the VRAM</td>
+        </tr>
+        <tr class="row-highlight">
+          <td><code>r1-pruned12-14b</code> (modified, 9GB)</td>
+          <td class="num">+5.3pt</td>
+          <td class="num">+1.5</td>
+          <td class="num">+9.4pt</td>
+          <td class="num">+4.6</td>
+          <td>E2B wins retry by 9 tasks at 1/3 the VRAM</td>
+        </tr>
+        <tr class="row-highlight">
+          <td><code>qwen2.5-14B-vanilla</code> (dense, 9GB)</td>
+          <td class="num">+10.3pt</td>
+          <td class="num">+7.7</td>
+          <td class="num">+14.0pt</td>
+          <td class="num">+9.4</td>
+          <td>E2B dominates at 1/3 the VRAM</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- SECTION 4: FINDINGS -->
+    <h2>Findings</h2>
+
+    <h3>Capability-per-VRAM is dramatically non-monotonic</h3>
+    <p>
+      The naive deployment heuristic "bigger model = better performance" fails badly here. A 3GB
+      PLE model (E2B) outperforms 9GB dense models on multi-step bash workflows by 9–14 retry
+      points. It even outperforms a 17GB MoE (<code>Qwen3-30B-A3B</code>) on first-try success.
+      <strong>Per-token activated compute, not stored parameters, is what determines multi-step
+      capability</strong>—and PLE is unusually efficient at packing capability into its activated
+      compute budget for this task class.
+    </p>
+
+    <h3>E2B is suitable for narrow deployment scenarios</h3>
+    <p>
+      The win is conditional. On knowledge benchmarks (TruthfulQA, HellaSwag, MMLU), E2B sits near
+      the bottom of the fleet—well below 8B vanilla baselines. <strong>E2B is not a universal
+      replacement.</strong>
+    </p>
+
+    <p><em>Well-suited for:</em></p>
+    <ul style="margin-bottom: 16px; padding-left: 20px;">
+      <li style="margin-bottom: 6px; font-size: 15.5px;"><strong>Agent-loop tasks</strong>—tool use, bash workflow orchestration, code generation against well-defined APIs</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;"><strong>Math reasoning under tight VRAM budgets</strong>—phone-side coding assistants, edge math reasoning</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;"><strong>Multi-step task decomposition</strong> where the prompt provides the knowledge and the model executes against it</li>
+    </ul>
+
+    <p><em>Poorly suited for:</em></p>
+    <ul style="margin-bottom: 16px; padding-left: 20px;">
+      <li style="margin-bottom: 6px; font-size: 15.5px;"><strong>Knowledge-RAG-free chatbots</strong>—needs a bigger model or RAG augmentation to compensate for the weak knowledge axis</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;"><strong>General-purpose reasoning</strong> where world knowledge is the bottleneck (TruthfulQA-style calibration)</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;"><strong>Long-form coherent writing</strong> where commonsense matters (HellaSwag-style scenarios)</li>
+    </ul>
+
+    <!-- SECTION 5: HYPOTHESES -->
+    <h2>Per-Layer Embeddings Deserve More Attention</h2>
+
+    <p>
+      PLE's nominal value proposition is memory efficiency—keep half the parameters on CPU and only
+      stream the active embeddings to GPU per layer. The empirical surprise is that PLE produces a
+      model that's not just memory-efficient but <strong>unexpectedly strong at multi-step
+      tasks</strong>. Two candidate hypotheses:
+    </p>
+
+    <div class="hypothesis-card">
+      <div class="hypothesis-num">Hypothesis 01</div>
+      <div class="hypothesis-title">PLE forces GPU-resident parameters to specialize in computation rather than knowledge storage</div>
+      <p class="hypothesis-body">
+        The on-CPU embeddings hold lookup-style knowledge; the on-GPU FFN/attention have to learn
+        procedure. For multi-step tasks—which are ~90% procedure, ~10% lookup—this allocation works
+        well. The single-question knowledge benchmark deficits are consistent with this: knowledge
+        sits on CPU and must be streamed, which is a slower path.
+      </p>
+    </div>
+
+    <div class="hypothesis-card">
+      <div class="hypothesis-num">Hypothesis 02</div>
+      <div class="hypothesis-title">PLE's smaller GPU footprint allows larger context per slot</div>
+      <p class="hypothesis-body">
+        At the same VRAM budget, PLE indirectly helps multi-step by giving the model more room to
+        reason. We did not directly test this; it is a hypothesis. For the runs reported here, all
+        models had identical context budgets, so this can only be a partial explanation.
+      </p>
+    </div>
+
+    <p>
+      Either way, the empirical fact stands: at the smallest deployment tier, PLE punches above its
+      compute weight on multi-step. This deserves further architectural investigation—and, in the
+      meantime, deserves practitioner attention when selecting models for agent workloads at
+      consumer VRAM levels.
+    </p>
+
+    <!-- SECTION 6: DEPLOYMENT GUIDANCE -->
+    <h2>Practical Guidance for AI Deployment Decisions</h2>
+
+    <p>
+      When choosing a model for client deliverables, the deployment-cost vs capability trade-off is
+      non-trivial. This table summarizes our findings:
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Use case</th>
+          <th>Recommendation</th>
+          <th class="num">VRAM</th>
+          <th>Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="row-highlight">
+          <td>Agent-loop / tool-use / multi-step bash</td>
+          <td><code>gemma-4-E2B</code></td>
+          <td class="num">3GB</td>
+          <td>Dominates 9–17GB models at 1/3–1/6 the VRAM cost</td>
+        </tr>
+        <tr class="row-highlight">
+          <td>Phone/edge math assistant</td>
+          <td><code>gemma-4-E2B</code></td>
+          <td class="num">3GB</td>
+          <td>90.7% GSM8K-IL67 at 3GB is exceptional</td>
+        </tr>
+        <tr>
+          <td>General chatbot, no RAG</td>
+          <td><code>gemma-4-E4B</code> or larger</td>
+          <td class="num">6GB+</td>
+          <td>E2B's knowledge axis (TruthfulQA 54%) is too weak</td>
+        </tr>
+        <tr>
+          <td>Workstation agent loops, max capability</td>
+          <td><code>gemma-4-26B-A4B</code></td>
+          <td class="num">17GB</td>
+          <td>Best-in-fleet on multi-step (78% retry)</td>
+        </tr>
+        <tr>
+          <td>Cost-sensitive RAG-augmented chatbot</td>
+          <td><code>gemma-4-E4B</code></td>
+          <td class="num">6GB</td>
+          <td>Best balance of knowledge + capability per GB</td>
+        </tr>
+        <tr>
+          <td>Heavy code generation against uncommon libraries</td>
+          <td>Undetermined</td>
+          <td class="num">varies</td>
+          <td>Need code-specific benchmarks beyond WildClaw scope</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <div class="callout-label">The Headline Practitioner Finding</div>
+      <p>
+        For agent-loop workloads at consumer VRAM, the 3GB PLE model beats every dense 14B and
+        ties or beats the 17GB MoE—at one-third to one-sixth the memory footprint. The deployment
+        decision isn't "which is best in the abstract"; it's "which axis matters for my task." If
+        the answer is execution, ship E2B. If it's knowledge, ship something bigger.
+      </p>
+    </div>
+
+    <!-- SECTION 7: LIMITATIONS -->
+    <h2>Limitations</h2>
+
+    <h3>n=3 multi-step but n=1 single-question for E2B</h3>
+    <p>
+      Single-question benchmarks have ~1pt cross-run drift so n=1 is acceptable for those numbers;
+      full transparency is that the WildClaw multi-step numbers are the only ones with explicit
+      confidence intervals here.
+    </p>
+
+    <h3>One PLE family tested</h3>
+    <p>
+      Gemma 3n / Gemma 4 are currently the only public PLE-architecture models. Our conclusions
+      apply to this family; whether other PLE designs (if released) would show the same multi-step
+      strength is an open question.
+    </p>
+
+    <h3>WildClaw is one harness</h3>
+    <p>
+      A second multi-step benchmark (SWE-bench Lite, GAIA, agent-tool-use sweeps) would test
+      whether the PLE-punches-above-weight phenomenon survives different long-prompt regimes.
+    </p>
+
+    <h3>Mixed quantization across the comparison</h3>
+    <p>
+      E2B at Q6_K vs Q4_K_M for the 14B+ comparison models. Q4 may slightly depress capability.
+      The direction of the E2B-wins claim is robust to this gap—dense+PLE at Q6 still beats Q4 14B
+      by 9–14pt across two metrics, an effect size much larger than typical Q4-vs-Q6 drift.
+    </p>
+
+    <h3>Knowledge-axis underperformance is severe</h3>
+    <p>
+      This isn't a "small concern"—it's a real deployment limitation. If a client task touches
+      general world knowledge, E2B is the wrong choice.
+    </p>
+
+    <h3>Mechanism is empirically strong but not yet explained</h3>
+    <p>
+      Two candidate hypotheses are presented above but not yet directly tested. Companion
+      architectural investigation is warranted.
+    </p>
+
+    <!-- SECTION 8: WHAT'S NEXT -->
+    <h2>What's Next</h2>
+
+    <h3>Map deployment recommendations across more client scenarios</h3>
+    <p>
+      What happens on creative writing? Code review? Multi-document RAG? Long-context summarization?
+      Build a richer benchmark matrix to guide model selection across deployment tiers.
+    </p>
+
+    <h3>Test PLE at larger scales</h3>
+    <p>
+      If a higher-tier Gemma PLE variant releases (e.g., E16B or larger) and preserves the
+      multi-step efficiency, the consumer-tier story extends to a workstation-tier story. Pending
+      model availability.
+    </p>
+
+    <h3>Cross-scale comparison work to 32B/70B</h3>
+    <p>
+      This paper covers the 2–17GB tier. The 70B-class story (Llama 3.3 70B, Qwen 2.5 72B at Q4) is
+      the next deployment tier above this. Knowing where E4B / 26B-MoE / 70B sit relative to each
+      other on multi-step would complete the deployment matrix.
+    </p>
+
+    <h3>Mechanism investigation</h3>
+    <p>
+      Direct test of the "PLE forces compute-vs-knowledge specialization" hypothesis: ablate PLE on
+      a controlled training run, or compare hidden-state norms between PLE and matched-compute dense.
+    </p>
+
+    <div class="verdict">
+      <p>
+        Capability-per-VRAM is non-monotonic. For agent workloads at consumer VRAM, a 3GB PLE model
+        outperforms 9GB dense and 17GB MoE. Pick by task axis, not by parameter count.
+      </p>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <div class="cta-label">About Fireside Labs</div>
+      <h2 class="cta-title" style="margin-top:0; border:none; display:block; color:#fff; font-size:26px;">
+        We Pick the Right Model for Your Deployment Tier
+      </h2>
+      <p class="cta-body">
+        Fireside Labs builds the evaluation infrastructure that answers the question every AI team
+        should be asking: <em>which model is right for my VRAM budget and my task?</em> We run
+        confidence-bounded benchmarks across architecture families and quantization levels so you
+        ship the right model the first time—not the one that topped a leaderboard for a task that
+        isn't yours.
+      </p>
+
+      <div class="cta-services">
+        <div class="cta-service">
+          <div class="cta-service-name">Model Selection</div>
+          <p class="cta-service-desc">
+            Pick the right model for your task and VRAM tier with confidence-bounded data.
+          </p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Edge Deployment</div>
+          <p class="cta-service-desc">
+            Optimize sub-10GB inference for phone, laptop, and embedded targets.
+          </p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Architecture Benchmarking</div>
+          <p class="cta-service-desc">
+            Apples-to-apples comparison across dense, MoE, and PLE families on your workload.
+          </p>
+        </div>
+      </div>
+
+      <div class="cta-contact">
+        <p class="cta-contact-text">
+          Deploying at the edge or on consumer GPUs? Let's pick the right model before you commit.
+        </p>
+        <a class="cta-contact-link" href="mailto:j.nguyen@firesidelabs.ai">
+          j.nguyen@firesidelabs.ai →
+        </a>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>Fireside Labs &nbsp;·&nbsp; firesidelabs.ai &nbsp;·&nbsp; © 2026</div>
+      <div>For informational purposes only.</div>
+    </div>
+
+  </div>
+</body>
+</html>

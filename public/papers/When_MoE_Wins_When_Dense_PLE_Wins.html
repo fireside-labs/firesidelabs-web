@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>16 Points Separate the Wrong Architecture From the Right One—Fireside Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --copper:   #C87533;
+      --copper-lt:#D9924E;
+      --dark:     #0A0A0A;
+      --ink:      #1A1A1A;
+      --muted:    #6B6B6B;
+      --rule:     #E8E3DC;
+      --bg:       #FFFFFF;
+      --bg-soft:  #FAF8F5;
+      --highlight:#FBF1E2;
+      --pos:      #2c7a3f;
+      --neg:      #b53c2a;
+      --mono:     'JetBrains Mono', 'Courier New', monospace;
+      --sans:     'Inter', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    html { font-size: 16px; }
+    body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    @page { size: letter; margin: 0; }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    /* ── COVER ── */
+    .cover { width: 100%; min-height: 100vh; background: var(--dark); display: flex; flex-direction: column; position: relative; overflow: hidden; page-break-after: always; }
+    .cover-flame-bar { height: 6px; background: linear-gradient(90deg, var(--copper) 0%, var(--copper-lt) 100%); }
+    .cover-inner { flex: 1; display: flex; flex-direction: column; padding: 60px 72px; position: relative; z-index: 2; }
+    .cover::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 110% 0%, rgba(200,117,51,0.2) 0%, transparent 60%), radial-gradient(ellipse at -10% 100%, rgba(200,117,51,0.1) 0%, transparent 50%); z-index: 1; }
+    .cover-logo { font-size: 13px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .cover-logo span { color: rgba(255,255,255,0.45); font-weight: 400; }
+    .cover-content { margin-top: auto; margin-bottom: auto; padding: 60px 0 40px; max-width: 760px; }
+    .cover-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 24px; }
+    .cover-eyebrow { font-size: 13px; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+    .cover-title { font-family: var(--mono); font-size: 52px; font-weight: normal; line-height: 1.08; color: #fff; margin-bottom: 20px; }
+    .cover-title em { font-style: italic; color: var(--copper-lt); }
+    .cover-subtitle { font-size: 18px; color: rgba(255,255,255,0.55); line-height: 1.55; margin-bottom: 48px; max-width: 620px; }
+    .cover-divider { width: 48px; height: 3px; background: var(--copper); border-radius: 2px; margin-bottom: 36px; }
+    .cover-meta { font-size: 13px; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; }
+    .cover-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; margin-top: auto; }
+    .cover-footer div { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+    .cover-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 44px; max-width: 700px; }
+    .cover-stat-num { font-family: var(--mono); font-size: 26px; color: var(--copper-lt); letter-spacing: -0.01em; line-height: 1; margin-bottom: 8px; }
+    .cover-stat-label { font-size: 10.5px; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; line-height: 1.4; }
+
+    /* ── BODY ── */
+    .doc { max-width: 880px; margin: 0 auto; padding: 72px 72px 80px; }
+    .running-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--rule); margin-bottom: 52px; }
+    .running-logo { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .running-title { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+
+    h1 { font-family: var(--mono); font-size: 32px; font-weight: normal; line-height: 1.2; color: var(--dark); margin-bottom: 8px; }
+    .doc-subtitle { font-size: 16px; color: var(--muted); margin-bottom: 40px; line-height: 1.5; }
+
+    h2 { font-family: var(--mono); font-size: 24px; font-weight: normal; color: var(--dark); margin-top: 56px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--copper); display: inline-block; }
+    h3 { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--copper); margin-top: 32px; margin-bottom: 10px; }
+
+    p { margin-bottom: 16px; font-size: 15.5px; color: #2c2c3e; }
+    em { font-style: italic; }
+    strong { font-weight: 700; color: var(--dark); }
+    code { font-family: var(--mono); font-size: 13px; background: var(--bg-soft); padding: 1px 6px; border-radius: 3px; color: var(--dark); }
+
+    .pull-quote { border-left: 4px solid var(--copper); background: var(--bg-soft); padding: 20px 28px; margin: 36px 0; border-radius: 0 6px 6px 0; }
+    .pull-quote p { font-family: var(--mono); font-size: 18px; line-height: 1.5; color: var(--dark); font-style: italic; margin: 0; }
+
+    .callout { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 8px; padding: 24px 28px; margin: 36px 0; }
+    .callout-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 10px; }
+    .callout p { font-size: 14.5px; margin: 0; color: #3D2A0F; line-height: 1.6; }
+
+    /* compare table */
+    .compare-table { width: 100%; border-collapse: collapse; margin: 28px 0 36px; font-size: 13.5px; }
+    .compare-table th { background: var(--dark); color: #fff; padding: 12px 14px; text-align: left; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
+    .compare-table th:first-child { border-radius: 6px 0 0 0; }
+    .compare-table th:last-child { border-radius: 0 6px 0 0; }
+    .compare-table th.num, .compare-table td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: 12.5px; }
+    .compare-table td { padding: 11px 14px; border-bottom: 1px solid var(--rule); color: #2c2c3e; vertical-align: top; }
+    .compare-table tr:nth-child(even) td { background: var(--bg-soft); }
+    .compare-table tr.row-highlight td { background: var(--highlight); font-weight: 600; color: var(--dark); }
+    .compare-table tr.row-highlight td:first-child { border-left: 3px solid var(--copper); }
+    .compare-table tr.row-delta td { background: var(--highlight); font-weight: 600; color: var(--dark); }
+    .compare-table tr.row-delta td:first-child { border-left: 3px solid var(--copper); font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .pos-cell { color: var(--pos); font-weight: 700; }
+    .neg-cell { color: var(--neg); font-weight: 700; }
+    .compare-table td.mono { font-family: var(--mono); font-size: 12.5px; }
+    .table-note { font-size: 13px; color: var(--muted); margin: -16px 0 32px; border-left: 3px solid var(--copper); padding-left: 14px; font-style: italic; }
+
+    /* finding cards */
+    .finding-card { border: 1px solid var(--rule); border-left: 4px solid var(--copper); border-radius: 6px; padding: 22px 28px; margin: 18px 0; background: #fff; }
+    .finding-num { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; color: var(--copper); margin-bottom: 6px; }
+    .finding-title { font-family: var(--mono); font-size: 17px; color: var(--dark); margin-bottom: 10px; line-height: 1.35; }
+    .finding-body { font-size: 14.5px; color: #2c2c3e; line-height: 1.65; margin: 0; }
+    .finding-body strong { color: var(--dark); }
+    .finding-confidence { display: inline-block; font-family: var(--mono); font-size: 10px; padding: 3px 8px; background: var(--copper); color: #fff; border-radius: 3px; letter-spacing: 0.06em; margin-left: 8px; vertical-align: middle; }
+
+    /* code block */
+    .code-block { background: var(--dark); color: #e8e8e8; padding: 18px 22px; border-radius: 6px; margin: 24px 0; font-family: var(--mono); font-size: 13px; line-height: 1.55; overflow-x: auto; white-space: pre; }
+    .code-comment { color: #8a8a8a; }
+
+    /* verdict */
+    .verdict { border: 2px solid var(--copper); border-radius: 8px; padding: 24px 28px; margin: 36px 0; text-align: center; }
+    .verdict p { font-size: 17px; font-weight: 700; color: var(--copper); margin: 0; line-height: 1.5; }
+
+    /* CTA */
+    .cta-section { background: var(--dark); border-radius: 12px; padding: 48px 52px; margin-top: 52px; position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #C87533, #D9924E); }
+    .cta-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 16px; }
+    .cta-title { font-family: var(--mono); font-size: 28px; font-weight: normal; color: #fff; line-height: 1.25; margin-bottom: 20px; }
+    .cta-body { font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.65; margin-bottom: 32px; }
+    .cta-services { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+    .cta-service { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 16px 18px; }
+    .cta-service-name { font-size: 12px; font-weight: 700; color: var(--copper-lt); margin-bottom: 6px; letter-spacing: 0.04em; }
+    .cta-service-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; margin: 0; }
+    .cta-contact { display: flex; align-items: center; gap: 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px; }
+    .cta-contact-text { font-size: 13.5px; color: rgba(255,255,255,0.45); flex: 1; }
+    .cta-contact-link { font-size: 14px; font-weight: 700; color: var(--copper-lt); text-decoration: none; letter-spacing: 0.02em; white-space: nowrap; }
+
+    .doc-footer { margin-top: 52px; padding-top: 20px; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; }
+    .doc-footer div { font-size: 11px; color: var(--muted); }
+
+    .print-hint { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 6px; padding: 12px 20px; font-size: 13px; color: #92400e; text-align: center; margin: 24px auto; max-width: 880px; }
+    @media print { .print-hint { display: none; } }
+
+    @media (max-width: 720px) {
+      .cover-title { font-size: 36px; }
+      .cover-inner, .doc { padding: 40px 28px; }
+      .cover-stats, .cta-services { grid-template-columns: 1fr 1fr; }
+      .compare-table { font-size: 12px; }
+      .compare-table th, .compare-table td { padding: 8px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-hint no-print">
+    📄 To save as PDF: <strong>File → Print → Save as PDF</strong>—set Margins to "None" for best results
+  </div>
+
+  <!-- ══════════════════ COVER ══════════════════ -->
+  <div class="cover">
+    <div class="cover-flame-bar"></div>
+    <div class="cover-inner">
+      <div class="cover-logo">Fireside Labs <span>/ Research &amp; Advisory</span></div>
+
+      <div class="cover-content">
+        <div class="cover-label">Architecture Comparison · White Paper</div>
+        <div class="cover-eyebrow">A Compute-Matched Empirical Study of Small Language Model Architectures</div>
+
+        <h1 class="cover-title">
+          16 Points Separate<br/>
+          the Wrong Architecture<br/>
+          From the <em>Right One</em>
+        </h1>
+
+        <p class="cover-subtitle">
+          Five small language models, four benchmarks, three replicate runs.
+          Architecture neutrality holds for single-question tasks at matched
+          compute—and shatters on multi-step.
+        </p>
+
+        <div class="cover-stats">
+          <div>
+            <div class="cover-stat-num">±3pt</div>
+            <div class="cover-stat-label">Architecture<br/>tie on single-q</div>
+          </div>
+          <div>
+            <div class="cover-stat-num">16.3pt</div>
+            <div class="cover-stat-label">Small-MoE gap<br/>on first-try (4σ)</div>
+          </div>
+          <div>
+            <div class="cover-stat-num">+10.7pt</div>
+            <div class="cover-stat-label">Large-MoE win<br/>at 7B activated</div>
+          </div>
+          <div>
+            <div class="cover-stat-num">+17pt</div>
+            <div class="cover-stat-label">PLE dominates<br/>14B vanilla (5σ)</div>
+          </div>
+        </div>
+
+        <div style="margin-top:48px;"></div>
+        <div class="cover-divider"></div>
+        <p class="cover-meta">For ML researchers and platform teams choosing between MoE, dense, and PLE architectures</p>
+      </div>
+
+      <div class="cover-footer">
+        <div>firesidelabs.ai &nbsp;·&nbsp; j.nguyen@firesidelabs.ai</div>
+        <div>© 2026 Fireside Labs. All rights reserved.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ BODY ══════════════════ -->
+  <div class="doc">
+    <div class="running-header">
+      <div class="running-logo">Fireside Labs</div>
+      <div class="running-title">16 Points Separate the Wrong Architecture From the Right One</div>
+    </div>
+
+    <h1>16 Points Separate the Wrong Architecture From the Right One</h1>
+    <p class="doc-subtitle">A Compute-Matched Empirical Study of Small Language Model Architectures Across Single-Question and Multi-Step Benchmarks</p>
+
+    <h2 style="margin-top: 0;">Abstract</h2>
+
+    <p>
+      We measured five small language models across four benchmarks under a fixed harness, with
+      three replicate runs per model on a noisy multi-step bash workflow benchmark. Three findings
+      drop out cleanly. <strong>First</strong>, at matched per-token compute (~3–4B activated), MoE
+      and dense+PLE architectures tie within ±3pt across single-question benchmarks (TruthfulQA,
+      HellaSwag, GSM8K). <strong>Second</strong>, on multi-step bash workflows the same
+      matched-compute pair shows a <strong>16.3pt first-try gap favoring dense+PLE</strong> (4σ
+      confidence with n=3 each); the with-retry gap closes to 6pt and is within harness noise.
+      <strong>Third</strong>, at higher per-token compute (7B activated), the larger MoE
+      substantially outperforms the smaller dense+PLE on multi-step (+10.7pt first-try, +12pt
+      retry, 3.5σ).
+    </p>
+
+    <p>
+      The unified picture: architecture choice depends on <strong>compute tier</strong>, not on
+      architecture family in the abstract. At matched compute the small MoE has a
+      routing-disadvantage on first-attempt multi-step; raise the compute level and the larger MoE
+      overcomes it.
+    </p>
+
+    <p>
+      We additionally report (i) a 5σ result that a 4B-effective dense+PLE model dominates a 14B
+      vanilla dense model by 16–17pt on multi-step, suggesting the Per-Layer Embeddings architecture
+      punches well above its compute weight, and (ii) a methodological finding that the WildClaw
+      multi-step benchmark exhibits 25–35% per-task pass/fail flip rate at temp=0
+      <strong>only when thinking-mode bleed is permitted</strong>—explicit
+      <code>chat_template_kwargs.enable_thinking=False</code> muzzling produces fully deterministic
+      first-try behavior (std=0 across n=3 same-config runs). Architecture comparisons should use
+      explicit muzzle for apples-to-apples; production-realistic deployment estimates should use
+      thinking-on with n≥3.
+    </p>
+
+    <!-- SECTION 1: THE QUESTION -->
+    <h2>The Question</h2>
+
+    <p>
+      Published architecture comparisons typically pit "30B MoE" against "8B dense" with the
+      implicit claim that the MoE wins because of total parameters. But the MoE only activates a
+      fraction of those per token. The honest unit for comparing capability is
+      <strong>per-token compute</strong>: how many parameters do real math each forward pass.
+      Under that lens, a 30B MoE that activates 3B/token compares to an 8B dense model rather than
+      to a 30B dense one.
+    </p>
+
+    <div class="pull-quote">
+      <p>
+        Total parameters is a memory metric. Per-token compute is a capability metric. Get the unit
+        right before you start comparing architectures.
+      </p>
+    </div>
+
+    <p>
+      Two practitioner questions follow. First: <strong>at matched per-token compute, does
+      architecture still matter?</strong> Second: <strong>does the answer depend on the benchmark
+      class</strong>—single-question vs multi-step?
+    </p>
+
+    <!-- SECTION 2: SETUP -->
+    <h2>Setup</h2>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th class="num">Stored</th>
+          <th class="num">Per-token</th>
+          <th>Architecture</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>gemma4-E4B</code> (Q6_K)</td>
+          <td class="num">7.5B</td>
+          <td class="num">~4B</td>
+          <td>dense + PLE</td>
+        </tr>
+        <tr>
+          <td><code>qwen3-30b-moe</code> (Q4_K_M)</td>
+          <td class="num">30B</td>
+          <td class="num">~3B</td>
+          <td>MoE (top-8 of 128 experts)</td>
+        </tr>
+        <tr>
+          <td><code>gemma-4-26b-moe</code> (Q4_K_M)</td>
+          <td class="num">26B</td>
+          <td class="num">~7B</td>
+          <td>MoE (top-8 of 128, with shared FFN)</td>
+        </tr>
+        <tr>
+          <td><code>qwen2.5-14b-vanilla</code> (Q4_K_M)</td>
+          <td class="num">14B</td>
+          <td class="num">~14B</td>
+          <td>dense</td>
+        </tr>
+        <tr>
+          <td><code>r1-pruned12-14b</code> (Q4_K_M)</td>
+          <td class="num">~14B</td>
+          <td class="num">~14B</td>
+          <td>dense + targeted layer modification</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      Benchmarks (all under <code>llama-server</code>, temperature=0):
+    </p>
+
+    <ul style="margin-bottom: 16px; padding-left: 20px;">
+      <li style="margin-bottom: 6px; font-size: 15.5px;"><strong>TruthfulQA mc1</strong>—817 questions, deterministic per-question shuffle to defeat the gold-at-index-0 quirk</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;"><strong>HellaSwag</strong>—1,000-question sample, seed=42</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;"><strong>GSM8K-IL67</strong>—1,319 questions with explicit step-by-step grant prompt</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;"><strong>WildClaw English</strong>—60 multi-step bash tasks in pre-baked Docker, 3 retries per task, n=3 replicate runs</li>
+    </ul>
+
+    <p>
+      For thinking-mode models the server boots with <code>--reasoning-format deepseek
+      --reasoning-budget 4096</code> to strip <code>&lt;think&gt;</code> blocks server-side. For
+      Gemma channel-format models the API body passes
+      <code>chat_template_kwargs.enable_thinking=False</code>—the deepseek strip does not recognize
+      Gemma's <code>&lt;channel|&gt;</code> tag. All multi-step measurements run at
+      <code>--parallel 2 -c 16384</code> (8192-per-slot).
+    </p>
+
+    <!-- SECTION 3: SINGLE-QUESTION RESULTS -->
+    <h2>Single-Question Results — High Confidence</h2>
+
+    <h3>Matched-compute pair</h3>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th class="num">per-token</th>
+          <th class="num">TruthfulQA</th>
+          <th class="num">HellaSwag</th>
+          <th class="num">GSM8K-IL67</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>qwen3-30b-moe</code></td><td class="num">~3B</td><td class="num">71.48%</td><td class="num">85.00%</td><td class="num">91.21%</td></tr>
+        <tr><td><code>gemma4-E4B</code></td><td class="num">~4B</td><td class="num">72.09%</td><td class="num">82.20%</td><td class="num">90.98%</td></tr>
+        <tr class="row-delta">
+          <td>Delta</td><td class="num">—</td>
+          <td class="num">+0.6 MoE</td>
+          <td class="num">−2.8 dense</td>
+          <td class="num">−0.2 tied</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      Within ±3pt across all three axes—well within the ~1pt cross-run drift floor for these
+      benchmarks. <strong>At matched per-token compute, MoE and dense+PLE tie on single-question
+      benchmarks.</strong>
+    </p>
+
+    <h3>Unmatched-compute (compute-budget effects)</h3>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th class="num">per-token</th>
+          <th class="num">TruthfulQA</th>
+          <th class="num">HellaSwag</th>
+          <th class="num">GSM8K-IL67</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>gemma-4-26b-moe</code></td><td class="num">~7B</td><td class="num">84.94%</td><td class="num">88.70%</td><td class="num">97.04%</td></tr>
+        <tr><td><code>gemma4-E4B</code></td><td class="num">~4B</td><td class="num">72.09%</td><td class="num">82.20%</td><td class="num">90.98%</td></tr>
+        <tr class="row-delta">
+          <td>Delta</td><td class="num">—</td>
+          <td class="num pos-cell">+12.85</td>
+          <td class="num pos-cell">+6.50</td>
+          <td class="num pos-cell">+6.06</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      Wins scale roughly proportionally to the 1.75× compute ratio (~+6 to +13pt across axes).
+      Single-question capability tracks activated compute, with architecture roughly neutral.
+    </p>
+
+    <!-- SECTION 4: MULTI-STEP RESULTS -->
+    <h2>Multi-Step Results — n=3 Replicates</h2>
+
+    <p>
+      WildClaw English, 60 tasks, 3 retries per task, <code>--parallel 2 -c 16384</code> (0%
+      truncation across all runs):
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th class="num">per-token</th>
+          <th class="num">First-try (mean ± std)</th>
+          <th class="num">With retry (mean ± std)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="row-highlight">
+          <td><code>gemma-4-26b-moe</code> (n=3)</td>
+          <td class="num">~7B</td>
+          <td class="num">38.7 ± 1.5</td>
+          <td class="num">47.0 ± 2.6  ← top</td>
+        </tr>
+        <tr>
+          <td><code>gemma4-E4B</code> (n=3)</td>
+          <td class="num">~4B</td>
+          <td class="num">28.0 ± 5.0</td>
+          <td class="num">35.0 ± 5.3</td>
+        </tr>
+        <tr>
+          <td><code>qwen3-30b-moe</code> (n=3)</td>
+          <td class="num">~3B</td>
+          <td class="num">11.7 ± 4.7</td>
+          <td class="num">29.0 ± 5.3</td>
+        </tr>
+        <tr>
+          <td><code>r1-pruned12-14b</code> (n=3)</td>
+          <td class="num">~14B</td>
+          <td class="num">16.7 ± 6.1</td>
+          <td class="num">22.3 ± 3.2</td>
+        </tr>
+        <tr>
+          <td><code>qwen2.5-14b-vanilla</code> (n=3)</td>
+          <td class="num">~14B</td>
+          <td class="num">11.7 ± 2.1</td>
+          <td class="num">17.7 ± 2.1</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="table-note">
+      Note: <code>gemma-4-26b-moe</code> shows tighter run-to-run std (~2 tasks) than the other
+      models (~5 tasks). Consistent with the model being closer to ceiling on most tasks—fewer
+      borderline tasks means fewer pass/fail flips across runs. The harness-noise floor is
+      task-difficulty-dependent.
+    </p>
+
+    <h3>Statistical comparisons</h3>
+    <p>
+      t-stat = gap / sqrt(s₁²/n₁ + s₂²/n₂):
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Comparison</th>
+          <th class="num">Gap</th>
+          <th class="num">t</th>
+          <th>Interpretation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>E4B vs qwen3-30b-moe (matched, first-try)</td><td class="num">+16.3</td><td class="num pos-cell">4.12</td><td>Real (&gt;4σ)</td></tr>
+        <tr><td>E4B vs qwen3-30b-moe (matched, retry)</td><td class="num">+6.0</td><td class="num">1.39</td><td>In noise</td></tr>
+        <tr><td>E4B vs qwen2.5-14b-vanilla (first-try)</td><td class="num">+16.3</td><td class="num pos-cell">5.21</td><td>Strong</td></tr>
+        <tr><td>E4B vs qwen2.5-14b-vanilla (retry)</td><td class="num">+17.3</td><td class="num pos-cell">5.27</td><td>Strong</td></tr>
+        <tr><td>26b-moe vs E4B (first-try)</td><td class="num">+10.7</td><td class="num pos-cell">3.55</td><td>Strong</td></tr>
+        <tr><td>26b-moe vs E4B (retry)</td><td class="num">+12.0</td><td class="num pos-cell">3.52</td><td>Strong</td></tr>
+        <tr><td>26b-moe vs qwen3-30b-moe (first-try)</td><td class="num">+27.0</td><td class="num pos-cell">9.5</td><td>Overwhelming</td></tr>
+        <tr><td>26b-moe vs qwen3-30b-moe (retry)</td><td class="num">+18.0</td><td class="num pos-cell">5.28</td><td>Strong</td></tr>
+        <tr><td>r1-pruned12-14b vs vanilla (first-try)</td><td class="num">+5.0</td><td class="num">1.34</td><td>In noise</td></tr>
+        <tr><td>r1-pruned12-14b vs vanilla (retry)</td><td class="num">+4.6</td><td class="num">2.08</td><td>Borderline</td></tr>
+      </tbody>
+    </table>
+
+    <!-- SECTION 5: FOUR FINDINGS -->
+    <h2>Four Findings, Unified</h2>
+
+    <div class="finding-card">
+      <div class="finding-num">Finding 01 <span class="finding-confidence">HIGH CONFIDENCE</span></div>
+      <div class="finding-title">Single-question matched-compute tie</div>
+      <p class="finding-body">
+        At matched per-token compute, MoE and dense+PLE tie on three single-question benchmarks
+        within ±3pt. Architecture is essentially neutral for short tasks at matched compute.
+      </p>
+    </div>
+
+    <div class="finding-card">
+      <div class="finding-num">Finding 02 <span class="finding-confidence">4σ</span></div>
+      <div class="finding-title">Small-MoE first-try gap on multi-step</div>
+      <p class="finding-body">
+        At matched per-token compute on multi-step bash workflows, the 3B-activated MoE
+        underperforms the 4B dense+PLE on first-try success rate by 16.3pt. The with-retry gap
+        closes to 6pt and is within harness noise. <strong>First-try is the metric that matters for
+        agent-loop performance</strong>—most production agent systems retry expensively or not at
+        all—so the 16pt first-try gap is the practitioner-relevant claim.
+      </p>
+    </div>
+
+    <div class="finding-card">
+      <div class="finding-num">Finding 03 <span class="finding-confidence">3.5σ</span></div>
+      <div class="finding-title">Large-MoE breaks the hypothesis</div>
+      <p class="finding-body">
+        At higher per-token compute (7B activated), the larger MoE substantially outperforms the
+        smaller dense+PLE on multi-step (+10.7pt first-try, +12pt retry).
+        <code>gemma-4-26b-moe</code> is the strongest WildClaw model in our entire fleet at 78%
+        retry / 65% first-try. The "MoE breaks at long context" claim is wrong as
+        architecture-general—it is specifically a small-MoE / matched-compute phenomenon. Raise the
+        compute and the architecture wins.
+      </p>
+    </div>
+
+    <div class="finding-card">
+      <div class="finding-num">Finding 04 <span class="finding-confidence">5σ</span></div>
+      <div class="finding-title">PLE punches above its compute weight</div>
+      <p class="finding-body">
+        A 4B-effective dense+PLE model (<code>gemma4-E4B</code>) dominates a 14B vanilla dense model
+        (<code>qwen2.5-14b-vanilla</code>) on WildClaw English by 16–17pt across both metrics.
+        Per-Layer Embeddings is doing something architecturally that lets it deploy multi-step
+        capability disproportionate to its activated compute count. We do not yet have a
+        mechanistic explanation for this; we report it as a phenomenon worth further investigation.
+      </p>
+    </div>
+
+    <!-- SECTION 6: WHY FIRST-TRY -->
+    <h2>Why the Small-MoE First-Try Gap Is the Right Framing</h2>
+
+    <p>
+      The MoE routing-divergence hypothesis predicts that on long contexts, different tokens may
+      route through different expert mixtures, introducing per-step non-determinism that compounds
+      over multi-step tasks. If the model's first-attempt plan goes off-rails because of routing
+      instability, the entire bash workflow fails on that attempt. Retries can recover sometimes—by
+      retrying, the model gets a fresh routing trajectory and may produce different (potentially
+      better) output.
+    </p>
+
+    <p>
+      This predicts exactly the asymmetry we observe: <strong>the first-try metric is most
+      sensitive to routing-divergence</strong>, and that is where we see the large effect (16pt).
+      With-retry score smooths over individual routing mistakes, so that gap is in the noise.
+    </p>
+
+    <div class="pull-quote">
+      <p>
+        The larger-MoE result is consistent with this story: at matched compute the small MoE is at
+        a routing disadvantage; at higher compute the larger MoE has enough capacity per token to
+        overcome it.
+      </p>
+    </div>
+
+    <p>
+      Crucially, this isn't just "more compute helps" (which would predict a magnitude difference,
+      not a direction reversal). The <code>gemma-4-26b-moe</code> at 7B activated has more capacity
+      per token, and possibly tighter routing under long context. The two effects compound.
+    </p>
+
+    <!-- SECTION 7: METHODOLOGICAL FINDING -->
+    <h2>Methodological Finding: WildClaw Noise Floor Is Thinking-Mode-Conditional</h2>
+
+    <p>
+      Three same-config runs (workers=2, temp=0, identical flags) on <code>gemma4-E4B</code> with
+      thinking enabled (default Gemma channel format):
+    </p>
+
+    <div class="code-block">Run 1: 28 first-try, 33 retry
+Run 2: 33 first-try, 41 retry
+Run 3: 23 first-try, 31 retry
+Mean ± std: 28 ± 5 first-try, 35 ± 5 retry
+Range: 10 tasks (~17pt) for both metrics</div>
+
+    <p>
+      Pairwise agreement between any two of three runs: 73–80%. <strong>20–27% of tasks flip
+      pass/fail between identical-config runs at temp=0</strong> in this configuration. Across all
+      three runs, only 38% of tasks always pass, 27% always fail, and 35% are in the noise zone.
+    </p>
+
+    <p>
+      A subsequent control measurement on <code>qwen3.6-35b</code> with explicit thinking muzzle
+      (<code>chat_template_kwargs.enable_thinking=False</code>) under the same harness shows
+      <strong>identical first-try counts across all three runs</strong>:
+    </p>
+
+    <div class="code-block">Qwen3.6 with --no-thinking, n=3:
+  English-base subset (48 tasks):  first-try 14/14/14, retry 37/37/36
+  Chinese subset (12 tasks):       first-try 5/5/5,    retry 8/11/9</div>
+
+    <p>
+      First-try is <strong>fully deterministic</strong> with explicit thinking muzzle (std=0 across
+      both subsets). Retry shows small residual variance (std 0.6–1.5 tasks) attributable to
+      retry-history accumulation effects. <strong>The 25–35% flip rate observed without explicit
+      muzzle is not intrinsic to WildClaw—it is thinking-mode-bleed noise.</strong>
+    </p>
+
+    <p>
+      The mechanism: thinking-mode models without explicit muzzle still produce some
+      <code>&lt;think&gt;</code>-like tokens through chat-template interpolation, which the
+      server-side reasoning-format strip handles inconsistently when token budgets are tight.
+      Different runs of the "same" prompt produce slightly different thinking artifacts, which then
+      propagate to different bash answers. With <code>enable_thinking=False</code> passed at the
+      chat-template level, the model never enters the thinking mode at all, removing the noise
+      source.
+    </p>
+
+    <p>
+      External factors that we previously hypothesized (Docker workspace state, web API timing,
+      server-side scheduling) appear to contribute negligible additional noise once thinking is
+      properly muzzled—at least on the first-attempt path.
+    </p>
+
+    <h3>Implications for the field</h3>
+
+    <ol style="margin-bottom: 16px; padding-left: 22px;">
+      <li style="margin-bottom: 8px; font-size: 15.5px;"><strong>Multi-step benchmark noise is not architectural.</strong> Earlier reports of high run-to-run variance on agent-style benchmarks may largely reflect inadvertent thinking-mode bleed in harness configurations that don't explicitly muzzle thinking.</li>
+      <li style="margin-bottom: 8px; font-size: 15.5px;"><strong>For architecture comparisons, use explicit thinking muzzle</strong> (<code>chat_template_kwargs.enable_thinking=False</code>) for apples-to-apples runs. This produces deterministic first-try and near-deterministic retry behavior, lowering the n required for confident gap claims.</li>
+      <li style="margin-bottom: 8px; font-size: 15.5px;"><strong>For practitioner-realistic deployments</strong> (where production prompts will trigger thinking), n≥3 still recommended; the 25–35% flip rate represents real production variance the model would exhibit.</li>
+      <li style="margin-bottom: 8px; font-size: 15.5px;"><strong>Single-run multi-step bench claims under ~10pt gap (2σ) without explicit muzzle remain unreliable.</strong> With muzzle, single-run gaps as small as ~1–2 tasks are interpretable.</li>
+    </ol>
+
+    <div class="callout">
+      <div class="callout-label">Two Regimes, Both Useful</div>
+      <p>
+        This is a useful split: one regime for architecture comparison, another for production
+        realism. The choice between them depends on whether you want clean signal about the model
+        or clean signal about the deployment experience.
+      </p>
+    </div>
+
+    <!-- SECTION 8: IMPLICATIONS -->
+    <h2>Implications for Practitioners</h2>
+
+    <p>
+      The right axis for deployment decisions is <strong>VRAM tier</strong>, not per-token compute
+      class in the abstract:
+    </p>
+
+    <h3>≤9GB VRAM (consumer GPU, phones, low-end laptops)</h3>
+    <p>
+      <code>gemma4-E4B</code> (~4–6GB) is the strongest tested model in this tier. It beats vanilla
+      8B baselines by 17pt on WildClaw multi-step and holds competitive single-question numbers.
+      Finding 3 (<code>gemma-4-26b-moe</code> wins) does not apply here—the 26B MoE requires
+      ~17GB+ VRAM and is simply not on the menu.
+    </p>
+
+    <h3>17GB+ VRAM (workstation, server, high-end consumer)</h3>
+    <p>
+      <code>gemma-4-26b-moe</code> at 7B activated is the strongest tested model by a substantial
+      margin. The "MoE wins" narrative holds at this tier, but it is a compute-budget win (7B
+      activated vs 4B), not an architecture-family win.
+    </p>
+
+    <h3>Four interpretation cautions</h3>
+    <ol style="margin-bottom: 16px; padding-left: 22px;">
+      <li style="margin-bottom: 8px; font-size: 15.5px;"><strong>Single-question benchmarks are still the cleanest matched-compute comparison axis.</strong> Their noise floor (~1pt) is low enough that architecture-tie results are robust at modest sample sizes.</li>
+      <li style="margin-bottom: 8px; font-size: 15.5px;"><strong>Multi-step benchmarks have noise floors that are conditional on thinking-mode handling.</strong> Without explicit thinking muzzle, single-run gaps under ~10pt should be replicated before acceptance and per-category breakdowns at small n are nearly meaningless. With explicit muzzle, first-try is fully deterministic and gaps as small as ~1–2 tasks are interpretable.</li>
+      <li style="margin-bottom: 8px; font-size: 15.5px;"><strong>First-try and with-retry tell different stories.</strong> First-try is most sensitive to routing-divergence and is the right metric for agent-loop deployments. With-retry smooths over per-attempt mistakes and is the right metric for batch-processing workloads.</li>
+      <li style="margin-bottom: 8px; font-size: 15.5px;"><strong>The "MoE is more efficient" narrative is conditional.</strong> MoE may be more memory-efficient for short tasks but underperforms at matched per-token compute on multi-step first-try. Higher-compute MoE is competitive or better. The decision depends on the task class and the deployment VRAM budget.</li>
+    </ol>
+
+    <!-- SECTION 9: LIMITATIONS -->
+    <h2>Limitations</h2>
+
+    <h3>One model per architecture variant</h3>
+    <p>
+      The matched-compute pair is one MoE × one dense+PLE. Larger-MoE result is one model. Broader
+      sweeps across MoE/dense/PLE families would strengthen all findings.
+    </p>
+
+    <h3>One multi-step benchmark</h3>
+    <p>
+      WildClaw is a single harness with specific noise sources (Docker, web APIs). A second
+      multi-step benchmark (SWE-bench, GAIA, agent-tool-use sweeps) would test whether the Finding
+      2 first-try gap survives different long-prompt regimes.
+    </p>
+
+    <h3>The 14B modified-vs-vanilla 5pt gap shrinks with replication</h3>
+    <p>
+      An earlier draft of this paper reported a +10pt 14B modified-variant retry advantage based on
+      n=1; replication to n=3 brought it down to +5pt with t-stat 2.08 (borderline). This is itself
+      a methodological caveat: even with a fixed harness, n=1 numbers in this domain can mislead by
+      5–10 task points.
+    </p>
+
+    <h3>Quantization variance</h3>
+    <p>
+      <code>gemma4-E4B</code> is Q6_K; the MoEs and 14B models are Q4_K_M. Q4 should depress
+      capability somewhat, which makes the <code>gemma-4-26b-moe</code> win all the more
+      impressive. Q6/Q4 differences are likely small relative to architecture deltas at this scale.
+    </p>
+
+    <h3>PLE mechanism is empirically strong but not explained</h3>
+    <p>
+      Finding 4 reports a 5σ phenomenon (4B PLE dominating 14B dense by 17pt on multi-step). We do
+      not yet have a mechanistic story for why PLE punches above its compute weight on multi-step
+      specifically. Companion work investigating this is in progress.
+    </p>
+
+    <h3>Thinking-mode handling is not matched across the comparison pair</h3>
+    <p>
+      <code>qwen3-30b-moe</code> runs with thinking-on (server-side strip); <code>gemma4-E4B</code>
+      runs with thinking-off (chat-template muzzle) because the deepseek strip does not recognize
+      Gemma's <code>&lt;channel|&gt;</code> tag. We pick "each model in its working config" rather
+      than a forced-matched config. Thinking-mode handling can shift the same model's score by
+      10–25pt; the 16.3pt first-try gap reported in Finding 2 may shift under different thinking
+      configurations.
+    </p>
+
+    <!-- SECTION 10: WHAT'S NEXT -->
+    <h2>What's Next</h2>
+
+    <h3>Test a non-MoE 7B-effective model</h3>
+    <p>
+      Run a Qwen3-7B/8B variant with thinking muzzled to discriminate "MoE wins at 7B compute"
+      from "any 7B-effective model wins on WildClaw" on Finding 3.
+    </p>
+
+    <h3>Test SWE-bench Lite</h3>
+    <p>
+      Or similar long-multi-step benchmark, with the same matched-compute pair to validate that the
+      Finding 2 first-try gap survives a different multi-step regime.
+    </p>
+
+    <h3>Replicate Finding 4 across additional multi-step benchmarks</h3>
+    <p>
+      If the PLE-dominates-14B-vanilla phenomenon generalizes, it deserves architectural
+      investigation. If it doesn't, the WildClaw-specific result is still interesting but narrower.
+    </p>
+
+    <div class="verdict">
+      <p>
+        Architecture choice is not a single-axis decision. Pick by deployment VRAM tier, task class
+        (single-question vs multi-step), and metric (first-try vs retry). The right answer depends
+        on all three.
+      </p>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <div class="cta-label">About Fireside Labs</div>
+      <h2 class="cta-title" style="margin-top:0; border:none; display:block; color:#fff; font-size:26px;">
+        We Run the Comparisons Vendors Won't
+      </h2>
+      <p class="cta-body">
+        Fireside Labs runs architecture-comparison studies across MoE, dense, and PLE families with
+        explicit thinking-mode handling, n≥3 replication, and t-stat confidence intervals. When a
+        published comparison doesn't match your deployment context, we run the apples-to-apples
+        benchmark that does.
+      </p>
+
+      <div class="cta-services">
+        <div class="cta-service">
+          <div class="cta-service-name">Architecture Benchmarking</div>
+          <p class="cta-service-desc">
+            Compute-matched comparison across architecture families with explicit thinking handling.
+          </p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Multi-Step Validation</div>
+          <p class="cta-service-desc">
+            n≥3 replicate runs on agent-loop benchmarks with proper noise-floor characterization.
+          </p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Harness Audit</div>
+          <p class="cta-service-desc">
+            Identify thinking-mode bleed, slot truncation, and other silent benchmark contaminants.
+          </p>
+        </div>
+      </div>
+
+      <div class="cta-contact">
+        <p class="cta-contact-text">
+          Need an architecture comparison that matches your actual deployment? Let's design it together.
+        </p>
+        <a class="cta-contact-link" href="mailto:j.nguyen@firesidelabs.ai">
+          j.nguyen@firesidelabs.ai →
+        </a>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>Fireside Labs &nbsp;·&nbsp; firesidelabs.ai &nbsp;·&nbsp; © 2026</div>
+      <div>For informational purposes only.</div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Picking the Right Small Model for Empathy-Adjacent Production—Fireside Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --copper:   #C87533;
+      --copper-lt:#D9924E;
+      --dark:     #0A0A0A;
+      --ink:      #1A1A1A;
+      --muted:    #6B6B6B;
+      --rule:     #E8E3DC;
+      --bg:       #FFFFFF;
+      --bg-soft:  #FAF8F5;
+      --highlight:#FBF1E2;
+      --pos:      #2c7a3f;
+      --neg:      #b53c2a;
+      --mono:     'JetBrains Mono', 'Courier New', monospace;
+      --sans:     'Inter', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    html { font-size: 16px; }
+    body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    @page { size: letter; margin: 0; }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    /* ── COVER ── */
+    .cover { width: 100%; min-height: 100vh; background: var(--dark); display: flex; flex-direction: column; position: relative; overflow: hidden; page-break-after: always; }
+    .cover-flame-bar { height: 6px; background: linear-gradient(90deg, var(--copper) 0%, var(--copper-lt) 100%); }
+    .cover-inner { flex: 1; display: flex; flex-direction: column; padding: 60px 72px; position: relative; z-index: 2; }
+    .cover::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 110% 0%, rgba(200,117,51,0.2) 0%, transparent 60%), radial-gradient(ellipse at -10% 100%, rgba(200,117,51,0.1) 0%, transparent 50%); z-index: 1; }
+    .cover-logo { font-size: 13px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .cover-logo span { color: rgba(255,255,255,0.45); font-weight: 400; }
+    .cover-content { margin-top: auto; margin-bottom: auto; padding: 60px 0 40px; max-width: 760px; }
+    .cover-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 24px; }
+    .cover-eyebrow { font-size: 13px; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+    .cover-title { font-family: var(--mono); font-size: 50px; font-weight: normal; line-height: 1.08; color: #fff; margin-bottom: 20px; }
+    .cover-title em { font-style: italic; color: var(--copper-lt); }
+    .cover-subtitle { font-size: 18px; color: rgba(255,255,255,0.55); line-height: 1.55; margin-bottom: 48px; max-width: 620px; }
+    .cover-divider { width: 48px; height: 3px; background: var(--copper); border-radius: 2px; margin-bottom: 36px; }
+    .cover-meta { font-size: 13px; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; }
+    .cover-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; margin-top: auto; }
+    .cover-footer div { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+    .cover-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 44px; max-width: 620px; }
+    .cover-stat-num { font-family: var(--mono); font-size: 30px; color: var(--copper-lt); letter-spacing: -0.01em; line-height: 1; margin-bottom: 8px; }
+    .cover-stat-label { font-size: 11px; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; line-height: 1.4; }
+
+    /* ── BODY ── */
+    .doc { max-width: 880px; margin: 0 auto; padding: 72px 72px 80px; }
+    .running-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--rule); margin-bottom: 52px; }
+    .running-logo { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .running-title { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+
+    h1 { font-family: var(--mono); font-size: 32px; font-weight: normal; line-height: 1.2; color: var(--dark); margin-bottom: 8px; }
+    .doc-subtitle { font-size: 16px; color: var(--muted); margin-bottom: 40px; line-height: 1.5; }
+
+    h2 { font-family: var(--mono); font-size: 24px; font-weight: normal; color: var(--dark); margin-top: 56px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--copper); display: inline-block; }
+    h3 { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--copper); margin-top: 32px; margin-bottom: 10px; }
+    h4 { font-family: var(--mono); font-size: 16px; color: var(--dark); margin-top: 24px; margin-bottom: 10px; font-weight: normal; }
+
+    p { margin-bottom: 16px; font-size: 15.5px; color: #2c2c3e; }
+    em { font-style: italic; }
+    strong { font-weight: 700; color: var(--dark); }
+    code { font-family: var(--mono); font-size: 13px; background: var(--bg-soft); padding: 1px 6px; border-radius: 3px; color: var(--dark); }
+
+    .pull-quote { border-left: 4px solid var(--copper); background: var(--bg-soft); padding: 20px 28px; margin: 36px 0; border-radius: 0 6px 6px 0; }
+    .pull-quote p { font-family: var(--mono); font-size: 18px; line-height: 1.5; color: var(--dark); font-style: italic; margin: 0; }
+
+    .callout { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 8px; padding: 24px 28px; margin: 36px 0; }
+    .callout-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 10px; }
+    .callout p { font-size: 14.5px; margin: 0; color: #3D2A0F; line-height: 1.6; }
+    .callout.warn { background: #fdf0eb; border-color: #d99780; }
+    .callout.warn .callout-label { color: var(--neg); }
+    .callout.warn p { color: #6a2a18; }
+
+    /* compare table */
+    .compare-table { width: 100%; border-collapse: collapse; margin: 28px 0 36px; font-size: 13.5px; }
+    .compare-table th { background: var(--dark); color: #fff; padding: 12px 14px; text-align: left; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
+    .compare-table th:first-child { border-radius: 6px 0 0 0; }
+    .compare-table th:last-child { border-radius: 0 6px 0 0; }
+    .compare-table th.num, .compare-table td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: 12.5px; }
+    .compare-table td { padding: 11px 14px; border-bottom: 1px solid var(--rule); color: #2c2c3e; vertical-align: top; }
+    .compare-table tr:nth-child(even) td { background: var(--bg-soft); }
+    .compare-table tr.row-highlight td { background: var(--highlight); font-weight: 600; color: var(--dark); }
+    .compare-table tr.row-highlight td:first-child { border-left: 3px solid var(--copper); }
+    .compare-table tr.row-warn td { background: #fdf0eb; color: #6a2a18; }
+    .compare-table tr.row-warn td:first-child { border-left: 3px solid var(--neg); }
+    .pos-cell { color: var(--pos); font-weight: 700; }
+    .neg-cell { color: var(--neg); font-weight: 700; }
+    .compare-table td.mono { font-family: var(--mono); font-size: 12.5px; }
+    .table-note { font-size: 13px; color: var(--muted); margin: -16px 0 32px; border-left: 3px solid var(--copper); padding-left: 14px; font-style: italic; }
+
+    /* finding cards */
+    .finding-card { border: 1px solid var(--rule); border-left: 4px solid var(--copper); border-radius: 6px; padding: 22px 28px; margin: 18px 0; background: #fff; }
+    .finding-num { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; color: var(--copper); margin-bottom: 6px; }
+    .finding-title { font-family: var(--mono); font-size: 17px; color: var(--dark); margin-bottom: 10px; line-height: 1.35; }
+    .finding-body { font-size: 14.5px; color: #2c2c3e; line-height: 1.65; margin: 0; }
+    .finding-body strong { color: var(--dark); }
+
+    /* profile/stack cards */
+    .profile-card { border: 1px solid var(--rule); border-left: 4px solid var(--copper); border-radius: 6px; padding: 24px 28px; margin: 18px 0; background: #fff; }
+    .profile-num { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; color: var(--copper); margin-bottom: 6px; }
+    .profile-title { font-family: var(--mono); font-size: 18px; color: var(--dark); margin-bottom: 6px; line-height: 1.35; }
+    .profile-examples { font-size: 13px; color: var(--muted); font-style: italic; margin-bottom: 16px; }
+    .profile-grid { display: grid; grid-template-columns: 120px 1fr; gap: 8px 18px; font-size: 14px; align-items: start; }
+    .profile-grid dt { font-weight: 700; color: var(--copper); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; padding-top: 3px; }
+    .profile-grid dd { color: #2c2c3e; line-height: 1.55; margin: 0; }
+    .profile-card.warn { border-left-color: var(--neg); }
+    .profile-card.warn .profile-num { color: var(--neg); }
+
+    /* dialogue block */
+    .dialogue-block {
+      background: var(--bg-soft); border: 1px solid var(--rule);
+      border-radius: 8px; padding: 24px 28px; margin: 24px 0;
+    }
+    .dialogue-setup { font-size: 14px; color: var(--ink); margin-bottom: 16px; font-style: italic; }
+    .dialogue-options { display: flex; flex-direction: column; gap: 10px; margin: 14px 0; }
+    .dialogue-opt {
+      padding: 12px 16px; border-radius: 6px;
+      background: #fff; border: 1px solid var(--rule);
+      font-size: 14px; color: var(--ink);
+    }
+    .dialogue-opt .opt-label { font-family: var(--mono); font-weight: 700; color: var(--copper); margin-right: 8px; }
+    .dialogue-opt .opt-tag { display: inline-block; font-size: 11px; color: var(--muted); margin-left: 10px; font-style: italic; }
+    .dialogue-opt.correct { border-color: var(--pos); background: rgba(60, 170, 90, 0.06); }
+    .dialogue-opt.correct .opt-label { color: var(--pos); }
+    .dialogue-opt.toxic { border-color: var(--neg); background: rgba(220, 90, 70, 0.06); }
+    .dialogue-opt.toxic .opt-label { color: var(--neg); }
+    .dialogue-truth { font-family: var(--mono); font-size: 13px; color: var(--copper); margin-top: 14px; font-weight: 600; }
+
+    /* verdict */
+    .verdict { border: 2px solid var(--copper); border-radius: 8px; padding: 24px 28px; margin: 36px 0; text-align: center; }
+    .verdict p { font-size: 17px; font-weight: 700; color: var(--copper); margin: 0; line-height: 1.5; }
+
+    /* CTA */
+    .cta-section { background: var(--dark); border-radius: 12px; padding: 48px 52px; margin-top: 52px; position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #C87533, #D9924E); }
+    .cta-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 16px; }
+    .cta-title { font-family: var(--mono); font-size: 28px; font-weight: normal; color: #fff; line-height: 1.25; margin-bottom: 20px; }
+    .cta-body { font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.65; margin-bottom: 32px; }
+    .cta-services { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+    .cta-service { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 16px 18px; }
+    .cta-service-name { font-size: 12px; font-weight: 700; color: var(--copper-lt); margin-bottom: 6px; letter-spacing: 0.04em; }
+    .cta-service-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; margin: 0; }
+    .cta-contact { display: flex; align-items: center; gap: 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px; }
+    .cta-contact-text { font-size: 13.5px; color: rgba(255,255,255,0.45); flex: 1; }
+    .cta-contact-link { font-size: 14px; font-weight: 700; color: var(--copper-lt); text-decoration: none; letter-spacing: 0.02em; white-space: nowrap; }
+
+    .doc-footer { margin-top: 52px; padding-top: 20px; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; }
+    .doc-footer div { font-size: 11px; color: var(--muted); }
+
+    .print-hint { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 6px; padding: 12px 20px; font-size: 13px; color: #92400e; text-align: center; margin: 24px auto; max-width: 880px; }
+    @media print { .print-hint { display: none; } }
+
+    @media (max-width: 720px) {
+      .cover-title { font-size: 36px; }
+      .cover-inner, .doc { padding: 40px 28px; }
+      .cover-stats, .cta-services { grid-template-columns: 1fr; }
+      .compare-table { font-size: 12px; }
+      .compare-table th, .compare-table td { padding: 8px 8px; }
+      .profile-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-hint no-print">
+    📄 To save as PDF: <strong>File → Print → Save as PDF</strong>—set Margins to "None" for best results
+  </div>
+
+  <!-- ══════════════════ COVER ══════════════════ -->
+  <div class="cover">
+    <div class="cover-flame-bar"></div>
+    <div class="cover-inner">
+      <div class="cover-logo">Fireside Labs <span>/ Research &amp; Advisory</span></div>
+
+      <div class="cover-content">
+        <div class="cover-label">Model Selection · White Paper</div>
+        <div class="cover-eyebrow">Empathy-Adjacent Production · 8 Small Models · 60 Scenarios</div>
+
+        <h1 class="cover-title">
+          Picking the Right<br/>
+          Small Model for<br/>
+          <em>Empathy-Adjacent</em> Production
+        </h1>
+
+        <p class="cover-subtitle">
+          Why standard benchmarks lead to wrong deployment choices,
+          and what to use instead.
+        </p>
+
+        <div class="cover-stats">
+          <div>
+            <div class="cover-stat-num">2.3×</div>
+            <div class="cover-stat-label">Stability gap across<br/>14B+ models on identical tasks</div>
+          </div>
+          <div>
+            <div class="cover-stat-num">8/8</div>
+            <div class="cover-stat-label">Tested models flunked<br/>conditional non-apologies</div>
+          </div>
+          <div>
+            <div class="cover-stat-num">67%</div>
+            <div class="cover-stat-label">Mistral-7B-v0.3<br/>format-adherence rate</div>
+          </div>
+        </div>
+
+        <div style="margin-top:48px;"></div>
+        <div class="cover-divider"></div>
+        <p class="cover-meta">For product teams choosing a small model for customer-facing AI</p>
+      </div>
+
+      <div class="cover-footer">
+        <div>firesidelabs.ai &nbsp;·&nbsp; j.nguyen@firesidelabs.ai</div>
+        <div>© 2026 Fireside Labs. All rights reserved.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ BODY ══════════════════ -->
+  <div class="doc">
+    <div class="running-header">
+      <div class="running-logo">Fireside Labs</div>
+      <div class="running-title">Picking the Right Small Model for Empathy-Adjacent Production</div>
+    </div>
+
+    <h1>Picking the Right Small Model for Empathy-Adjacent Production</h1>
+    <p class="doc-subtitle">Why standard benchmarks lead to wrong deployment choices, and what to use instead</p>
+
+    <p>
+      If you're deploying a small language model in any product where customers expect to feel
+      <em>understood</em>—sales call analysis, support routing, intent classification,
+      conversational coaching, complaint triage—the standard benchmarks (MMLU, HumanEval, MATH,
+      long-context recall) will lead you to the wrong model. They measure tasks where there is one
+      correct answer. They do not measure whether the model's behavior survives the reformulations
+      real customers throw at production systems, or whether the model parrots dramatic-canonical
+      responses absorbed from entertainment training data when canon is wrong.
+    </p>
+
+    <p>
+      We tested eight small open-weights models (Qwen3.6-35B, Qwen3.5-35B, Qwen2.5-14B,
+      Gemma-4-26B, Gemma-4-E4B, Llama-3.1-8B, Mistral-7B-Instruct-v0.3, Phi-3.5-mini-3.8B) on a
+      ranked-choice relationship-roleplay benchmark designed to surface two failure modes invisible
+      on standard evals: <strong>decision instability under prompt reformulation</strong> and
+      <strong>cultural canon contamination</strong>.
+    </p>
+
+    <div class="pull-quote">
+      <p>
+        Top-1 accuracy converges in the 95–97% range across all 14B+ models. If you pick by
+        accuracy alone, the modern small models look the same. They aren't.
+      </p>
+    </div>
+
+    <h3>Four findings that change the deployment decision</h3>
+
+    <div class="finding-card">
+      <div class="finding-num">Finding 01</div>
+      <div class="finding-title">Top-1 accuracy collapses as a useful signal above 14B</div>
+      <p class="finding-body">
+        Top-1 accuracy converges in the 95–97% range across all 14B+ models. If you pick by
+        accuracy alone, the modern small models look the same. This is misleading—they differ
+        substantially on the metrics that drive production reliability.
+      </p>
+    </div>
+
+    <div class="finding-card">
+      <div class="finding-num">Finding 02</div>
+      <div class="finding-title">Decision stability varies by ~2× across the field</div>
+      <p class="finding-body">
+        Whether the model picks the same answer when options are reordered—identical content,
+        identical scenarios, only the option labels reshuffled—ranges from 56.7% (Gemma-4-26B) to
+        25% (Llama-3.1-8B). <strong>This gap predicts how reliably your production system will
+        treat semantically-identical customer inputs.</strong>
+      </p>
+    </div>
+
+    <div class="finding-card">
+      <div class="finding-num">Finding 03</div>
+      <div class="finding-title">The Gemma family resists cultural canon contamination at every size</div>
+      <p class="finding-body">
+        On scenarios where the canonical sitcom answer is wrong, Gemma-4-26B scored +0.944,
+        Gemma-4-E4B (~4B effective parameters) scored +0.667, while Llama-3.1-8B scored +0.417.
+        Models trained heavily on Western internet text and entertainment carry latent
+        cliché-following behaviors that surface on out-of-distribution inputs. Gemma's training
+        mix appears to mitigate this.
+      </p>
+    </div>
+
+    <div class="finding-card">
+      <div class="finding-num">Finding 04</div>
+      <div class="finding-title">Format adherence varies from 100% to 67%</div>
+      <p class="finding-body">
+        Mistral-7B-Instruct-v0.3 fails to follow strict output formats one out of three times.
+        Phi-3.5-mini fails 12% of the time with a specific repeated-letter pattern. For any
+        deployment that depends on structured model output (function calls, JSON, classification
+        labels), <strong>format adherence is itself a deployment-gating metric</strong> and the
+        spread is enormous.
+      </p>
+    </div>
+
+    <p>
+      <strong>The business implication:</strong> for empathy-adjacent products, picking by
+      leaderboard accuracy is making a deployment-critical decision on irrelevant data. We propose
+      two alternative metrics—<strong>stability</strong> and <strong>cultural inversion
+      resistance</strong>—that take 10 minutes to measure on a single GPU and meaningfully change
+      which model a deployer should pick.
+    </p>
+
+    <!-- SECTION 1 -->
+    <h2>Why This Matters for Your Business</h2>
+
+    <p>
+      <strong>The problem you have:</strong> You're choosing a small model for a product that
+      involves understanding people. Maybe it's grading sales calls. Maybe it's a customer-support
+      assistant that needs to escalate the genuinely upset customers and not the merely-confused
+      ones. Maybe it's an intent-routing layer at the front of a contact center.
+    </p>
+
+    <p>
+      <strong>The decision you're making:</strong> Which open-weights small model do we deploy?
+      The leaderboards say one thing. Our gut says another. A wrong choice means weeks of
+      customer-facing degradation we won't see until churn metrics tell us, and possibly a
+      brand-damaging incident if the model gives an emotionally tone-deaf response to a high-stakes
+      interaction.
+    </p>
+
+    <p>
+      <strong>What the standard benchmarks tell you:</strong> Qwen3.6-35B is the strongest small
+      model on coding, math, and long-context recall. Pick it.
+    </p>
+
+    <p>
+      <strong>What you should ask before deploying it:</strong>
+    </p>
+
+    <ul style="margin-bottom: 16px; padding-left: 20px;">
+      <li style="margin-bottom: 8px; font-size: 15.5px;">Will the same customer intent, phrased twenty different ways across twenty different conversations, always produce the same model behavior? <em>The stability question. Answer for Q3.6: about 45% of the time. For Llama-3.1-8B: 25%.</em></li>
+      <li style="margin-bottom: 8px; font-size: 15.5px;">Will the model recognize when the situation in front of it doesn't match the dramatic-canonical pattern it absorbed during training? <em>The contamination question. Llama-8B fails this badly. Both Gemmas pass it.</em></li>
+      <li style="margin-bottom: 8px; font-size: 15.5px;">When the model is asked for an emotionally-aware response, does it pick the response that's <em>technically</em> helpful or the one that's <em>actually</em> helpful? <em>The subtext question. None of the small models we tested pass it cleanly.</em></li>
+    </ul>
+
+    <p>
+      The answers to those three questions matter more than HumanEval pass-rate for any product
+      where the customer must feel heard.
+    </p>
+
+    <!-- SECTION 2 -->
+    <h2>The Cost of Picking Wrong</h2>
+
+    <p>
+      Consider a hypothetical mid-market deployment: a SaaS product analyzing 100,000 sales calls
+      per month, each call producing one model-generated summary that a sales manager reviews.
+    </p>
+
+    <h3>If you pick by accuracy alone (deploy Qwen3.6-35B)</h3>
+    <ul style="margin-bottom: 16px; padding-left: 20px;">
+      <li style="margin-bottom: 6px; font-size: 15.5px;">The model produces summaries that score 96.7% accuracy on top-1 choice—"did the model pick the right key moment?"</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;">But the model's <em>ranking</em> of secondary moments is unstable across paraphrases. When the same call is summarized at slightly different times or with slightly different prompt framings, the secondary callouts shift.</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;">Sales managers see model behavior they describe as "inconsistent"—they re-run the same call and get different results.</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;">Trust degrades. The model gets shelved.</li>
+    </ul>
+
+    <h3>If you pick by stability (deploy Gemma-4-26B)</h3>
+    <ul style="margin-bottom: 16px; padding-left: 20px;">
+      <li style="margin-bottom: 6px; font-size: 15.5px;">Top-1 accuracy is statistically tied with Q3.6 (96.1% vs 96.7%).</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;">Stability is meaningfully higher (56.7% vs 45.0%).</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;">Sales managers see consistent behavior across paraphrases. Trust builds. Adoption sticks.</li>
+    </ul>
+
+    <div class="callout">
+      <div class="callout-label">The Numbers a Leaderboard Won't Show You</div>
+      <p>
+        The accuracy gap is 0.6 points. The stability gap is 11.7 points. Standard benchmarks would
+        show only the first number. For a contact-center deployment routing customer intent: an
+        unstable model will route the same complaint to different teams based on phrasing
+        variation. Operations costs go up; customer satisfaction goes down. Stability matters in
+        dollars.
+      </p>
+    </div>
+
+    <!-- SECTION 3 -->
+    <h2>What We Built</h2>
+
+    <p>
+      A 60-scenario ranked-choice benchmark (<code>empathy_bench</code>) for relationship
+      roleplay. Each scenario describes a 3–5 sentence interaction between you and a romantic
+      partner. Four candidate responses are provided. The model is asked to rank them best-to-worst.
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr><th>Source</th><th class="num">Count</th><th>What it tests</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Original</td><td class="num">18</td><td>Authored situations (Gottman bids, attachment dynamics)</td></tr>
+        <tr><td>Reddit-style</td><td class="num">25</td><td>Anonymized r/relationships dynamics</td></tr>
+        <tr><td>Sitcom-paraphrased</td><td class="num">13</td><td>Friends/Big Bang/HIMYM dynamics with names changed; canonical answers often dysfunctional</td></tr>
+        <tr><td>Sitcom-inverted</td><td class="num">4</td><td>Famous sitcom scenes with the dynamic flipped, so the canonical answer is wrong</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      The four response options for each scenario are designed so that each fails differently when
+      wrong: one reads the actual subtext (correct), one is technically helpful but emotionally
+      tone-deaf, one addresses surface but misses the underlying ask, and one is dismissive,
+      suppressive, or overcontrolling. We rank the four options ourselves; that ranking serves as
+      ground truth.
+    </p>
+
+    <h3>The position-bias innovation</h3>
+    <p>
+      For each scenario, we run the model three times with three different option orderings
+      (<code>ABCD</code>, <code>DCBA</code>, <code>BDAC</code>) and remap answers back to the
+      original options before scoring. A model that picks by content gives the same content-ranking
+      under all three orderings. A model that anchors on position labels gives different rankings
+      each time. The fraction of scenarios where all three orderings produce the same final ranking
+      is the <strong>stability metric</strong>.
+    </p>
+
+    <h3>The cultural-inversion innovation</h3>
+    <p>
+      The <code>sitcom_inverted</code> subset takes scenes the models almost certainly saw many
+      times in training (recaps, fan analyses, character studies of Friends, Big Bang Theory, How I
+      Met Your Mother) and explicitly flips the dynamic so the canonical answer is wrong. A model
+      that absorbs canon will rank the canonical answer too high; a model that adapts to the actual
+      prompt will not. <strong>This is a contamination probe that doesn't require access to
+      training data.</strong>
+    </p>
+
+    <!-- SECTION 4: RESULTS -->
+    <h2>What We Found</h2>
+
+    <h3>Headline rankings</h3>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th class="num">Params</th>
+          <th>Architecture</th>
+          <th class="num">Top-1</th>
+          <th class="num">Stability</th>
+          <th class="num">Cultural inv. (τ)</th>
+          <th class="num">Parse rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="row-highlight"><td><strong>Gemma-4-26B</strong></td><td class="num">26B sparse</td><td>MoE / SWA</td><td class="num">96.1%</td><td class="num pos-cell">56.7%</td><td class="num pos-cell">+0.944</td><td class="num">100%</td></tr>
+        <tr><td>Qwen3.5-35B</td><td class="num">35B (3B act.)</td><td>MoE / DeltaNet</td><td class="num">96.7%</td><td class="num">48.3%</td><td class="num">+0.750</td><td class="num">100%</td></tr>
+        <tr><td>Qwen3.6-35B</td><td class="num">35B (3B act.)</td><td>MoE / DeltaNet</td><td class="num">96.7%</td><td class="num">45.0%</td><td class="num">+0.833</td><td class="num">100%</td></tr>
+        <tr><td>Gemma-4-E4B</td><td class="num">~4B eff.</td><td>MatFormer</td><td class="num">95.0%</td><td class="num">40.0%</td><td class="num">+0.667</td><td class="num">100%</td></tr>
+        <tr><td>Phi-3.5-mini</td><td class="num">3.8B</td><td>dense</td><td class="num">92.8%</td><td class="num">38.3%</td><td class="num">+0.667</td><td class="num">88%</td></tr>
+        <tr><td>Qwen2.5-14B</td><td class="num">14B</td><td>dense</td><td class="num">95.0%</td><td class="num">31.7%</td><td class="num">+0.611</td><td class="num">96%</td></tr>
+        <tr class="row-warn"><td>Mistral-7B-v0.3</td><td class="num">7B</td><td>dense</td><td class="num">84.6%</td><td class="num">32.1%</td><td class="num">+0.500</td><td class="num neg-cell">67%</td></tr>
+        <tr><td>Llama-3.1-8B</td><td class="num">8B</td><td>dense</td><td class="num">91.7%</td><td class="num neg-cell">25.0%</td><td class="num neg-cell">+0.417</td><td class="num">99%</td></tr>
+      </tbody>
+    </table>
+
+    <p class="table-note">
+      Random baselines: Top-1 25%, Stability 4.2%, τ 0.000. Bootstrap 95% CIs (B=10000 resamples)
+      place Q3.6, Q3.5, and Gemma-4-26B in a statistical tie on top-1 accuracy and τ. The
+      35B-class vs 8B-class stability gap is significant; within-class effects need n=120+ to
+      confirm.
+    </p>
+
+    <h3>Three things that aren't on any leaderboard but should be</h3>
+
+    <h4>(a) Top-1 accuracy collapses as a useful metric above ~14B parameters</h4>
+    <p>
+      Five of the seven models cluster in the 95–97% range. If you ranked by accuracy alone, you'd
+      treat them as equivalent and pick by other criteria (license, VRAM, latency). You'd miss the
+      stability gap entirely.
+    </p>
+
+    <h4>(b) Stability is the production-relevant metric</h4>
+    <p>
+      The same customer intent, phrased differently, must produce the same model behavior.
+      Stability measures that property directly. Gemma-4-26B's 56.7% beats Llama-3.1-8B's 25.0% by
+      a factor of more than 2×. <em>In production, this is the difference between a system that
+      ships and a system that gets shelved for "unpredictable behavior."</em>
+    </p>
+
+    <h4>(c) Cultural canon contamination is real and asymmetric across model families</h4>
+    <p>
+      Llama-3.1-8B fails the inversion test (+0.417)—it ranks the canonical-but-wrong sitcom
+      answer too high. Both Gemmas pass at every size we tested. The gap reflects training-data
+      composition, not training-data size: even Gemma-E4B at ~4B effective parameters resists canon
+      better than Llama-3.1-8B at 8B.
+    </p>
+
+    <!-- SECTION 5: APOLOGY -->
+    <h2>What Every Model Flunks: Conditional Non-Apologies</h2>
+
+    <p>
+      One scenario in the benchmark surfaced a universal failure across all eight models we tested.
+      The setup: a partner says "I'd really like an apology for what you said yesterday." You can
+      see it hurt them but you don't fully agree. The four options:
+    </p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-setup">Partner: "I'd really like an apology for what you said yesterday." You don't fully agree with the framing, but you can see it hurt.</div>
+      <div class="dialogue-options">
+        <div class="dialogue-opt correct">
+          <span class="opt-label">A</span>"I'm sorry I hurt you. I didn't see it that way at the time, but I see now what I said landed badly."
+          <span class="opt-tag">genuine apology for impact</span>
+        </div>
+        <div class="dialogue-opt toxic">
+          <span class="opt-label">B</span>"I'm sorry IF I hurt you."
+          <span class="opt-tag">conditional non-apology—most corrosive</span>
+        </div>
+        <div class="dialogue-opt">
+          <span class="opt-label">C</span>"Fine. Sorry."
+          <span class="opt-tag">sarcastic compliance</span>
+        </div>
+        <div class="dialogue-opt">
+          <span class="opt-label">D</span>"I don't think I did anything wrong."
+          <span class="opt-tag">honest disagreement</span>
+        </div>
+      </div>
+      <div class="dialogue-truth">Truth: A &gt; D &gt; C &gt; B. The conditional "if" makes B worse than honest disagreement.</div>
+    </div>
+
+    <p>
+      <strong>Every single model we tested</strong>—Q3.6, Q3.5, Q2.5, Gemma-26B, Gemma-E4B,
+      Llama-8B, Mistral-7B, Phi-3.5—<strong>ranked B at position 2</strong>. They all see "I'm
+      sorry" in the words and rank it high.
+    </p>
+
+    <div class="callout warn">
+      <div class="callout-label">Release-Blocking for Empathy AI</div>
+      <p>
+        Small models do not currently recognize the toxicity of conditional apologies. If you ship
+        a customer-facing product with these models on the assumption they understand subtext, you
+        will eventually generate a corrosive non-apology to a customer at exactly the wrong moment.
+      </p>
+    </div>
+
+    <h3>What every model surprises on: body image</h3>
+    <p>
+      A separate scenario produced a counterintuitive size effect. The setup: partner asks "I feel
+      like I've gained weight, does this look bad?" with four options including B (the right
+      vulnerability-check answer) and D ("Honey, you definitely have not gained weight"—the
+      patronizing lie).
+    </p>
+
+    <p>
+      The 35B-class models (Q3.6, Q3.5, Gemma-26B) all rank D at position 2—they over-credit the
+      saccharine reassurance. The smaller models (Llama-8B, Phi-3.5) frequently rank D at position
+      4 where it belongs.
+    </p>
+
+    <p>
+      This contradicts the "bigger is more empathetic" assumption. Smaller models seem to evaluate
+      response tone more directly, while bigger models try to reason about which framing the
+      partner "really wants"—and over-rotate on the comforting answer.
+    </p>
+
+    <!-- SECTION 6: PROFILES -->
+    <h2>Deployment Recommendations by Customer Profile</h2>
+
+    <p>
+      The right model depends on what your product does. Here's how to map our findings to
+      deployment decisions.
+    </p>
+
+    <div class="profile-card">
+      <div class="profile-num">Profile A</div>
+      <div class="profile-title">Customer-facing chat / agent loop / routing</div>
+      <p class="profile-examples">Chatbot, intent router, conversational support agent, multi-turn coaching</p>
+      <dl class="profile-grid">
+        <dt>Pick</dt><dd><strong>Gemma-4-26B</strong>. Stability is the dominant constraint—the same customer intent must produce the same routing decision regardless of phrasing. Gemma's stability lead (56.7% vs 45–48% for the Qwens) and its cultural-inversion resistance (+0.944) make it the safer choice. The 1-point top-1 deficit vs Qwen3.6 is in the noise.</dd>
+        <dt>Avoid</dt><dd>Llama-3.1-8B and Qwen2.5-14B in this role. Both have stability below 32%, meaning more than two-thirds of the time, paraphrased inputs will produce divergent behavior.</dd>
+      </dl>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-num">Profile B</div>
+      <div class="profile-title">One-shot extraction with fixed prompts</div>
+      <p class="profile-examples">Batch-summarize a known fixed input format, extract structured data from a single template</p>
+      <dl class="profile-grid">
+        <dt>Pick</dt><dd><strong>Qwen3.6-35B</strong>. Slight edge on subtext-reading on canon-but-wrong scenarios (sitcom-paraphrased: +0.786 vs Gemma's +0.803—they're tied here, actually) and matches Gemma on top-1 accuracy. Stability matters less because the prompt is fixed.</dd>
+      </dl>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-num">Profile C</div>
+      <div class="profile-title">Edge / on-device deployment</div>
+      <p class="profile-examples">Model-on-laptop, mobile inference, CPU-only, low-budget GPU</p>
+      <dl class="profile-grid">
+        <dt>Pick</dt><dd><strong>Gemma-4-E4B</strong>. At ~4B effective parameters it matches Phi-3.5-mini on accuracy and beats it on stability <em>and</em> cultural inversion. Compared to Llama-3.1-8B, Gemma-E4B beats it on every metric while being smaller. The Gemma family's stability and inversion advantages survive the size reduction.</dd>
+      </dl>
+    </div>
+
+    <div class="profile-card warn">
+      <div class="profile-num">Profile C (cont.)</div>
+      <div class="profile-title">Models to avoid for production structured-output use cases</div>
+      <p class="profile-examples">Any deployment relying on machine-parseable model output</p>
+      <dl class="profile-grid">
+        <dt>Mistral-7B-v0.3</dt><dd>67% parse rate—one in three responses fails to produce a valid ranking. Non-starter for production. Also lowest top-1 accuracy in the field at 84.6%—meaningfully below the next-worst Llama-3.1-8B at 91.7%.</dd>
+        <dt>Phi-3.5-mini</dt><dd>12% of responses have format-adherence failures (repeated letters in the ranking output: e.g. <code>RANKING: B &gt; B &gt; A &gt; D</code>). For unstructured response tasks, more usable.</dd>
+      </dl>
+    </div>
+
+    <div class="profile-card warn">
+      <div class="profile-num">Profile D</div>
+      <div class="profile-title">Empathy-AI / coaching / therapy-adjacent claims</div>
+      <p class="profile-examples">Customer-emotion analysis, sales-call coaching, "AI therapist," conversation summarization for HR</p>
+      <dl class="profile-grid">
+        <dt>Pick</dt><dd><strong>None of the eight tested models is ready off-the-shelf.</strong> The conditional-apology blind spot recurs across every model and represents an unacceptable failure mode for any product positioning itself as understanding human emotion.</dd>
+        <dt>Options</dt><dd>(1) Don't make that positioning claim. (2) Build a guardrail layer that catches conditional/non-apology patterns before they reach the customer. (3) Wait for next-generation small models that pass this test.</dd>
+      </dl>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-num">Profile E</div>
+      <div class="profile-title">Customers who insist on a Western-trained model</div>
+      <p class="profile-examples">Compliance, vendor familiarity, or reputational reasons</p>
+      <dl class="profile-grid">
+        <dt>Pick</dt><dd>Use the <strong>Gemma-4 family</strong>, not Llama. Llama-3.1-8B is the most cultural-canon-contaminated model we tested. Gemma-4-26B has the best inversion resistance in the entire field.</dd>
+      </dl>
+    </div>
+
+    <!-- SECTION 7: METHODOLOGY -->
+    <h2>Why This Is a Methodology You Can Sell</h2>
+
+    <p>
+      The benchmark itself takes 10 minutes per model on a single RTX 5090—60 scenarios × 3
+      orderings = 180 inferences, ~3–5 seconds each. The marginal cost of qualifying a new model
+      for production use is approximately $0.30 in compute.
+    </p>
+
+    <p>
+      <strong>The customer pain we solve:</strong> mid-market companies (~$10M–$500M ARR) building
+      customer-facing AI have model-choice anxiety but no internal evaluation team. They read the
+      leaderboards, they pick something, they ship, then they discover the production failure mode
+      at the worst possible time.
+    </p>
+
+    <h3>Why competitors won't replicate this in 6 months</h3>
+    <ul style="margin-bottom: 16px; padding-left: 20px;">
+      <li style="margin-bottom: 6px; font-size: 15.5px;">The position-bias control is cheap but conceptually non-obvious. Most existing eval pipelines run each scenario once and report the result.</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;">The cultural-inversion subset requires content authoring—choosing which canonical scenes to invert, designing distractors that fail differently. This is editorial work, not ML work.</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;">The deployment recommendations require interpreting which metric matters for which customer profile. That interpretation is the consulting layer.</li>
+    </ul>
+
+    <!-- SECTION 8: LIMITATIONS -->
+    <h2>Limitations and Honest Caveats</h2>
+
+    <h3>n=60 scenarios is small</h3>
+    <p>Bootstrap 95% CIs are roughly ±0.06 on the per-model τ and ±13 percentage points on stability. Some pairwise gaps we report are within those bands. The directional findings hold; some specific orderings of models may shift at n=200+.</p>
+
+    <h3>Single-author ground truth</h3>
+    <p>Our rankings reflect one team's judgment of "emotionally healthy." Future work should validate against a panel of licensed therapists or relationship counselors.</p>
+
+    <h3>Three orderings is a minimal stability test</h3>
+    <p>A full study would test all 24 permutations. Our three orderings catch the strong biases.</p>
+
+    <h3>Western therapeutic norms baked into ground truth</h3>
+    <p>Gottman, Brené Brown. For customers in different cultural frames, the benchmark needs cultural-fit recalibration. <em>This is itself a feature: it makes the benchmark a cultural-fit probe.</em></p>
+
+    <h3>Q4_K_M weight quantization</h3>
+    <p>For the powerhouses, F16 for the small models. This conservatively weights against the powerhouses; their numbers would only improve at higher precision.</p>
+
+    <h3>No reasoning-mode tested</h3>
+    <p>All runs are with reasoning disabled. Reasoning may improve subtext reading at the cost of stability. Productive future ablation.</p>
+
+    <!-- SECTION 9: FUTURE -->
+    <h2>Future Work and Invitations</h2>
+
+    <h3>Extend to customer domains</h3>
+    <p>Sales-call scenarios. Support-call scenarios. Internal-coaching scenarios. Each domain needs its own scenario set, but the methodology transfers cleanly.</p>
+
+    <h3>Multi-rater ground truth</h3>
+    <p>Validate the rankings against 5–10 licensed relationship counselors. The places we agree are the most defensible findings; the places we disagree reveal cultural-frame-dependence.</p>
+
+    <h3>Reasoning-mode ablation</h3>
+    <p>Re-run the same benchmark with reasoning enabled where supported. Hypothesis: reasoning shifts the accuracy/stability tradeoff.</p>
+
+    <h3>Frontier-model topline</h3>
+    <p>Run GPT-4o, Claude Sonnet, Gemini Pro on the same benchmark. They almost certainly all pass top-1 at 99%+, but the stability and inversion findings should be revealing.</p>
+
+    <h3>Production correlation</h3>
+    <p>Most importantly: validate that empathy_bench scores correlate with real production outcomes (customer satisfaction, retention, escalation rates). This requires a customer partner willing to run the benchmark and track the deployment.</p>
+
+    <!-- APPENDICES -->
+    <h2>Appendix A: Per-Source Scoring</h2>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th class="num">Original</th>
+          <th class="num">Reddit</th>
+          <th class="num">Sitcom-paraphrased</th>
+          <th class="num">Sitcom-inverted</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Qwen3.6-35B</td><td class="num">+0.772</td><td class="num">+0.760</td><td class="num">+0.786</td><td class="num">+0.833</td></tr>
+        <tr><td>Qwen3.5-35B</td><td class="num">+0.796</td><td class="num">+0.747</td><td class="num">+0.744</td><td class="num">+0.750</td></tr>
+        <tr><td>Qwen2.5-14B</td><td class="num">+0.731</td><td class="num">+0.664</td><td class="num">+0.735</td><td class="num">+0.611</td></tr>
+        <tr class="row-highlight"><td>Gemma-4-26B</td><td class="num">+0.772</td><td class="num">+0.800</td><td class="num">+0.803</td><td class="num pos-cell">+0.944</td></tr>
+        <tr><td>Gemma-4-E4B</td><td class="num">+0.685</td><td class="num">+0.738</td><td class="num">+0.718</td><td class="num">+0.667</td></tr>
+        <tr><td>Llama-3.1-8B</td><td class="num">+0.722</td><td class="num">+0.676</td><td class="num">+0.667</td><td class="num neg-cell">+0.417</td></tr>
+        <tr><td>Mistral-7B-v0.3</td><td class="num">+0.533</td><td class="num">+0.659</td><td class="num">+0.530</td><td class="num">+0.500</td></tr>
+        <tr><td>Phi-3.5-mini</td><td class="num">+0.722</td><td class="num">+0.662</td><td class="num">+0.611</td><td class="num">+0.667</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Appendix B: Related Work</h2>
+
+    <ul style="margin-bottom: 16px; padding-left: 20px;">
+      <li style="margin-bottom: 6px; font-size: 15.5px;"><strong>EQ-Bench</strong> (Boyle, 2024): rubric-judged generative emotional intelligence benchmark. Our work uses ranked-choice MCQ to remove judge-LLM noise.</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;"><strong>SocialIQA</strong> (Sap et al., 2019): social commonsense MCQ. Our work focuses specifically on relationship dynamics and adds position-bias control.</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;"><strong>Position-bias studies in MCQ evaluation</strong> (Zheng et al., 2023; Wang et al., 2023): document that LLM judges and answerers prefer certain option positions. Our 3-ordering protocol is an applied version of that finding.</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;"><strong>MMLU and HumanEval</strong> (the standard small-model leaderboards): measure accuracy on tasks with one correct answer. Our work argues these miss the metrics that matter for empathy-adjacent production deployments.</li>
+    </ul>
+
+    <div class="verdict">
+      <p>
+        For empathy-adjacent products, leaderboard accuracy is the wrong axis. Stability and
+        cultural-inversion resistance take 10 minutes to measure and meaningfully change which
+        model you should pick.
+      </p>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <div class="cta-label">About Fireside Labs</div>
+      <h2 class="cta-title" style="margin-top:0; border:none; display:block; color:#fff; font-size:26px;">
+        We Find the Failure Modes Your Customers Will Feel
+      </h2>
+      <p class="cta-body">
+        Fireside Labs builds production-realistic evaluation harnesses for customer-facing AI:
+        decision stability under prompt reformulation, cultural-canon contamination probes, and
+        domain-specific scenario sets. When you're deploying a small model where customers must
+        feel heard, we run the benchmarks that match what your users actually experience.
+      </p>
+
+      <div class="cta-services">
+        <div class="cta-service">
+          <div class="cta-service-name">Model Selection</div>
+          <p class="cta-service-desc">
+            Pick the right small model for your domain with stability and inversion-resistance metrics.
+          </p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Domain Scenarios</div>
+          <p class="cta-service-desc">
+            Custom scenario sets for sales calls, support tickets, internal coaching, or your vertical.
+          </p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Production Validation</div>
+          <p class="cta-service-desc">
+            Empirical confirmation that your shipped model behaves consistently under real customer inputs.
+          </p>
+        </div>
+      </div>
+
+      <div class="cta-contact">
+        <p class="cta-contact-text">
+          Shipping AI where customers must feel understood? Let's measure how your model actually behaves before they do.
+        </p>
+        <a class="cta-contact-link" href="mailto:j.nguyen@firesidelabs.ai">
+          j.nguyen@firesidelabs.ai →
+        </a>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>Fireside Labs &nbsp;·&nbsp; firesidelabs.ai &nbsp;·&nbsp; © 2026</div>
+      <div>For informational purposes only.</div>
+    </div>
+
+  </div>
+</body>
+</html>

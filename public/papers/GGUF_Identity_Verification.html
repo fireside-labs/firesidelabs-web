@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GGUF Identity Verification—Fireside Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --copper:#C87533; --copper-lt:#D9924E; --dark:#0A0A0A; --ink:#1A1A1A; --muted:#6B6B6B; --rule:#E8E3DC; --bg:#FFFFFF; --bg-soft:#FAF8F5; --mono:'JetBrains Mono','Courier New',monospace; --sans:'Inter','Helvetica Neue',Arial,sans-serif; }
+    html { font-size: 16px; } body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    @page { size: letter; margin: 0; } @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } .no-print { display: none !important; } a { color: inherit; text-decoration: none; } }
+    .cover { width: 100%; min-height: 100vh; background: var(--dark); display: flex; flex-direction: column; position: relative; overflow: hidden; page-break-after: always; }
+    .cover-flame-bar { height: 6px; background: linear-gradient(90deg, var(--copper) 0%, var(--copper-lt) 100%); }
+    .cover-inner { flex: 1; display: flex; flex-direction: column; padding: 60px 72px; position: relative; z-index: 2; }
+    .cover::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 110% 0%, rgba(200,117,51,0.2) 0%, transparent 60%), radial-gradient(ellipse at -10% 100%, rgba(200,117,51,0.1) 0%, transparent 50%); z-index: 1; }
+    .cover-logo { font-size: 13px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); } .cover-logo span { color: rgba(255,255,255,0.45); font-weight: 400; }
+    .cover-content { margin-top: auto; margin-bottom: auto; padding: 60px 0 40px; max-width: 700px; }
+    .cover-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 24px; }
+    .cover-eyebrow { font-size: 13px; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+    .cover-title { font-family: var(--mono); font-size: 58px; font-weight: normal; line-height: 1.08; color: #fff; margin-bottom: 20px; }
+    .cover-title em { font-style: italic; color: var(--copper-lt); }
+    .cover-subtitle { font-size: 18px; color: rgba(255,255,255,0.55); line-height: 1.55; margin-bottom: 48px; max-width: 560px; }
+    .cover-divider { width: 48px; height: 3px; background: var(--copper); border-radius: 2px; margin-bottom: 36px; }
+    .cover-meta { font-size: 13px; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; }
+    .cover-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; margin-top: auto; }
+    .cover-footer div { font-size: 12px; color: rgba(255,255,255,0.3); }
+    .doc { max-width: 760px; margin: 0 auto; padding: 72px 72px 80px; }
+    .running-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--rule); margin-bottom: 52px; }
+    .running-logo { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .running-title { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+    h1 { font-family: var(--mono); font-size: 36px; font-weight: normal; line-height: 1.2; color: var(--dark); margin-bottom: 8px; }
+    .doc-subtitle { font-size: 16px; color: var(--muted); margin-bottom: 40px; line-height: 1.5; }
+    h2 { font-family: var(--mono); font-size: 24px; font-weight: normal; color: var(--dark); margin-top: 56px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--copper); display: inline-block; }
+    h3 { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--copper); margin-top: 32px; margin-bottom: 10px; }
+    p { margin-bottom: 16px; font-size: 15.5px; color: #2c2c3e; }
+    em { font-style: italic; } strong { font-weight: 700; color: var(--dark); }
+    .pull-quote { border-left: 4px solid var(--copper); background: var(--bg-soft); padding: 20px 28px; margin: 36px 0; border-radius: 0 6px 6px 0; }
+    .pull-quote p { font-family: var(--mono); font-size: 18px; line-height: 1.5; color: var(--dark); font-style: italic; margin: 0; }
+    .callout { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 8px; padding: 24px 28px; margin: 36px 0; }
+    .callout-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 10px; }
+    .callout p { font-size: 14.5px; margin: 0; color: #3D2A0F; line-height: 1.6; }
+    .code-box { background: var(--dark); color: #e8e8e8; padding: 16px 20px; border-radius: 6px; margin: 20px 0; font-family: var(--mono); font-size: 13px; overflow-x: auto; }
+    .verdict { border: 2px solid var(--copper); border-radius: 8px; padding: 24px 28px; margin: 36px 0; text-align: center; }
+    .verdict p { font-size: 17px; font-weight: 700; color: var(--copper); margin: 0; line-height: 1.5; }
+    .cta-section { background: var(--dark); border-radius: 12px; padding: 48px 52px; margin-top: 52px; position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #C87533, #D9924E); }
+    .cta-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 16px; }
+    .cta-title { font-family: var(--mono); font-size: 28px; font-weight: normal; color: #fff; line-height: 1.25; margin-bottom: 20px; }
+    .cta-body { font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.65; margin-bottom: 32px; }
+    .cta-services { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+    .cta-service { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 16px 18px; }
+    .cta-service-name { font-size: 12px; font-weight: 700; color: var(--copper-lt); margin-bottom: 6px; letter-spacing: 0.04em; }
+    .cta-service-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; margin: 0; }
+    .cta-contact { display: flex; align-items: center; gap: 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px; }
+    .cta-contact-text { font-size: 13.5px; color: rgba(255,255,255,0.45); flex: 1; }
+    .cta-contact-link { font-size: 14px; font-weight: 700; color: var(--copper-lt); text-decoration: none; letter-spacing: 0.02em; white-space: nowrap; }
+    .doc-footer { margin-top: 52px; padding-top: 20px; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; }
+    .doc-footer div { font-size: 11px; color: var(--muted); }
+    .print-hint { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 6px; padding: 12px 20px; font-size: 13px; color: #92400e; text-align: center; margin: 24px auto; max-width: 760px; }
+    @media print { .print-hint { display: none; } }
+    @media (max-width: 700px) { .cover-title { font-size: 36px; } .cover-inner, .doc { padding: 40px 32px; } .cta-services { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="print-hint no-print">📄 To save as PDF: <strong>File → Print → Save as PDF</strong></div>
+  <div class="cover">
+    <div class="cover-flame-bar"></div>
+    <div class="cover-inner">
+      <div class="cover-logo">Fireside Labs <span>/ Research &amp; Advisory</span></div>
+      <div class="cover-content">
+        <div class="cover-label">Model Distribution &amp; Verification · Engineering Note</div>
+        <h1 class="cover-title">GGUF<br/><em>Identity</em></h1>
+        <p class="cover-subtitle">Why filename-based identity is insufficient, and how to verify quantized models actually contain what they claim.</p>
+        <div class="cover-divider"></div>
+        <p class="cover-meta">For model creators, benchmark builders, and teams distributing open-source models</p>
+      </div>
+      <div class="cover-footer">
+        <div>firesidelabs.ai &nbsp;·&nbsp; j.nguyen@firesidelabs.ai</div>
+        <div>© 2025 Fireside Labs. All rights reserved.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc">
+    <div class="running-header">
+      <div class="running-logo">Fireside Labs</div>
+      <div class="running-title">GGUF Identity Verification</div>
+    </div>
+
+    <h1>GGUF Identity Verification</h1>
+    <p class="doc-subtitle">A Note on Identity Verification in the GGUF Ecosystem</p>
+
+    <p>In the open-source LLM ecosystem, models are distributed as GGUF files (quantized, local-inference-optimized formats). You download a file named <code>experimental-graft-v1.gguf</code> and assume it's a custom variant. Sometimes it's not. Sometimes it's the unmodified base model with a new filename.</p>
+
+    <div class="pull-quote">
+      <p>We benchmarked three models with different names, ran experiments thinking we were testing novel architectures, and published results that were meaningless. They were all the same file.</p>
+    </div>
+
+    <h2>The Discovery</h2>
+
+    <p>We maintained a suite of Llama-3.1-8B variants with custom configurations. Three files existed:</p>
+
+    <p>1. <code>llama-3.1-8b-instruct-q4_k_m.gguf</code> (explicit base model)<br/>
+    2. <code>experimental-graft-v1.gguf</code> (claimed to be a layer-grafted variant)<br/>
+    3. <code>validated-graft-v2.gguf</code> (claimed to be an improved, validated variant)</p>
+
+    <p>We benchmarked all three. Results were puzzling: identical scores on every benchmark, identical per-question latency. Investigation revealed the cause: the surgery script had failed silently. No layers were modified. The filenames were updated. The file contents were not.</p>
+
+    <p>SHA256 verification confirmed: all three hashes were identical. We had benchmarked the same model three times under different names.</p>
+
+    <div class="callout">
+      <div class="callout-label">Why This Happened</div>
+      <p>
+        Most GGUF files are generated automatically via quantization scripts. If the script has a bug,
+        or if the input weights weren't actually modified, you end up with a GGUF that claims to be a
+        variant but is identical to the base. Most creators don't verify this. They assume the script did its job.
+      </p>
+    </div>
+
+    <h2>Why GGUF Identity is Fragile</h2>
+
+    <h3>The Problem</h3>
+    <p>GGUF metadata includes fields like <code>general.name</code>, <code>general.architecture</code>, and <code>general.quantization_version</code>. But it does NOT include:</p>
+
+    <p>• <code>surgery.lineage</code>—what modifications were made<br/>
+    • <code>surgery.base_hash</code>—SHA256 of the original model<br/>
+    • <code>surgery.timestamp</code>—when modifications happened<br/>
+    • <code>surgery.author</code>—source/origin</p>
+
+    <p>Without this information, you can't distinguish a genuinely custom model from a mislabeled base model.</p>
+
+    <h2>Detection Methods</h2>
+
+    <h3>Method 1: Full File SHA256</h3>
+    <p>Definitive but slow. For 100GB+ files, takes minutes.</p>
+
+    <h3>Method 2: Partial Hash</h3>
+    <p>Fast. Compute SHA256 of first 64MB. Catches ~99% of duplicates in seconds.</p>
+
+    <h3>Method 3: Metadata Inspection</h3>
+    <p>Fast but not definitive. Metadata can be forged, and modified models often keep original metadata.</p>
+
+    <div class="callout">
+      <div class="callout-label">Recommended Approach</div>
+      <p>
+        (1) Compare GGUF metadata (fast, catches obvious mismatches).
+        (2) Compare partial SHA256 of first 64MB (catches duplicates in seconds).
+        (3) If suspicious, compare full file SHA256 (definitive, slow).
+      </p>
+    </div>
+
+    <h2>The Broader Ecosystem Problem</h2>
+
+    <p>The open GGUF ecosystem has exploded. Hugging Face, GitHub, Discord servers, personal websites all distribute GGUFs. In a benchmark suite of 100 models, you might have:</p>
+
+    <p>• 10 genuinely unique models<br/>
+    • 30 variants of a few base models<br/>
+    • 60 duplicates or near-duplicates</p>
+
+    <p>Your benchmark results are inflated. You think you've tested 100 models when you've tested 10.</p>
+
+    <h2>Best Practices</h2>
+
+    <h3>For Model Creators</h3>
+    <p><strong>1. Verify Your Model Changed.</strong> Before distributing, compute SHA256. If it matches the base, something went wrong.</p>
+
+    <p><strong>2. Include Metadata.</strong> Mark as modified or not. Include base model SHA256 if modified.</p>
+
+    <p><strong>3. Use Clear Naming.</strong> Name variants to describe the modification. Not <code>experimental-graft-v1</code> (which says nothing about what's inside). Use <code>llama-3.1-8b-qwen3-graft-L18-26</code> (clear: Llama base, Qwen graft at layers 18-26).</p>
+
+    <h3>For Benchmark Builders</h3>
+    <p><strong>1. Hash All Models on Intake.</strong> Compute SHA256 when you download. Store in a manifest.</p>
+
+    <p><strong>2. Audit Existing Suite.</strong> Check for duplicates. You may have far fewer unique models than you think.</p>
+
+    <p><strong>3. Include Hash in Metadata.</strong> Every benchmark result should reference the model's SHA256. If someone else gets a different result with the same filename, they can immediately check: "Do our hashes match?"</p>
+
+    <div class="verdict">
+      <p>
+        The GGUF ecosystem lacks standardized identity verification. Until the spec
+        extends with provenance tracking, teams must hash models on intake,
+        detect duplicates, and store hashes alongside results.
+      </p>
+    </div>
+
+    <h2>Future: Proposed Extension</h2>
+
+    <p>The GGUF spec should include <code>surgery.*</code> metadata fields:</p>
+
+    <div class="code-box">
+surgery.is_modified: true
+surgery.base_model_name: "llama-3.1-8b-instruct"
+surgery.base_hash: "DEDE52D710DFA7B86AE380E7590F34A7..."
+surgery.modifications: [{"type": "graft", "source": "qwen3-14b", "layers": "L18:L26"}]
+surgery.author: "jordan@firesidelabs.ai"
+surgery.timestamp: "2026-04-15T10:23:00Z"
+    </div>
+
+    <p>This enables provenance tracking, lineage audits, and reproducible model modifications.</p>
+
+    <div class="cta-section">
+      <div class="cta-label">About Fireside Labs</div>
+      <h2 class="cta-title" style="margin-top:0; border:none; display:block; color:#fff; font-size:26px;">Building Trust in Model Distribution</h2>
+      <p class="cta-body">Fireside Labs helps organizations build trustworthy model supply chains. From identity verification to provenance tracking to benchmark infrastructure, we ensure every model is what it claims to be.</p>
+      <div class="cta-services">
+        <div class="cta-service">
+          <div class="cta-service-name">Suite Audit</div>
+          <p class="cta-service-desc">Scan your models for duplicates and hash all files.</p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Distribution Strategy</div>
+          <p class="cta-service-desc">Set up hash registries and provenance metadata.</p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Verification Tools</div>
+          <p class="cta-service-desc">Implement identity checking in your pipeline.</p>
+        </div>
+      </div>
+      <div class="cta-contact">
+        <p class="cta-contact-text">Ready to verify your models? Let's talk.</p>
+        <a class="cta-contact-link" href="mailto:j.nguyen@firesidelabs.ai">j.nguyen@firesidelabs.ai →</a>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>Fireside Labs &nbsp;·&nbsp; firesidelabs.ai &nbsp;·&nbsp; © 2025</div>
+      <div>This document is for informational purposes only.</div>
+    </div>
+  </div>
+</body>
+</html>

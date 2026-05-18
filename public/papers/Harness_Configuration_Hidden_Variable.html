@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Harness Configuration Is the Hidden Variable—Fireside Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --copper:   #C87533;
+      --copper-lt:#D9924E;
+      --dark:     #0A0A0A;
+      --ink:      #1A1A1A;
+      --muted:    #6B6B6B;
+      --rule:     #E8E3DC;
+      --bg:       #FFFFFF;
+      --bg-soft:  #FAF8F5;
+      --highlight:#FBF1E2;
+      --pos:      #2c7a3f;
+      --neg:      #b53c2a;
+      --mono:     'JetBrains Mono', 'Courier New', monospace;
+      --sans:     'Inter', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    html { font-size: 16px; }
+    body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    @page { size: letter; margin: 0; }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    /* ── COVER ── */
+    .cover { width: 100%; min-height: 100vh; background: var(--dark); display: flex; flex-direction: column; position: relative; overflow: hidden; page-break-after: always; }
+    .cover-flame-bar { height: 6px; background: linear-gradient(90deg, var(--copper) 0%, var(--copper-lt) 100%); }
+    .cover-inner { flex: 1; display: flex; flex-direction: column; padding: 60px 72px; position: relative; z-index: 2; }
+    .cover::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 110% 0%, rgba(200,117,51,0.2) 0%, transparent 60%), radial-gradient(ellipse at -10% 100%, rgba(200,117,51,0.1) 0%, transparent 50%); z-index: 1; }
+    .cover-logo { font-size: 13px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .cover-logo span { color: rgba(255,255,255,0.45); font-weight: 400; }
+    .cover-content { margin-top: auto; margin-bottom: auto; padding: 60px 0 40px; max-width: 760px; }
+    .cover-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 24px; }
+    .cover-eyebrow { font-size: 13px; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+    .cover-title { font-family: var(--mono); font-size: 50px; font-weight: normal; line-height: 1.08; color: #fff; margin-bottom: 20px; }
+    .cover-title em { font-style: italic; color: var(--copper-lt); }
+    .cover-subtitle { font-size: 18px; color: rgba(255,255,255,0.55); line-height: 1.55; margin-bottom: 48px; max-width: 620px; }
+    .cover-divider { width: 48px; height: 3px; background: var(--copper); border-radius: 2px; margin-bottom: 36px; }
+    .cover-meta { font-size: 13px; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; }
+    .cover-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; margin-top: auto; }
+    .cover-footer div { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+    .cover-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 44px; max-width: 620px; }
+    .cover-stat-num { font-family: var(--mono); font-size: 30px; color: var(--copper-lt); letter-spacing: -0.01em; line-height: 1; margin-bottom: 8px; }
+    .cover-stat-label { font-size: 11px; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; line-height: 1.4; }
+
+    /* ── BODY ── */
+    .doc { max-width: 880px; margin: 0 auto; padding: 72px 72px 80px; }
+    .running-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--rule); margin-bottom: 52px; }
+    .running-logo { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); }
+    .running-title { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+
+    h1 { font-family: var(--mono); font-size: 32px; font-weight: normal; line-height: 1.2; color: var(--dark); margin-bottom: 8px; }
+    .doc-subtitle { font-size: 16px; color: var(--muted); margin-bottom: 40px; line-height: 1.5; }
+
+    h2 { font-family: var(--mono); font-size: 24px; font-weight: normal; color: var(--dark); margin-top: 56px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--copper); display: inline-block; }
+    h3 { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--copper); margin-top: 32px; margin-bottom: 10px; }
+    h4 { font-family: var(--mono); font-size: 16px; color: var(--dark); margin-top: 24px; margin-bottom: 10px; font-weight: normal; }
+
+    p { margin-bottom: 16px; font-size: 15.5px; color: #2c2c3e; }
+    em { font-style: italic; }
+    strong { font-weight: 700; color: var(--dark); }
+    code { font-family: var(--mono); font-size: 13px; background: var(--bg-soft); padding: 1px 6px; border-radius: 3px; color: var(--dark); }
+
+    .pull-quote { border-left: 4px solid var(--copper); background: var(--bg-soft); padding: 20px 28px; margin: 36px 0; border-radius: 0 6px 6px 0; }
+    .pull-quote p { font-family: var(--mono); font-size: 18px; line-height: 1.5; color: var(--dark); font-style: italic; margin: 0; }
+
+    .callout { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 8px; padding: 24px 28px; margin: 36px 0; }
+    .callout-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 10px; }
+    .callout p { font-size: 14.5px; margin: 0; color: #3D2A0F; line-height: 1.6; }
+    .callout.warn { background: #fdf0eb; border-color: #d99780; }
+    .callout.warn .callout-label { color: var(--neg); }
+    .callout.warn p { color: #6a2a18; }
+
+    /* compare table */
+    .compare-table { width: 100%; border-collapse: collapse; margin: 28px 0 36px; font-size: 13.5px; }
+    .compare-table th { background: var(--dark); color: #fff; padding: 12px 14px; text-align: left; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
+    .compare-table th:first-child { border-radius: 6px 0 0 0; }
+    .compare-table th:last-child { border-radius: 0 6px 0 0; }
+    .compare-table th.num, .compare-table td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: 12.5px; }
+    .compare-table td { padding: 11px 14px; border-bottom: 1px solid var(--rule); color: #2c2c3e; vertical-align: top; }
+    .compare-table tr:nth-child(even) td { background: var(--bg-soft); }
+    .compare-table tr.row-highlight td { background: var(--highlight); font-weight: 600; color: var(--dark); }
+    .compare-table tr.row-highlight td:first-child { border-left: 3px solid var(--copper); }
+    .pos-cell { color: var(--pos); font-weight: 700; }
+    .neg-cell { color: var(--neg); font-weight: 700; }
+    .compare-table td.mono { font-family: var(--mono); font-size: 12.5px; }
+    .table-note { font-size: 13px; color: var(--muted); margin: -16px 0 32px; border-left: 3px solid var(--copper); padding-left: 14px; font-style: italic; }
+
+    /* variable impact ranking */
+    .impact-block { margin: 28px 0 36px; }
+    .impact-row {
+      display: grid; grid-template-columns: 1fr 130px 1fr;
+      align-items: center; gap: 18px;
+      padding: 14px 0; border-bottom: 1px solid var(--rule);
+    }
+    .impact-row:last-child { border-bottom: none; }
+    .impact-name { font-size: 15px; color: var(--ink); font-weight: 600; }
+    .impact-bar-container { background: var(--bg-soft); border-radius: 4px; height: 22px; position: relative; overflow: hidden; }
+    .impact-bar { background: linear-gradient(90deg, var(--copper) 0%, var(--copper-lt) 100%); height: 100%; border-radius: 4px; }
+    .impact-bar.muted { background: linear-gradient(90deg, #9b8470 0%, #b59c83 100%); }
+    .impact-value { font-family: var(--mono); font-size: 14px; color: var(--copper); font-weight: 700; text-align: right; }
+
+    /* score progression strip */
+    .progression { margin: 28px 0 36px; }
+    .progression-step {
+      display: grid; grid-template-columns: 180px 1fr 100px;
+      gap: 16px; padding: 12px 16px;
+      border-radius: 6px; margin-bottom: 8px;
+      background: var(--bg-soft); border-left: 4px solid var(--rule);
+      align-items: center;
+    }
+    .progression-step.win { border-left-color: var(--pos); background: rgba(60, 170, 90, 0.04); }
+    .progression-step.lose { border-left-color: var(--neg); background: rgba(220, 90, 70, 0.04); }
+    .progression-config { font-family: var(--mono); font-size: 13px; color: var(--ink); }
+    .progression-desc { font-size: 13px; color: var(--muted); }
+    .progression-score { font-family: var(--mono); font-size: 16px; font-weight: 700; color: var(--copper); text-align: right; }
+    .progression-score.win { color: var(--pos); }
+    .progression-score.lose { color: var(--neg); }
+
+    /* finding cards */
+    .finding-card { border: 1px solid var(--rule); border-left: 4px solid var(--copper); border-radius: 6px; padding: 22px 28px; margin: 18px 0; background: #fff; }
+    .finding-num { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; color: var(--copper); margin-bottom: 6px; }
+    .finding-title { font-family: var(--mono); font-size: 17px; color: var(--dark); margin-bottom: 10px; line-height: 1.35; }
+    .finding-body { font-size: 14.5px; color: #2c2c3e; line-height: 1.65; margin: 0; }
+
+    /* playbook steps */
+    .playbook-block { margin: 28px 0 36px; }
+    .playbook-row {
+      display: grid; grid-template-columns: 56px 1fr; gap: 18px;
+      padding: 16px 0; border-bottom: 1px solid var(--rule); align-items: start;
+    }
+    .playbook-row:last-child { border-bottom: none; }
+    .playbook-num { font-family: var(--mono); font-size: 22px; color: var(--copper); font-weight: 600; line-height: 1; }
+    .playbook-step strong { font-family: var(--mono); font-size: 14px; color: var(--dark); display: block; margin-bottom: 6px; }
+    .playbook-step { font-size: 14.5px; color: #2c2c3e; line-height: 1.65; margin: 0; }
+
+    /* code block */
+    .code-block { background: var(--dark); color: #e8e8e8; padding: 18px 22px; border-radius: 6px; margin: 24px 0; font-family: var(--mono); font-size: 13px; line-height: 1.55; overflow-x: auto; white-space: pre; }
+
+    /* verdict */
+    .verdict { border: 2px solid var(--copper); border-radius: 8px; padding: 24px 28px; margin: 36px 0; text-align: center; }
+    .verdict p { font-size: 17px; font-weight: 700; color: var(--copper); margin: 0; line-height: 1.5; }
+
+    /* CTA */
+    .cta-section { background: var(--dark); border-radius: 12px; padding: 48px 52px; margin-top: 52px; position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #C87533, #D9924E); }
+    .cta-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 16px; }
+    .cta-title { font-family: var(--mono); font-size: 28px; font-weight: normal; color: #fff; line-height: 1.25; margin-bottom: 20px; }
+    .cta-body { font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.65; margin-bottom: 32px; }
+    .cta-services { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+    .cta-service { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 16px 18px; }
+    .cta-service-name { font-size: 12px; font-weight: 700; color: var(--copper-lt); margin-bottom: 6px; letter-spacing: 0.04em; }
+    .cta-service-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; margin: 0; }
+    .cta-contact { display: flex; align-items: center; gap: 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px; }
+    .cta-contact-text { font-size: 13.5px; color: rgba(255,255,255,0.45); flex: 1; }
+    .cta-contact-link { font-size: 14px; font-weight: 700; color: var(--copper-lt); text-decoration: none; letter-spacing: 0.02em; white-space: nowrap; }
+
+    .doc-footer { margin-top: 52px; padding-top: 20px; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; }
+    .doc-footer div { font-size: 11px; color: var(--muted); }
+
+    .print-hint { background: #fdf6ee; border: 1px solid #e8c99a; border-radius: 6px; padding: 12px 20px; font-size: 13px; color: #92400e; text-align: center; margin: 24px auto; max-width: 880px; }
+    @media print { .print-hint { display: none; } }
+
+    @media (max-width: 720px) {
+      .cover-title { font-size: 36px; }
+      .cover-inner, .doc { padding: 40px 28px; }
+      .cover-stats, .cta-services { grid-template-columns: 1fr; }
+      .compare-table { font-size: 12px; }
+      .compare-table th, .compare-table td { padding: 8px 8px; }
+      .impact-row { grid-template-columns: 1fr; gap: 6px; }
+      .progression-step { grid-template-columns: 1fr; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-hint no-print">
+    📄 To save as PDF: <strong>File → Print → Save as PDF</strong>—set Margins to "None" for best results
+  </div>
+
+  <!-- ══════════════════ COVER ══════════════════ -->
+  <div class="cover">
+    <div class="cover-flame-bar"></div>
+    <div class="cover-inner">
+      <div class="cover-logo">Fireside Labs <span>/ Research &amp; Advisory</span></div>
+
+      <div class="cover-content">
+        <div class="cover-label">Benchmark Methodology · White Paper</div>
+        <div class="cover-eyebrow">Verbose Thinking, Permission Prompts, and the Hidden Variable</div>
+
+        <h1 class="cover-title">
+          Harness Configuration<br/>
+          Is the <em>Hidden Variable</em>
+        </h1>
+
+        <p class="cover-subtitle">
+          A 30-hour Qwen3.6 case study and a 6-model permission-prompt sweep
+          show that harness configuration moves benchmark scores more than
+          quantization, surgery, or binary version drift combined.
+        </p>
+
+        <div class="cover-stats">
+          <div>
+            <div class="cover-stat-num">+45.7pt</div>
+            <div class="cover-stat-label">HumanEval lift from<br/>harness fixes alone</div>
+          </div>
+          <div>
+            <div class="cover-stat-num">+16pt</div>
+            <div class="cover-stat-label">GSM8K swing from<br/>system prompt alone</div>
+          </div>
+          <div>
+            <div class="cover-stat-num">2K → 24K</div>
+            <div class="cover-stat-label">max_tokens range needed<br/>across model families</div>
+          </div>
+        </div>
+
+        <div style="margin-top:48px;"></div>
+        <div class="cover-divider"></div>
+        <p class="cover-meta">For benchmark authors, evaluation engineers, and anyone publishing model comparisons</p>
+      </div>
+
+      <div class="cover-footer">
+        <div>firesidelabs.ai &nbsp;·&nbsp; j.nguyen@firesidelabs.ai</div>
+        <div>© 2026 Fireside Labs. All rights reserved.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ BODY ══════════════════ -->
+  <div class="doc">
+    <div class="running-header">
+      <div class="running-logo">Fireside Labs</div>
+      <div class="running-title">Harness Configuration Is the Hidden Variable</div>
+    </div>
+
+    <h1>Harness Configuration Is the Hidden Variable</h1>
+    <p class="doc-subtitle">Verbose Thinking, Permission Prompts, and Why Your Benchmark Numbers Aren't What You Think They Are</p>
+
+    <p>
+      <strong>We fixed the benchmark harness configuration—not the model, not the hardware—and
+      Qwen3.6's HumanEval score moved by 45.7 points.</strong> Then we measured the same effect
+      across our 2026 benchmark fleet. The harness is the hidden variable in published model
+      comparisons. Everything else most teams worry about—quantization, surgery, binary version
+      drift—moves scores by single digits. The system prompt and <code>max_tokens</code> ceiling
+      move them by double digits, sometimes triple. Published benchmark tables almost never
+      specify either.
+    </p>
+
+    <p>
+      This paper documents two related failure modes: <strong>verbose-thinking truncation</strong>
+      (some model families need 4–12× the default token budget to be fairly measured) and
+      <strong>permission-prompt sensitivity</strong> (a single system-prompt phrasing change swings
+      GSM8K scores by up to 16 percentage points). Together they make untracked harness
+      configuration the largest single source of benchmark variance for thinking-trained models.
+    </p>
+
+    <div class="pull-quote">
+      <p>
+        Comparing models on benchmarks without standardized harness protocols is roughly equivalent
+        to comparing them at different temperatures. Apples to oranges, dressed up as a leaderboard.
+      </p>
+    </div>
+
+    <!-- SECTION 1: The Impact Ranking -->
+    <h2>The Impact Ranking</h2>
+
+    <p>
+      Where does harness configuration fit in the universe of benchmark variables? We measured each
+      variable's score swing on GSM8K-IL67 across our 8B-class fleet:
+    </p>
+
+    <div class="impact-block">
+      <div class="impact-row">
+        <div class="impact-name">System prompt (permission framing)</div>
+        <div class="impact-bar-container"><div class="impact-bar" style="width: 100%;"></div></div>
+        <div class="impact-value">+5 to +16pt</div>
+      </div>
+      <div class="impact-row">
+        <div class="impact-name"><code>max_tokens</code> ceiling (verbose-thinking models)</div>
+        <div class="impact-bar-container"><div class="impact-bar" style="width: 95%;"></div></div>
+        <div class="impact-value">+13 to +62pt</div>
+      </div>
+      <div class="impact-row">
+        <div class="impact-name">Harness change (script-to-script)</div>
+        <div class="impact-bar-container"><div class="impact-bar muted" style="width: 32%;"></div></div>
+        <div class="impact-value">~5pt</div>
+      </div>
+      <div class="impact-row">
+        <div class="impact-name">Binary version drift (b8245 → b8738)</div>
+        <div class="impact-bar-container"><div class="impact-bar muted" style="width: 32%;"></div></div>
+        <div class="impact-value">~5pt</div>
+      </div>
+      <div class="impact-row">
+        <div class="impact-name">Chimera vs vanilla host (surgery)</div>
+        <div class="impact-bar-container"><div class="impact-bar muted" style="width: 36%;"></div></div>
+        <div class="impact-value">~3–6pt</div>
+      </div>
+      <div class="impact-row">
+        <div class="impact-name">Quantization (Q4 → Q6)</div>
+        <div class="impact-bar-container"><div class="impact-bar muted" style="width: 12%;"></div></div>
+        <div class="impact-value">~0–2pt typical</div>
+      </div>
+    </div>
+
+    <p>
+      The two harness-configuration variables top the list—each one larger than the variables
+      practitioners spend most of their time worrying about. Researchers benchmark across
+      quantization variants and architecture modifications while the harness defaults are silently
+      moving scores by 2–4× the magnitude.
+    </p>
+
+    <!-- SECTION 2: VERBOSE THINKING -->
+    <h2>Part I — Verbose Thinking Silently Breaks Standard Harnesses</h2>
+
+    <p>
+      Some thinking-mode model families emit thinking traces 2–4× longer than typical for the same
+      problem class. Standard benchmark harnesses with <code>max_tokens=2048</code> defaults
+      silently truncate these models mid-<code>&lt;think&gt;</code> block. After the server-side
+      reasoning-format strip, content is empty. The model is scored as failing—not because it
+      can't solve the problem, but because the harness assumed a token budget appropriate for one
+      architectural style and not another.
+    </p>
+
+    <h3>Case study: 30 hours of self-correction on Qwen3.6-35B-A3B</h3>
+
+    <p>
+      In May 2026 we ran Qwen3.6-35B-A3B (DeltaNet linear attention, MoE) through the standard
+      benchmark battery. Initial results suggested the model was bad at math. They weren't real.
+      Successive <code>max_tokens</code> bumps cut the empty-response rate by roughly half each
+      time:
+    </p>
+
+    <div class="progression">
+      <div class="progression-step lose">
+        <div class="progression-config">max_tokens=2048</div>
+        <div class="progression-desc">MATH (L3–5), default harness</div>
+        <div class="progression-score lose">6.8%</div>
+      </div>
+      <div class="progression-step">
+        <div class="progression-config">max_tokens=2048 (retry)</div>
+        <div class="progression-desc">MATH (L3–5), with retry pass</div>
+        <div class="progression-score">31.9%</div>
+      </div>
+      <div class="progression-step">
+        <div class="progression-config">max_tokens=8192</div>
+        <div class="progression-desc">MATH (L3–5), 4× budget</div>
+        <div class="progression-score">54.5%</div>
+      </div>
+      <div class="progression-step win">
+        <div class="progression-config">max_tokens=24576</div>
+        <div class="progression-desc">MATH (L3–5), 12× budget</div>
+        <div class="progression-score win">68.9%</div>
+      </div>
+    </div>
+
+    <p>Same model, same problems, same temperature. <strong>The "Qwen3.6 is not a math model" framing collapses entirely under proper harness configuration</strong>—Qwen3.6 actually beats Qwen3-30B on every measured axis. It's just expensive in tokens-per-question.</p>
+
+    <h3>Three concurrent harness bugs in two days, all silently penalizing Qwen3.6</h3>
+
+    <div class="finding-card">
+      <div class="finding-num">Bug 01 — <code>gsm8k_bench.py</code></div>
+      <div class="finding-title"><code>max_tokens=2048</code> hardcoded</div>
+      <p class="finding-body">
+        Patched to expose <code>--max-tokens</code> CLI flag. Qwen3.6 GSM8K-IL67 jumped
+        <strong>83.93% → 96.74%</strong> with <code>--max-tokens 8192</code>.
+      </p>
+    </div>
+
+    <div class="finding-card">
+      <div class="finding-num">Bug 02 — <code>math_bench.py</code></div>
+      <div class="finding-title"><code>max_tokens=2048</code> hardcoded</div>
+      <p class="finding-body">
+        Same patch applied. Qwen3.6 MATH (L3–5) jumped <strong>6.8% → 31.9% → 54.5% → 68.9%</strong>
+        as the cap rose 2K → 8K → 16K → 24K. The model needed 24K thinking room to fully measure
+        on hard MATH problems.
+      </p>
+    </div>
+
+    <div class="finding-card">
+      <div class="finding-num">Bug 03 — <code>humaneval_bench.py</code></div>
+      <div class="finding-title">Markdown-fence regex ate leading indent</div>
+      <p class="finding-body">
+        <code>extract_function_body</code> had two bugs: (a) markdown-fence regex
+        <code>r'```python\s*'</code> was too greedy and ate the leading 4-space indent of the first
+        body line; (b) auto-indent logic unconditionally added 4 spaces to every line,
+        double-indenting Qwen3.6's already-indented body to 8 spaces and breaking parse. Patched:
+        line-anchored markdown match + already-indented detection. Qwen3.6 HumanEval jumped
+        <strong>28.7% → 74.4%</strong> (ties Gemma 31B's muzzled score exactly).
+      </p>
+    </div>
+
+    <h3>The within-family asymmetry: same family, opposite relationships with thinking</h3>
+
+    <p>
+      The verbose-thinking pattern in Qwen3.6 is not just "long traces overflow harness budgets."
+      The deeper architecture-level finding is that Qwen3.6 and Qwen3-30B-A3B—same family, same 3B
+      activation count—have <strong>opposite relationships with thinking mode</strong>:
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Model · WildClaw retry (base-48, n=3)</th>
+          <th class="num">Thinking ON</th>
+          <th class="num">Thinking OFF (muzzled)</th>
+          <th class="num">Δ when muzzled</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Qwen3-30B-A3B (standard MoE attention)</td>
+          <td class="num">40.3 ± 1.5</td>
+          <td class="num">29.9 ± 2.1</td>
+          <td class="num neg-cell">−10pt (thinking is load-bearing)</td>
+        </tr>
+        <tr class="row-highlight">
+          <td>Qwen3.6-35B-A3B (DeltaNet linear attention)</td>
+          <td class="num">truncates / collapses</td>
+          <td class="num">76.4 ± 0.6</td>
+          <td class="num pos-cell">muzzle is native-best</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      Qwen3.6 (DeltaNet linear attention) appears to have learned to reason inside the forward
+      pass; Qwen3-30B (standard MoE attention) uses its <code>&lt;think&gt;</code> scratch space.
+      <strong>"Thinking-mode" isn't a single architectural property</strong>—same family, similar
+      activation count, opposite inference styles.
+    </p>
+
+    <div class="callout">
+      <div class="callout-label">Three Reporting Numbers, Not One</div>
+      <p>
+        For cross-model thinking-mode comparisons, the right framing is three numbers:
+        (1) matched-muzzled (both <code>--no-thinking</code>) controls for harness config and shows
+        raw forward-pass capability; (2) native-best each model in its preferred config gives the
+        deployment-reality number; (3) config sensitivity itself shows how much each model
+        gains/loses from thinking. Reporting only one of these will mislead.
+      </p>
+    </div>
+
+    <p>
+      The Chinese-12 head-to-head holds across all configs—Qwen3.6 muzzled 77.8%, Qwen3-30B at
+      either config 25.0%, a +52.8pt gap with t > 7. Architecture-quality gap, not config artifact.
+    </p>
+
+    <!-- SECTION 3: PERMISSION PROMPTS -->
+    <h2>Part II — Permission Prompts Swing GSM8K by +5 to +16pt</h2>
+
+    <p>
+      A single system-prompt change—from <code>"Solve the math problem. End with: #### &lt;number&gt;"</code>
+      to <code>"Show your key reasoning steps. You're allowed to think before answering. Solve the math
+      problem step by step, then give your final numeric answer after #### on its own line."</code>—
+      swings GSM8K scores by +5 to +16pt across thinking-trained 8B models. We measured this as a
+      full-failure-rescue sweep across the fleet:
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th class="num">Original score</th>
+          <th class="num">Failures</th>
+          <th class="num">Rescued</th>
+          <th class="num">Rescue rate</th>
+          <th class="num">Full IL67 (measured)</th>
+          <th class="num">Δ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="row-highlight"><td>gemma4-E2B</td><td class="num">82.18%</td><td class="num">235</td><td class="num">150</td><td class="num pos-cell">63.8%</td><td class="num">90.37%</td><td class="num">+8.19pt</td></tr>
+        <tr><td>gemma4-E4B</td><td class="num">82.18%</td><td class="num">235</td><td class="num">145</td><td class="num">61.7%</td><td class="num">(projected ~93%)</td><td class="num">~+11pt</td></tr>
+        <tr><td>EXP6 chimera</td><td class="num">84.61%</td><td class="num">203</td><td class="num">86</td><td class="num">42.4%</td><td class="num">85.97%</td><td class="num">+1.36pt</td></tr>
+        <tr><td>R1-Distill-8B-Q6</td><td class="num">70.51%</td><td class="num">389</td><td class="num">212</td><td class="num">54.5%</td><td class="num">77.26%</td><td class="num">+6.75pt</td></tr>
+        <tr><td>llama-3.1-8b</td><td class="num">79.98%</td><td class="num">264</td><td class="num">67</td><td class="num">25.4%</td><td class="num">80.36%</td><td class="num">+0.38pt</td></tr>
+      </tbody>
+    </table>
+
+    <p class="table-note">
+      Rescue rate = fraction of originally-failed questions that pass under the new prompt. Full
+      IL67 = the same prompt applied to all 1,319 questions (the measured leaderboard number).
+    </p>
+
+    <h3>The architecture-monotonic pattern that didn't generalize</h3>
+
+    <p>
+      Initially the rescue-rate gradient looked clean:
+    </p>
+
+    <ul style="margin-bottom: 16px; padding-left: 20px;">
+      <li style="margin-bottom: 6px; font-size: 15.5px;">Native niche thinking format (Gemma4 <code>&lt;channel|&gt;</code>, R1 <code>&lt;think&gt;</code>): 55–64% rescue</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;">Mixed thinking-graft on non-thinking-host (EXP6) / hybrid (Qwen3): 42% rescue</li>
+      <li style="margin-bottom: 6px; font-size: 15.5px;">Pure non-thinking (Llama-3.1): 25% rescue</li>
+    </ul>
+
+    <p>
+      We initially proposed this as an iron-law candidate: <em>permission-tax magnitude tracks
+      architecture in a clean monotonic way</em>. Then we ran the same permission-test on MMLU CoT
+      and the pattern dissolved. Gemma4-E4B was flat (−0.3pt). Gemma4-E2B, EXP6, and Llama all
+      gained ~5pt (similar magnitudes, no architectural gradient). <strong>The pattern was
+      math-specific.</strong>
+    </p>
+
+    <div class="callout warn">
+      <div class="callout-label">Withdrawn Claim — Honest Note</div>
+      <p>
+        We initially overstated this as <code>IL_PENDING_PERMISSION_TAX_BY_ARCH</code>—an
+        architecture-driven iron law. The MMLU cross-benchmark test falsified the
+        architecture-monotonic pattern. The honest finding is narrower: on math-word-problem
+        benchmarks, permission framing helps thinking-trained models, but the magnitude doesn't
+        follow a clean architecture-driven gradient on knowledge tasks. We withdrew the iron-law
+        proposal.
+      </p>
+    </div>
+
+    <h3>Methodology lesson: rescue-rate projection systematically overshoots</h3>
+
+    <p>
+      Our initial "rescue rate × failure count" projection methodology assumed IL67 only HELPS. In
+      reality the new prompt also COSTS some originally-passed questions. Net IL67 effect is much
+      smaller than rescue rate suggests, and the magnitude of error correlates with the original
+      rescue rate:
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th class="num">Projected</th>
+          <th class="num">Actual (full retest)</th>
+          <th class="num">Projection error</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>gemma4-E2B</td><td class="num">93.56%</td><td class="num">90.37%</td><td class="num neg-cell">−3.19pt</td></tr>
+        <tr><td>EXP6</td><td class="num">91.13%</td><td class="num">85.97%</td><td class="num neg-cell">−5.16pt</td></tr>
+        <tr><td>R1-Distill-Q6</td><td class="num">87.64%</td><td class="num">77.26%</td><td class="num neg-cell">−10.38pt</td></tr>
+        <tr><td>llama-3.1-8b</td><td class="num">85.06%</td><td class="num">80.36%</td><td class="num neg-cell">−4.70pt</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      Mean error: −5.86pt. R1-Distill had highest rescue (54%) and biggest projection error
+      (−10.4pt). Llama had lowest rescue (25%) and smallest error (−4.7pt). <strong>For future
+      permission-tax studies, treat rescue-rate projection as an upper bound, not a point
+      estimate.</strong> Or just measure full retest if budget allows.
+    </p>
+
+    <!-- SECTION 4: DIAGNOSTIC PLAYBOOK -->
+    <h2>The Diagnostic Playbook</h2>
+
+    <p>
+      The recipe we developed across the May 2026 sprint, applicable to any benchmark whose results
+      look suspiciously low for a thinking-mode model:
+    </p>
+
+    <div class="playbook-block">
+      <div class="playbook-row">
+        <div class="playbook-num">01</div>
+        <p class="playbook-step">
+          <strong>First sanity check.</strong>
+          What fraction of failures have empty content in the result JSON? If &gt;5%, suspect
+          truncation. Empty responses are the canary for verbose-thinking budget exhaustion.
+        </p>
+      </div>
+      <div class="playbook-row">
+        <div class="playbook-num">02</div>
+        <p class="playbook-step">
+          <strong>Confirm with elapsed-time bunching.</strong>
+          Measure median elapsed time of empty-response fails. If it bunches near
+          <code>max_tokens / generation_rate</code> (typically <code>max_tokens / 165</code>
+          seconds for Q4 thinking models), the model is hitting the cap mid-thinking, not failing
+          on the problem itself.
+        </p>
+      </div>
+      <div class="playbook-row">
+        <div class="playbook-num">03</div>
+        <p class="playbook-step">
+          <strong>Bump and observe.</strong>
+          Double <code>max_tokens</code> and re-run. Each doubling cuts empty rate by roughly
+          half—diminishing returns suggest the verbosity-budget gap is closing. Plot
+          <code>score vs log(max_tokens)</code> to find the inflection.
+        </p>
+      </div>
+      <div class="playbook-row">
+        <div class="playbook-num">04</div>
+        <p class="playbook-step">
+          <strong>Partial recovery without full re-run.</strong>
+          <code>gsm8k_retry_failed.py</code> (template, adapt for math/humaneval) loads existing
+          JSON, retries only fails with bumped budget, merges back. ~80% wall-time savings.
+        </p>
+      </div>
+      <div class="playbook-row">
+        <div class="playbook-num">05</div>
+        <p class="playbook-step">
+          <strong>VRAM accounting.</strong>
+          <code>max_tokens &gt; 12K</code> typically requires bumping per-slot context. Use
+          <code>--ctx (max_tokens × 2.5) --workers (vram-budget // model-size)</code> rule of thumb.
+        </p>
+      </div>
+      <div class="playbook-row">
+        <div class="playbook-num">06</div>
+        <p class="playbook-step">
+          <strong>Test prompt variants if math scores still look low.</strong>
+          Explicit permission framing
+          (<em>"Show your key reasoning steps. You're allowed to think before answering."</em>)
+          can rescue 25–64% of originally-failed math questions for thinking-trained models.
+          Generic "show your work" doesn't reliably trigger native thinking formats.
+        </p>
+      </div>
+    </div>
+
+    <!-- SECTION 5: TAKEAWAYS -->
+    <h2>Practitioner Takeaways</h2>
+
+    <h3>1. Don't trust single-config benchmark numbers across model families</h3>
+    <p>
+      Different architectures emit different thinking-trace lengths. A score that looks low may
+      just be a budget mismatch. Cross-family comparisons require either matched configuration
+      controls or per-model harness tuning—and the methodology should be reported alongside the
+      number.
+    </p>
+
+    <h3>2. <code>max_tokens=2048</code> is no longer a safe default</h3>
+    <p>
+      For thinking-mode benchmarks, bump to 8192 for routine measurement; 16K–24K for
+      verbose-thinking variants like DeltaNet-based models. The bigger budget costs wall time but
+      protects against silent truncation contamination.
+    </p>
+
+    <h3>3. Empty-response rate is the canary</h3>
+    <p>
+      Surface it in benchmark output JSONs as a standard field. The Qwen3.6 case study showed that
+      pre-existing low scores were almost entirely accounted for by empty-content responses—a
+      symptom that any harness can detect cheaply and that no harness currently logs by default.
+    </p>
+
+    <h3>4. Harness assumptions encode prior models' formatting conventions</h3>
+    <p>
+      Each new model family deserves a sanity-check pass on extraction logic before scores are
+      believed. The HumanEval indent bug only triggered for models that emit ready-to-drop-in code;
+      it had been silent for years against models that emit raw unindented bodies.
+    </p>
+
+    <h3>5. The cost-per-problem axis matters as much as score</h3>
+    <p>
+      Qwen3.6 is broadly stronger than Qwen3-30B but burns ~3–4× tokens per problem. For
+      latency-sensitive deployments, that ratio dominates the architecture-quality argument. The
+      honest reporting unit may be <strong>tokens-per-correct-answer</strong>, not raw accuracy.
+    </p>
+
+    <h3>6. Standardized prompts before vendor comparisons</h3>
+    <p>
+      A model reported as "70% on GSM8K" may score 85%+ with a different system prompt. Comparing
+      models on benchmarks without standardized prompt protocols is the prompt-equivalent of
+      comparing them at different temperatures. Until prompt protocols are standardized in
+      published evaluations, cross-vendor comparisons of thinking-trained models should be treated
+      as directional, not definitive.
+    </p>
+
+    <!-- SECTION 6: WHAT'S NEXT -->
+    <h2>What's Next</h2>
+
+    <h3>Generalize the verbose-thinking survey</h3>
+    <p>
+      Which other thinking-mode model families exhibit verbose-thinking? Likely candidates:
+      Llama-3-thought-aware variants, additional R1 variants, DeepSeek-V3 reasoning. Worth a
+      survey-style benchmark across thinking-mode families with empty-rate as the primary metric.
+    </p>
+
+    <h3>Quantify tokens-per-correct-answer as a unified cost metric</h3>
+    <p>
+      Tonight's data suggests this is a useful metric for cost-aware benchmarking. A model scoring
+      70% at 500 tokens/answer may be more useful than a model scoring 80% at 2,500 tokens/answer
+      for many production deployments.
+    </p>
+
+    <h3>Standardize the harness audit as a CI check</h3>
+    <p>
+      Warn on per-slot context &lt; 4K when thinking models are detected. Warn on
+      <code>max_tokens &lt; 4K</code> when measuring math benchmarks. Flag empty-content rate
+      &gt;5% as a likely truncation signal. These are cheap checks that would prevent the most
+      common silent-contamination class.
+    </p>
+
+    <h3>Within-family asymmetry replication</h3>
+    <p>
+      Test Qwen3.5-35B-A3B as a version-diff to discriminate "DeltaNet causes the asymmetry" from
+      "training-pipeline shapes inference style." Test other "newer version of older family" pairs
+      (Llama-3.5 vs Llama-3, Gemma-3n vs Gemma-3) for parallel asymmetries.
+    </p>
+
+    <div class="verdict">
+      <p>
+        Harness configuration is the largest single variable in published benchmark scores for
+        thinking-trained models. Larger than quantization, surgery, or binary drift. Report your
+        harness, or your numbers are noise.
+      </p>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <div class="cta-label">About Fireside Labs</div>
+      <h2 class="cta-title" style="margin-top:0; border:none; display:block; color:#fff; font-size:26px;">
+        We Audit the Variables Vendors Don't Mention
+      </h2>
+      <p class="cta-body">
+        Fireside Labs builds benchmark infrastructure that surfaces the silent contaminants in
+        standard evaluation: thinking-budget truncation, prompt-permission sensitivity, harness
+        extraction bugs, binary drift. When the leaderboard number doesn't match your deployment
+        experience, we find what the harness is hiding.
+      </p>
+
+      <div class="cta-services">
+        <div class="cta-service">
+          <div class="cta-service-name">Harness Audit</div>
+          <p class="cta-service-desc">
+            Diagnose silent contamination in your evaluation pipeline—budget truncation, extraction bugs, prompt sensitivity.
+          </p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Reproducible Benchmarking</div>
+          <p class="cta-service-desc">
+            Standardized harness configurations with proper noise-floor characterization for your model fleet.
+          </p>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-name">Production Validation</div>
+          <p class="cta-service-desc">
+            Empirical confirmation that your benchmark scores predict your real-world deployment behavior.
+          </p>
+        </div>
+      </div>
+
+      <div class="cta-contact">
+        <p class="cta-contact-text">
+          Suspect your benchmarks aren't measuring what you think they are? Let's audit the harness together.
+        </p>
+        <a class="cta-contact-link" href="mailto:j.nguyen@firesidelabs.ai">
+          j.nguyen@firesidelabs.ai →
+        </a>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>Fireside Labs &nbsp;·&nbsp; firesidelabs.ai &nbsp;·&nbsp; © 2026</div>
+      <div>For informational purposes only.</div>
+    </div>
+
+  </div>
+</body>
+</html>

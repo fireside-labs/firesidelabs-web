@@ -62,16 +62,16 @@ export const Hero = () => {
           </span>
         </motion.h1>
 
-        {/* Sub — flexibility-as-feature; deployment fits the data, not the other way around */}
+        {/* Sub — explicit backend-only positioning; the AI that runs operations, not the AI customers talk to */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="text-lg md:text-xl text-text-secondary max-w-2xl mx-auto mb-12 leading-relaxed"
         >
-          We turn your biggest operational bottlenecks into AI-powered solutions:{' '}
+          We build the AI that runs your operations—not the AI your customers talk to.{' '}
           <span className="text-text-primary font-medium">
-            local, hybrid, or private cloud. We architect the AI to fit the data, not the other way around.
+            Local, hybrid, or private cloud. Errors stay inside your perimeter, never on your brand.
           </span>
         </motion.p>
 

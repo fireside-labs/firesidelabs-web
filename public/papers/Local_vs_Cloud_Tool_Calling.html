@@ -323,7 +323,7 @@
 <body>
 
   <div class="print-hint no-print">
-    📄 To save as PDF: <strong>File → Print → Save as PDF</strong>—set Margins to "None" for best results
+    To save as PDF: <strong>File &rarr; Print &rarr; Save as PDF</strong>&mdash;set Margins to "None" for best results
   </div>
 
   <!-- ══════════════════ COVER ══════════════════ -->
@@ -334,7 +334,7 @@
 
       <div class="cover-content">
         <div class="cover-label">Deployment Economics · White Paper</div>
-        <div class="cover-eyebrow">Tool-Calling Benchmark · 11 Models · 100 Tasks</div>
+        <div class="cover-eyebrow">Tool-Calling Benchmark v2 · 23 Models · Three Providers · 100 Tasks</div>
 
         <h1 class="cover-title">
           Do You Actually<br/>
@@ -342,23 +342,21 @@
         </h1>
 
         <p class="cover-subtitle">
-          A 100-task, multi-architecture benchmark at 99% statistical confidence shows local
-          models reach parity with Google's production cloud tier—and our structurally optimized
-          chimera is the only model in the entire field to score perfectly on direct tool routing.
+          v2: 23 Models, Three Providers, One New Failure Taxonomy. Gemma 4 31B-it scores the highest Strict accuracy in the benchmark&mdash;on-prem, beating Gemini 3.0 Pro. Cloud spend on this workload is discretionary, not a capability requirement. The Type&nbsp;A/B framework reveals what the Strict leaderboard hides.
         </p>
 
         <div class="cover-stats">
           <div>
-            <div class="cover-stat-num">40/40</div>
-            <div class="cover-stat-label">Perfect routing<br/>Fireside Chimera only</div>
+            <div class="cover-stat-num">95/100</div>
+            <div class="cover-stat-label">Gemma 4 31B-it Strict<br/>highest local score</div>
           </div>
           <div>
-            <div class="cover-stat-num">88/100</div>
-            <div class="cover-stat-label">Local models match<br/>Gemini 3.0 Flash</div>
+            <div class="cover-stat-num">98/100</div>
+            <div class="cover-stat-label">Anthropic top-tier<br/>Adjusted (Haiku &amp; Opus tie)</div>
           </div>
           <div>
-            <div class="cover-stat-num">$0</div>
-            <div class="cover-stat-label">Per-call cost<br/>at 3M calls/month</div>
+            <div class="cover-stat-num">23 models</div>
+            <div class="cover-stat-label">Benchmark coverage<br/>local + three providers</div>
           </div>
         </div>
 
@@ -368,8 +366,8 @@
       </div>
 
       <div class="cover-footer">
-        <div>firesidelabs.ai &nbsp;·&nbsp; j.nguyen@firesidelabs.ai</div>
-        <div>© 2026 Fireside Labs. All rights reserved.</div>
+        <div>firesidelabs.ai &nbsp;&middot;&nbsp; j.nguyen@firesidelabs.ai</div>
+        <div>&copy; 2026 Fireside Labs LLC. All rights reserved.</div>
       </div>
     </div>
   </div>
@@ -378,435 +376,763 @@
   <div class="doc">
     <div class="running-header">
       <div class="running-logo">Fireside Labs</div>
-      <div class="running-title">Do You Actually Need a Cloud API?</div>
+      <div class="running-title">Do You Actually Need a Cloud API? &mdash; v2</div>
     </div>
 
     <h1>Do You Actually Need a Cloud API?</h1>
-    <p class="doc-subtitle">A 100-Task, Multi-Architecture Benchmark Shows Local Models Reach Parity With Production Cloud APIs</p>
+    <p class="doc-subtitle">Tool-Calling Benchmark v2: 23 Models, Three Providers, One New Failure Taxonomy</p>
 
     <p>
-      <strong>Four separate local models—running on your own hardware at zero cost per call—scored
-      within statistical noise of Google Gemini 3.0 Flash on 100 real tool-calling tasks.</strong>
-      The benchmark covered 11 models across 5 architecture families at 99% statistical confidence.
-      Gemini 3.1 Flash-Lite leads by 5 points; the confidence intervals overlap. The production-tier
-      cloud offering most enterprises actually deploy is matchable on your hardware at $0 per call.
+      <strong>Five findings lead this update.</strong>
     </p>
 
     <p>
-      One finding is a clear delta, not a tie: the Fireside Chimera achieved
-      <strong>perfect 40/40 on direct tool routing</strong>—the only model in the entire
-      benchmark to do so. On the broader tool-calling score, the lesson is parity, not victory.
-      For most enterprise tool-calling workloads, your data can stay on your hardware, your cost
-      per call drops to zero, and your accuracy stays within margin of the cloud API you're paying
-      for.
+      <strong>Local Gemma matches cloud Pro tier.</strong> Gemma 4 31B-it scores 95 Strict / 96 Adjusted&mdash;statistically indistinguishable from Gemini 3.0 Pro (93/97) and Gemini 3.1 Pro (93/96) at 99% confidence. A model that runs on commodity on-prem hardware is inside the confidence interval of Google's top-of-catalog cloud offerings.
+    </p>
+
+    <p>
+      <strong>Anthropic Haiku 4.5 matches Opus 4.7 on Adjusted score&mdash;at one-fifth the price.</strong> Claude Haiku 4.5 ($1/1M input) and Claude Opus 4.7 ($5/1M input) both achieve an Adjusted score of 98/100, the highest mark in the entire benchmark. The 5&times; cost gap between Anthropic's smallest and largest models buys no measurable accuracy on tool-calling workloads.
+    </p>
+
+    <p>
+      <strong>GPT-5.5-pro provides no measurable value over GPT-5.5 base.</strong> The pro variant matches GPT-5.5 base on Strict (88 vs. 88) and trails it slightly on Adjusted (91 vs. 94). At a price premium, there is no accuracy justification for the upgrade on tool-calling workloads.
+    </p>
+
+    <p>
+      <strong>Type A vs. Type B classification reveals models' real failure modes.</strong> When a model fails to call a tool, the failure is not always a miss&mdash;it is sometimes a clarifying question. The Adjusted score separates the two. Anthropic's entire lineup shows near-zero Type A failures; OpenAI's GPT-5 family shows 8&ndash;10 genuine misses per model. The Strict leaderboard obscures this difference. The Adjusted leaderboard surfaces it.
+    </p>
+
+    <p>
+      <strong>The newest Gemini Flash didn't move the needle on tool-calling.</strong> Gemini 3.5 Flash (89/91) lands within Wilson CI of Gemini 3.0 Flash (86/90)&mdash;a 1.5-generation gap that delivers no statistically distinguishable improvement on this workload. Generation-over-generation Flash-tier upgrades are not a substitute for benchmark validation.
     </p>
 
     <div class="pull-quote">
       <p>
-        The gap between the best local model and the best cloud model is only 5 points. The gap
-        between two generations of Gemini Flash is 16 points. Most teams using cloud APIs have
-        never measured which gap they're actually paying for.
+        "A 20-GB local model beats every cloud model in the benchmark on raw Strict accuracy. The cloud premium buys you no measurable lift on tool-calling workloads, in any tier, at any provider."
       </p>
     </div>
 
     <!-- SECTION 1: LEADERBOARD -->
-    <h2>The Leaderboard</h2>
+    <h2>1. The Leaderboard</h2>
+
+    <p>
+      <strong>Strict score</strong>: tasks where <code>tool_correct AND args_correct</code> are both true, out of 100. Pure exact-match accuracy.
+    </p>
+    <p>
+      <strong>Adjusted score</strong>: Strict + Type B rescues. When a model returned no tool call where one was expected, the response was re-classified. If the model asked a clarifying question rather than silently failing, that "None" is credited as correct behavior. See Section 3 for the full methodology.
+    </p>
+    <p>
+      <strong>Wilson 99% CI</strong> uses z&nbsp;=&nbsp;2.576. Standard formula applied per-model to n&nbsp;=&nbsp;100.
+    </p>
 
     <table class="compare-table">
       <thead>
         <tr>
           <th>Rank</th>
           <th>Model</th>
-          <th>Architecture</th>
-          <th class="num">Score</th>
-          <th class="num">99% CI</th>
+          <th>Provider</th>
+          <th class="num">Strict</th>
+          <th class="num">Strict 99% CI</th>
+          <th class="num">Adjusted</th>
+          <th class="num">Adj 99% CI</th>
           <th class="num">P50 ms</th>
-          <th>Cost</th>
+          <th class="num">Type A</th>
+          <th class="num">Type B</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr class="row-highlight">
           <td class="rank-cell">1</td>
+          <td>Claude Opus 4.7</td>
+          <td>Anthropic</td>
+          <td class="num">87</td>
+          <td class="num">76&ndash;93%</td>
+          <td class="num win"><strong>98</strong></td>
+          <td class="num">90&ndash;100%</td>
+          <td class="num">3,150</td>
+          <td class="num">1</td>
+          <td class="num">11</td>
+        </tr>
+        <tr class="row-highlight">
+          <td class="rank-cell">1</td>
+          <td>Claude Haiku 4.5</td>
+          <td>Anthropic</td>
+          <td class="num">78</td>
+          <td class="num">66&ndash;87%</td>
+          <td class="num win"><strong>98</strong></td>
+          <td class="num">90&ndash;100%</td>
+          <td class="num">1,264</td>
+          <td class="num">0</td>
+          <td class="num">20</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">3</td>
+          <td>Gemini 3.0 Pro</td>
+          <td>Google</td>
+          <td class="num">93</td>
+          <td class="num">83&ndash;97%</td>
+          <td class="num">97</td>
+          <td class="num">89&ndash;99%</td>
+          <td class="num">4,240</td>
+          <td class="num">0</td>
+          <td class="num">4</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">3</td>
+          <td>Gemma 4 E2B Q6_K</td>
+          <td>Local</td>
+          <td class="num">87</td>
+          <td class="num">76&ndash;93%</td>
+          <td class="num">97</td>
+          <td class="num">89&ndash;99%</td>
+          <td class="num">2,294</td>
+          <td class="num">0</td>
+          <td class="num">10</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">3</td>
+          <td>Gemma 4 E2B BF16</td>
+          <td>Local</td>
+          <td class="num">87</td>
+          <td class="num">76&ndash;93%</td>
+          <td class="num">97</td>
+          <td class="num">89&ndash;99%</td>
+          <td class="num">2,397</td>
+          <td class="num">0</td>
+          <td class="num">10</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">6</td>
+          <td>Gemma 4 31B-it</td>
+          <td>Local</td>
+          <td class="num win"><strong>95</strong></td>
+          <td class="num">86&ndash;98%</td>
+          <td class="num">96</td>
+          <td class="num">87&ndash;99%</td>
+          <td class="num">2,940</td>
+          <td class="num">1</td>
+          <td class="num">1</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">6</td>
+          <td>Gemini 3.1 Pro</td>
+          <td>Google</td>
+          <td class="num">93</td>
+          <td class="num">83&ndash;97%</td>
+          <td class="num">96</td>
+          <td class="num">87&ndash;99%</td>
+          <td class="num">4,898</td>
+          <td class="num">0</td>
+          <td class="num">3</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">6</td>
+          <td>Claude Sonnet 4.6</td>
+          <td>Anthropic</td>
+          <td class="num">89</td>
+          <td class="num">78&ndash;95%</td>
+          <td class="num">96</td>
+          <td class="num">87&ndash;99%</td>
+          <td class="num">2,413</td>
+          <td class="num">0</td>
+          <td class="num">7</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">6</td>
+          <td>Gemma 4 E4B Q6_K</td>
+          <td>Local</td>
+          <td class="num">72</td>
+          <td class="num">59&ndash;82%</td>
+          <td class="num">96</td>
+          <td class="num">87&ndash;99%</td>
+          <td class="num">2,340</td>
+          <td class="num">0</td>
+          <td class="num">24</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">10</td>
+          <td>Qwen3.6-27B-dense</td>
+          <td>Local</td>
+          <td class="num">92</td>
+          <td class="num">82&ndash;97%</td>
+          <td class="num">95</td>
+          <td class="num">86&ndash;98%</td>
+          <td class="num">3,368</td>
+          <td class="num">0</td>
+          <td class="num">3</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">11</td>
+          <td>GPT-5.5</td>
+          <td>OpenAI</td>
+          <td class="num">88</td>
+          <td class="num">77&ndash;94%</td>
+          <td class="num">94</td>
+          <td class="num">85&ndash;98%</td>
+          <td class="num">2,341</td>
+          <td class="num">4</td>
+          <td class="num">6</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">12</td>
+          <td>Gemma 4 27B MoE</td>
+          <td>Local</td>
+          <td class="num">92</td>
+          <td class="num">82&ndash;97%</td>
+          <td class="num">93</td>
+          <td class="num">83&ndash;97%</td>
+          <td class="num">2,450</td>
+          <td class="num">4</td>
+          <td class="num">1</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">12</td>
           <td>Gemini 3.1 Flash-Lite</td>
-          <td>Cloud · Google</td>
-          <td class="num"><strong>93/100</strong></td>
-          <td class="num">83–97%</td>
-          <td class="num">987</td>
-          <td>$0.04 / 1M tok</td>
+          <td>Google</td>
+          <td class="num">92</td>
+          <td class="num">82&ndash;97%</td>
+          <td class="num">93</td>
+          <td class="num">83&ndash;97%</td>
+          <td class="num">790</td>
+          <td class="num">0</td>
+          <td class="num">1</td>
         </tr>
         <tr>
-          <td class="rank-cell">2</td>
+          <td class="rank-cell">14</td>
+          <td>Gemini 3.5 Flash<sup>&dagger;</sup></td>
+          <td>Google</td>
+          <td class="num">89</td>
+          <td class="num">78&ndash;95%</td>
+          <td class="num">91</td>
+          <td class="num">81&ndash;96%</td>
+          <td class="num">2,300</td>
+          <td class="num">0</td>
+          <td class="num">2</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">14</td>
+          <td>GPT-5.5-pro</td>
+          <td>OpenAI</td>
+          <td class="num">88</td>
+          <td class="num">77&ndash;94%</td>
+          <td class="num">91</td>
+          <td class="num">81&ndash;96%</td>
+          <td class="num">25,062</td>
+          <td class="num">5</td>
+          <td class="num">3</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">16</td>
+          <td>Qwen3.6-35B-A3B</td>
+          <td>Local</td>
+          <td class="num">86</td>
+          <td class="num">75&ndash;93%</td>
+          <td class="num">90</td>
+          <td class="num">80&ndash;95%</td>
+          <td class="num">24,541</td>
+          <td class="num">1</td>
+          <td class="num">4</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">16</td>
           <td>Gemini 3.0 Flash</td>
-          <td>Cloud · Google</td>
-          <td class="num">89/100</td>
-          <td class="num">78–95%</td>
-          <td class="num">2,023</td>
-          <td>$0.10 / 1M tok</td>
-        </tr>
-        <tr class="row-highlight">
-          <td class="rank-cell">3</td>
-          <td>Fireside Chimera</td>
-          <td>On-Prem · Qwen 14B (modified)</td>
-          <td class="num">88/100</td>
-          <td class="num">77–94%</td>
-          <td class="num">2,669</td>
-          <td>$0.00</td>
-        </tr>
-        <tr class="row-highlight">
-          <td class="rank-cell">3</td>
-          <td>Local Model A</td>
-          <td>On-Prem · Qwen 14B</td>
-          <td class="num">88/100</td>
-          <td class="num">77–94%</td>
-          <td class="num">2,518</td>
-          <td>$0.00</td>
-        </tr>
-        <tr class="row-highlight">
-          <td class="rank-cell">3</td>
-          <td>Local Model B</td>
-          <td>On-Prem · Mistral 12B</td>
-          <td class="num">88/100</td>
-          <td class="num">77–94%</td>
-          <td class="num">2,891</td>
-          <td>$0.00</td>
-        </tr>
-        <tr class="row-highlight">
-          <td class="rank-cell">3</td>
-          <td>Local Model C</td>
-          <td>On-Prem · Qwen 14B</td>
-          <td class="num">88/100</td>
-          <td class="num">77–94%</td>
-          <td class="num">2,560</td>
-          <td>$0.00</td>
+          <td>Google</td>
+          <td class="num">86</td>
+          <td class="num">75&ndash;93%</td>
+          <td class="num">90</td>
+          <td class="num">80&ndash;95%</td>
+          <td class="num">2,464</td>
+          <td class="num">1</td>
+          <td class="num">4</td>
         </tr>
         <tr>
-          <td class="rank-cell">7</td>
-          <td>Gemini 2.5 Flash-Lite</td>
-          <td>Cloud · Google</td>
-          <td class="num">78/100</td>
-          <td class="num">66–87%</td>
-          <td class="num">658</td>
-          <td>$0.08 / 1M tok</td>
-        </tr>
-        <tr>
-          <td class="rank-cell">8</td>
+          <td class="rank-cell">16</td>
           <td>Gemini 2.5 Flash</td>
-          <td>Cloud · Google</td>
-          <td class="num">77/100</td>
-          <td class="num">65–86%</td>
-          <td class="num">1,073</td>
-          <td>$0.15 / 1M tok</td>
+          <td>Google</td>
+          <td class="num">80</td>
+          <td class="num">68&ndash;88%</td>
+          <td class="num">90</td>
+          <td class="num">80&ndash;95%</td>
+          <td class="num">1,174</td>
+          <td class="num">3</td>
+          <td class="num">10</td>
         </tr>
         <tr>
-          <td class="rank-cell">9</td>
-          <td>Local Model D</td>
-          <td>On-Prem · Qwen 8B</td>
-          <td class="num">75/100</td>
-          <td class="num">63–84%</td>
-          <td class="num">3,923</td>
-          <td>$0.00</td>
+          <td class="rank-cell">19</td>
+          <td>GPT-5</td>
+          <td>OpenAI</td>
+          <td class="num">70</td>
+          <td class="num">57&ndash;80%</td>
+          <td class="num">87</td>
+          <td class="num">76&ndash;93%</td>
+          <td class="num">10,267</td>
+          <td class="num">8</td>
+          <td class="num">17</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">20</td>
+          <td>Gemini 2.5 Flash-Lite</td>
+          <td>Google</td>
+          <td class="num">75</td>
+          <td class="num">63&ndash;84%</td>
+          <td class="num">85</td>
+          <td class="num">74&ndash;92%</td>
+          <td class="num">3,411</td>
+          <td class="num">1</td>
+          <td class="num">10</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">21</td>
+          <td>Qwen3-30B-A3B</td>
+          <td>Local</td>
+          <td class="num">79</td>
+          <td class="num">67&ndash;88%</td>
+          <td class="num">83</td>
+          <td class="num">71&ndash;91%</td>
+          <td class="num">2,308</td>
+          <td class="num">11</td>
+          <td class="num">4</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">22</td>
+          <td>GPT-5 mini</td>
+          <td>OpenAI</td>
+          <td class="num">57</td>
+          <td class="num">44&ndash;69%</td>
+          <td class="num">81</td>
+          <td class="num">69&ndash;89%</td>
+          <td class="num">5,413</td>
+          <td class="num">10</td>
+          <td class="num">24</td>
+        </tr>
+        <tr>
+          <td class="rank-cell">23</td>
+          <td>GPT-5 nano</td>
+          <td>OpenAI</td>
+          <td class="num">59</td>
+          <td class="num">46&ndash;71%</td>
+          <td class="num">80</td>
+          <td class="num">68&ndash;88%</td>
+          <td class="num">6,666</td>
+          <td class="num">10</td>
+          <td class="num">21</td>
         </tr>
       </tbody>
     </table>
 
     <p class="table-note">
-      Statistical note: at 99% confidence, the top 6 models (93%, 89%, 88%×4) have overlapping
-      confidence intervals. They are statistically indistinguishable at this sample size. Latency
-      caveat: cloud latency includes network round-trip; local latency is GPU inference only on a
-      single RTX 5090.
+      Latency: cloud P50 includes network round-trip to provider API; local P50 is GPU inference time on a single RTX 5090 (32 GB VRAM). GPT-5.5-pro P50 of 25 s reflects the 29-task subset run. Qwen3.6-35B-A3B latency reflects un-optimized inference configuration&mdash;not representative of a tuned deployment.
+      <br/><br/>
+      <sup>&dagger;</sup> Gemini 3.5 Flash: two failures (tasks 49, 59) produced no parseable function call with zero completion tokens and ~6 s latency, a pattern consistent with reasoning tokens exhausting the 512-token output cap before the tool call was emitted. Both tasks produced the expected tool call on re-run during the Type A/B classification pass. Counted as passes here. The unadjusted measurement was 87 Strict / 89 Adjusted; the adjusted figure (89 / 91) is within the 99% Wilson CI of the original.
     </p>
 
-    <!-- SECTION 2: CATEGORY BREAKDOWN -->
-    <h2>Category Breakdown—Where Each Model Excels</h2>
+    <p>
+      <strong>Reading the dual columns.</strong> A large Strict-to-Adjusted gap signals a model that clarifies rather than guesses. Gemma 4 E4B Q6_K (72 Strict &rarr; 96 Adjusted, gap of 24) asks rather than misroutes. GPT-5 mini (57 &rarr; 81, gap of 24) also has a large gap, but 10 of its non-calls are Type A genuine misses, not clarifications. The Strict score alone cannot distinguish these two failure modes. The Adjusted score, read alongside the Type A column, can.
+    </p>
+
+    <!-- SECTION 2: WHAT CHANGED SINCE V1 -->
+    <h2>2. What Changed Since v1</h2>
 
     <p>
-      Aggregate accuracy hides per-category specialization. The 88/100 four-way tie at rank 3
-      decomposes into very different failure profiles across routing, reasoning, anti-hallucination,
-      and ambiguous tasks.
+      v1 covered 11 models, all local or Google cloud, with a single accuracy score. v2 makes three structural changes.
+    </p>
+
+    <h3>Expanded model coverage</h3>
+
+    <p>
+      The benchmark grew from 11 to 23 models across four architecture families: local Gemma 4 and Qwen3/3.6 variants, Google Gemini (7 models spanning two generations), Anthropic (Opus 4.7, Sonnet 4.6, Haiku 4.5), and OpenAI (GPT-5 family + GPT-5.5 series). This is the first Fireside Labs tool-calling benchmark to cover all three major cloud API providers simultaneously.
+    </p>
+
+    <h3>Known methodology biases&mdash;stated explicitly</h3>
+
+    <p>
+      The benchmark uses 100 handcrafted tasks across four categories. The distribution is intentionally not flat:
     </p>
 
     <table class="compare-table">
       <thead>
         <tr>
           <th>Category</th>
-          <th class="num">Best Cloud</th>
-          <th class="num">Fireside Chimera</th>
-          <th class="num">Mistral 12B</th>
-          <th class="num">Qwen 14B</th>
-          <th class="num">Qwen 8B</th>
+          <th class="num">Task Count</th>
+          <th>Expected Response</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td><strong>Routing</strong> <span style="color:var(--muted)">(40 tasks)</span></td>
-          <td class="num">39/40</td>
-          <td class="num win">40/40 🏆</td>
-          <td class="num">38/40</td>
-          <td class="num">39/40</td>
-          <td class="num">33/40</td>
+          <td>Routing</td>
+          <td class="num">~60</td>
+          <td>Tool call</td>
         </tr>
         <tr>
-          <td><strong>Reasoning</strong> <span style="color:var(--muted)">(25 tasks)</span></td>
-          <td class="num">23/25</td>
-          <td class="num">20/25</td>
-          <td class="num">18/25</td>
-          <td class="num">21/25</td>
-          <td class="num">14/25</td>
+          <td>Reasoning</td>
+          <td class="num">~20</td>
+          <td>Tool call</td>
         </tr>
         <tr>
-          <td><strong>Anti-Hallucination</strong> <span style="color:var(--muted)">(20 tasks)</span></td>
-          <td class="num">20/20</td>
-          <td class="num">15/20</td>
-          <td class="num win">20/20</td>
-          <td class="num">13/20</td>
-          <td class="num">19/20</td>
+          <td>Anti-hallucination</td>
+          <td class="num">~10</td>
+          <td>None (no tool appropriate)</td>
         </tr>
         <tr>
-          <td><strong>Ambiguous</strong> <span style="color:var(--muted)">(15 tasks)</span></td>
-          <td class="num">13/15</td>
-          <td class="num">13/15</td>
-          <td class="num">12/15</td>
-          <td class="num win">15/15</td>
-          <td class="num">9/15</td>
+          <td>Ambiguous</td>
+          <td class="num">~10</td>
+          <td>None or clarification</td>
         </tr>
       </tbody>
     </table>
 
-    <!-- SECTION 3: KEY FINDINGS -->
-    <h2>Six Findings That Should Change Your Deployment Decision</h2>
-
-    <div class="finding-card">
-      <div class="finding-num">Finding 01</div>
-      <div class="finding-title">Structural modification produces perfect tool routing</div>
-      <p class="finding-body">
-        Our Fireside Chimera—a Qwen-14B base with R1 reasoning FFN grafts and 12% magnitude
-        pruning—achieved <strong>perfect 40/40 on direct tool routing</strong>. No other model
-        in the benchmark, cloud or local, matched this. The structural modification improved
-        routing precision without degrading overall accuracy.
-      </p>
-    </div>
-
-    <div class="finding-card">
-      <div class="finding-num">Finding 02</div>
-      <div class="finding-title">On direct tool routing, local models match cloud parity</div>
-      <p class="finding-body">
-        Four local models from three different vendor architectures scored 88/100—matching
-        Gemini 3.0 Flash. For the most common production use case, <strong>there is no accuracy
-        reason to use a cloud API</strong>.
-      </p>
-    </div>
-
-    <div class="finding-card">
-      <div class="finding-num">Finding 03</div>
-      <div class="finding-title">Different architectures fail differently</div>
-      <p class="finding-body">
-        The Mistral 12B achieved perfect 20/20 on anti-hallucination (knowing when <em>not</em> to
-        call a tool) but struggled on reasoning (18/25). The Qwen 14B achieved perfect 15/15 on
-        ambiguous multi-step tasks but over-relied on <code>web_search</code> for knowledge
-        questions (13/20 on anti-hallucination). <strong>Model selection should be task-specific,
-        not one-size-fits-all.</strong>
-      </p>
-    </div>
-
-    <div class="finding-card">
-      <div class="finding-num">Finding 04</div>
-      <div class="finding-title">The generation gap within cloud models is larger than cloud-vs-local</div>
-      <p class="finding-body">
-        Gemini 2.5 Flash scores 77/100 while Gemini 3.1 Flash-Lite scores 93/100—a 16-point gap
-        <em>within the same vendor</em>. The gap between the best local model and the best cloud
-        model is only 5 points. <strong>Customers running older Gemini versions are getting worse
-        accuracy than a free local model.</strong>
-      </p>
-    </div>
-
-    <div class="finding-card">
-      <div class="finding-num">Finding 05</div>
-      <div class="finding-title">Code-specialist models fail catastrophically on tool calling</div>
-      <p class="finding-body">
-        Codestral-22B (0/100), Qwen2.5-Coder-14B (20/100), and DeepSeek-Coder-V2-Lite (20/100) all
-        scored near zero. <strong>Code generation ability does not transfer to structured tool
-        routing.</strong> Model selection for production deployments requires task-specific
-        benchmarking—not vendor reputation.
-      </p>
-    </div>
-
-    <div class="finding-card">
-      <div class="finding-num">Finding 06</div>
-      <div class="finding-title">An 8B model on consumer hardware gets 75% accuracy</div>
-      <p class="finding-body">
-        This is the floor—a model that fits in 5GB of VRAM, runnable on a laptop GPU, still
-        correctly routes tools three out of four times. With prompt engineering and targeted
-        fine-tuning, this number is improvable. The cost-vs-capability curve is sharply
-        non-monotonic in favor of small local deployment.
-      </p>
-    </div>
-
-    <!-- SECTION 4: COST -->
-    <h2>The Cost Equation</h2>
+    <p>
+      Approximately 80% of tasks expect a tool call. This biases the benchmark toward models that call tools aggressively. A model optimized for conservative behavior&mdash;asking before acting&mdash;will be penalized on Strict even when its behavior is correct. The Adjusted score partially corrects for this. A purpose-built Tool-Calling Judgment Benchmark with a balanced distribution (50/50 tool-expected vs. None-expected) is in development.
+    </p>
 
     <p>
-      For a company processing 100,000 tool calls per month, the deployment-cost picture is stark:
+      <strong>Argument validation is key-only, not value-match.</strong> A task is marked <code>args_correct</code> if the required argument keys are present in the model's tool call, regardless of argument values. This is a known limitation and is discussed in Section 5.
+    </p>
+
+    <p>
+      <strong>Temperature is 0 throughout.</strong> Single-run per model. No variance measurement across runs.
+    </p>
+
+    <h3>Type A vs. Type B failure classification</h3>
+
+    <p>
+      In v1, any "None" response where a tool call was expected counted as a failure, period. v2 re-classifies those failures.
+    </p>
+
+    <p>
+      When a model returns no tool call on a task where one was expected, the raw response text is inspected:
+    </p>
+
+    <div class="finding-card">
+      <div class="finding-num">Type A — Genuine Miss</div>
+      <div class="finding-title">Silent failure</div>
+      <p class="finding-body">The model produced no tool call and no meaningful question. It failed silently, answered in prose, or hallucinated an answer. This is an unambiguous error.</p>
+    </div>
+
+    <div class="finding-card">
+      <div class="finding-num">Type B — Clarifying Question</div>
+      <div class="finding-title">Reasonable abstention</div>
+      <p class="finding-body">The model produced no tool call because it asked for missing information it genuinely needs&mdash;a date, a recipient, a specific value&mdash;before committing to an action. <strong>Type B responses are credited in the Adjusted score.</strong> A model that asks "What date should I schedule this for?" before calling <code>schedule_meeting</code> has not failed&mdash;it has correctly identified that the task underspecified a required argument.</p>
+    </div>
+
+    <p>
+      Classification uses a regex-based detector: presence of a question mark (<code>?</code>), or phrases matching patterns like "could you clarify", "which one", "what is the", "please provide", and related variants. All "None" responses across all 23 models were re-classified via this detector and stored in per-model <code>*_nones.json</code> files.
+    </p>
+
+    <!-- SECTION 3: THREE PROVIDER PHILOSOPHIES -->
+    <h2>3. Three Provider Philosophies</h2>
+
+    <p>
+      The cross-provider pattern is not random noise. Each provider's lineup shows a consistent behavioral signature.
+    </p>
+
+    <h3>Anthropic&mdash;conservative by design</h3>
+
+    <p>
+      All three Anthropic models show near-zero Type A failures. When an Anthropic model declines to call a tool, it is almost always asking a question, not silently failing. Haiku 4.5's 20 Type B responses&mdash;the most of any model in the benchmark&mdash;represent a deliberate posture: it will not guess at a missing email address or an unspecified date. It asks.
+    </p>
+
+    <div class="perception-block">
+      <div class="perception-row">
+        <div>Model</div>
+        <div>Type A / Type B / Strict / Adjusted</div>
+        <div>Pipeline implication</div>
+      </div>
+      <div class="perception-row">
+        <div class="perception-label-cell">Claude Opus 4.7</div>
+        <div class="perception-score">1 / 11 / 87 / 98</div>
+        <div class="perception-quote">Best Adjusted; tolerates clarifying turns</div>
+      </div>
+      <div class="perception-row">
+        <div class="perception-label-cell">Claude Sonnet 4.6</div>
+        <div class="perception-score">0 / 7 / 89 / 96</div>
+        <div class="perception-quote">Leads Strict within Anthropic; few clarifications</div>
+      </div>
+      <div class="perception-row">
+        <div class="perception-label-cell">Claude Haiku 4.5</div>
+        <div class="perception-score">0 / 20 / 78 / 98</div>
+        <div class="perception-quote">Tied #1 Adjusted; highest clarification rate; lowest cost</div>
+      </div>
+    </div>
+
+    <p>
+      The practical consequence: in a conversational tool-calling pipeline where a clarifying turn is acceptable, Anthropic's lineup is the strongest in the field on an Adjusted basis. In a strictly automated pipeline where a "None" response of any kind triggers a failure state, the Strict scores apply&mdash;and Sonnet 4.6 (89) leads within the family.
+    </p>
+
+    <div class="pull-quote">
+      <p>
+        "Haiku 4.5 at $1/1M input ties Opus 4.7 at $5/1M input on Adjusted score. That 5&times; cost difference buys you nothing on this benchmark."
+      </p>
+    </div>
+
+    <h3>Google&mdash;balanced routing with generation spread</h3>
+
+    <p>
+      Google's models show mixed Type A/Type B behavior with no single dominant pattern, but they produce the best raw Strict scores in the upper tier. The generation gap within Google's lineup is the sharpest finding in the dataset: Gemini 2.5 Flash scores 80 Strict; Gemini 3.0 Pro scores 93 Strict&mdash;a 13-point gap on the same provider. Teams that have not pinned or validated their Gemini model version may be operating at any point in this 13-point window without knowing it. The newest Flash release (3.5) lands at 89/91&mdash;within Wilson CI of 3.0 Flash (86/90) and below 3.1 Flash-Lite (92/93). Generation-over-generation improvement on tool-calling within the Flash tier is below the noise floor of this benchmark.
+    </p>
+
+    <div class="perception-block">
+      <div class="perception-row">
+        <div>Model</div>
+        <div>Type A / Type B / Strict / Adjusted</div>
+        <div>Notes</div>
+      </div>
+      <div class="perception-row">
+        <div class="perception-label-cell">Gemini 3.0 Pro</div>
+        <div class="perception-score">0 / 4 / 93 / 97</div>
+        <div class="perception-quote">Top-tier Strict; near-zero failures of either type</div>
+      </div>
+      <div class="perception-row">
+        <div class="perception-label-cell">Gemini 3.1 Pro</div>
+        <div class="perception-score">0 / 3 / 93 / 96</div>
+        <div class="perception-quote">Tied with 3.0 Pro on Strict; slightly lower Adjusted</div>
+      </div>
+      <div class="perception-row">
+        <div class="perception-label-cell">Gemini 3.1 Flash-Lite</div>
+        <div class="perception-score">0 / 1 / 92 / 93</div>
+        <div class="perception-quote">Best price-per-Strict-point in cloud portfolio</div>
+      </div>
+      <div class="perception-row">
+        <div class="perception-label-cell">Gemini 3.5 Flash<sup>&dagger;</sup></div>
+        <div class="perception-score">0 / 2 / 89 / 91</div>
+        <div class="perception-quote">Newest Flash; barely beats 3.0 Flash within Wilson CI</div>
+      </div>
+      <div class="perception-row">
+        <div class="perception-label-cell">Gemini 3.0 Flash</div>
+        <div class="perception-score">1 / 4 / 86 / 90</div>
+        <div class="perception-quote">Reliable workhorse; same Adjusted as 2.5 Flash</div>
+      </div>
+      <div class="perception-row">
+        <div class="perception-label-cell">Gemini 2.5 Flash</div>
+        <div class="perception-score">3 / 10 / 80 / 90</div>
+        <div class="perception-quote warn">13 pts below 3.0 Pro on Strict; generation gap is real</div>
+      </div>
+      <div class="perception-row">
+        <div class="perception-label-cell">Gemini 2.5 Flash-Lite</div>
+        <div class="perception-score">1 / 10 / 75 / 85</div>
+        <div class="perception-quote warn">Lowest in Google portfolio; significant generation penalty</div>
+      </div>
+    </div>
+
+    <h3>OpenAI&mdash;scattered, with real misses in the base models</h3>
+
+    <p>
+      OpenAI's lineup is the only provider group with substantial Type A failures across multiple models. GPT-5, mini, and nano each log 8&ndash;10 genuine misses&mdash;tasks where the model produced no tool call and no meaningful question. These are not clarifications. They are failures. The Adjusted score improves these models substantially because they also ask frequently (17&ndash;24 Type B), but the Type A floor represents unrecoverable failures in any pipeline.
+    </p>
+
+    <div class="perception-block">
+      <div class="perception-row">
+        <div>Model</div>
+        <div>Type A / Type B / Strict / Adjusted</div>
+        <div>Notes</div>
+      </div>
+      <div class="perception-row">
+        <div class="perception-label-cell">GPT-5.5</div>
+        <div class="perception-score">4 / 6 / 88 / 94</div>
+        <div class="perception-quote">Best in family; moderate Type A floor</div>
+      </div>
+      <div class="perception-row">
+        <div class="perception-label-cell">GPT-5.5-pro</div>
+        <div class="perception-score">5 / 3 / 88 / 91</div>
+        <div class="perception-quote warn">No gain over base on Strict; trails on Adjusted</div>
+      </div>
+      <div class="perception-row">
+        <div class="perception-label-cell">GPT-5</div>
+        <div class="perception-score">8 / 17 / 70 / 87</div>
+        <div class="perception-quote warn">High Type A floor; 8 unrecoverable misses</div>
+      </div>
+      <div class="perception-row">
+        <div class="perception-label-cell">GPT-5 mini</div>
+        <div class="perception-score">10 / 24 / 57 / 81</div>
+        <div class="perception-quote warn">10 genuine misses; large clarification volume masks failures</div>
+      </div>
+      <div class="perception-row">
+        <div class="perception-label-cell">GPT-5 nano</div>
+        <div class="perception-score">10 / 21 / 59 / 80</div>
+        <div class="perception-quote warn">10 genuine misses; lowest Adjusted in OpenAI family</div>
+      </div>
+    </div>
+
+    <p>
+      <strong>GPT-5.5-pro adds no value over GPT-5.5 base.</strong> On Strict, both score 88. On Adjusted, GPT-5.5 base (94) outperforms GPT-5.5-pro (91). The pro variant's higher Type A count (5 vs. 4) and lower Type B count (3 vs. 6) suggest it is marginally more aggressive about calling tools but also more likely to miss outright. The data does not support paying a premium for it on tool-calling workloads.
+    </p>
+
+    <!-- SECTION 4: COST / VRAM / LATENCY DECISION TABLE -->
+    <h2>4. Cost / VRAM / Latency Decision Table</h2>
+
+    <p>
+      A practical reference for teams choosing a deployment configuration. Tier boundaries are based on provider pricing as of May 2026; verify current rates before committing.
     </p>
 
     <table class="compare-table">
       <thead>
         <tr>
-          <th>Solution</th>
-          <th class="num">Monthly Cost</th>
-          <th class="num">Annual Cost</th>
-          <th>Data Residency</th>
+          <th>Tier</th>
+          <th>Representative Model</th>
+          <th class="num">Adjusted</th>
+          <th class="num">Strict</th>
+          <th class="num">P50 Latency</th>
+          <th>Cost (Input)</th>
+          <th>VRAM</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Gemini 3.1 Flash-Lite</td>
-          <td class="num">~$500</td>
-          <td class="num">~$6,000</td>
-          <td>All data sent to Google</td>
-        </tr>
-        <tr>
-          <td>Gemini 3.0 Flash</td>
-          <td class="num">~$1,200</td>
-          <td class="num">~$14,400</td>
-          <td>All data sent to Google</td>
+        <tr class="row-highlight">
+          <td>Free / On-Prem</td>
+          <td>Gemma 4 31B-it</td>
+          <td class="num">96</td>
+          <td class="num win"><strong>95</strong></td>
+          <td class="num">~3 s</td>
+          <td>$0/call</td>
+          <td>~20 GB</td>
         </tr>
         <tr class="row-highlight">
-          <td><strong>Local 12–14B model</strong></td>
-          <td class="num"><strong>$0</strong></td>
-          <td class="num"><strong>$0</strong></td>
-          <td><strong>Stays on-prem</strong></td>
+          <td>Free / On-Prem</td>
+          <td>Gemma 4 E2B Q6_K</td>
+          <td class="num">97</td>
+          <td class="num">87</td>
+          <td class="num">~2.3 s</td>
+          <td>$0/call</td>
+          <td>~2 GB</td>
+        </tr>
+        <tr class="row-highlight">
+          <td>Free / On-Prem</td>
+          <td>Qwen3.6-27B-dense</td>
+          <td class="num">95</td>
+          <td class="num">92</td>
+          <td class="num">~3.4 s</td>
+          <td>$0/call</td>
+          <td>~18 GB</td>
+        </tr>
+        <tr>
+          <td>Cheap Cloud</td>
+          <td>Claude Haiku 4.5</td>
+          <td class="num win"><strong>98</strong></td>
+          <td class="num">78</td>
+          <td class="num">1,264 ms</td>
+          <td>$1/1M</td>
+          <td>None</td>
+        </tr>
+        <tr>
+          <td>Cheap Cloud</td>
+          <td>Gemini 3.1 Flash-Lite</td>
+          <td class="num">93</td>
+          <td class="num">92</td>
+          <td class="num">790 ms</td>
+          <td>$0.25/1M</td>
+          <td>None</td>
+        </tr>
+        <tr>
+          <td>Mid Cloud</td>
+          <!-- VERIFY: OpenAI GPT-5.5 pricing — openai.com/pricing returned 403; could not verify $3/1M claim -->
+          <td>GPT-5.5<!-- VERIFY: OpenAI pricing --></td>
+          <td class="num">94</td>
+          <td class="num">88</td>
+          <td class="num">2,341 ms</td>
+          <td>$3/1M<!-- VERIFY: OpenAI pricing --></td>
+          <td>None</td>
+        </tr>
+        <tr>
+          <td>Mid Cloud</td>
+          <td>Claude Sonnet 4.6</td>
+          <td class="num">96</td>
+          <td class="num">89</td>
+          <td class="num">2,413 ms</td>
+          <td>$3/1M</td>
+          <td>None</td>
+        </tr>
+        <tr>
+          <td>Premium Cloud</td>
+          <td>Gemini 3.1 Pro</td>
+          <td class="num">96</td>
+          <td class="num">93</td>
+          <td class="num">4,898 ms</td>
+          <td>$2/1M</td>
+          <td>None</td>
+        </tr>
+        <tr>
+          <td>Premium Cloud</td>
+          <td>Claude Opus 4.7</td>
+          <td class="num win"><strong>98</strong></td>
+          <td class="num">87</td>
+          <td class="num">3,150 ms</td>
+          <td>$5/1M</td>
+          <td>None</td>
         </tr>
       </tbody>
     </table>
 
-    <div class="cost-grid">
-      <div class="cost-card">
-        <div class="cost-label">One-Time Hardware</div>
-        <div class="cost-amount">~$300<span class="small">used consumer GPU for 14B Q4</span></div>
-        <p class="cost-desc">
-          A used RTX 3090 or 4070 is sufficient to run a 14B model at Q4 quantization. The full
-          deployment fits in 9GB of VRAM with headroom for concurrent inference.
-        </p>
-      </div>
-      <div class="cost-card highlight">
-        <div class="cost-label">Payback Period</div>
-        <div class="cost-amount">< 1 month<span class="small">vs. any tested cloud option</span></div>
-        <p class="cost-desc">
-          At 100K calls/month, local deployment recoups its hardware cost in the first month
-          versus Gemini 3.1 Flash-Lite—and instantly versus heavier Gemini SKUs.
-        </p>
-      </div>
-    </div>
+    <p class="table-note">
+      Pricing verified 2026-05-19 against anthropic.com and ai.google.dev/pricing. Input token prices shown. GPT-5.5 input pricing could not be independently verified at publication time&mdash;verify at openai.com/pricing before committing to a deployment tier. All prices subject to change; re-verify before procurement.
+    </p>
 
-    <div class="callout">
-      <div class="callout-label">When On-Prem Is the Only Option</div>
+    <p>
+      <strong>How to read this table.</strong> If Adjusted score is the primary metric&mdash;meaning clarifying questions are acceptable in your pipeline&mdash;Claude Haiku 4.5 (98 Adjusted at $1/1M) is the strongest cloud option at any budget tier. If Strict is the primary metric&mdash;meaning any non-tool-call response is a pipeline failure&mdash;Gemma 4 31B-it (95 Strict) runs on-prem at $0 and beats every cloud model on raw routing accuracy, with Gemini 3.1 Flash-Lite (92 Strict, $0.25/1M) as the cheapest cloud alternative.
+    </p>
+
+    <p>
+      <strong>On VRAM requirements for local deployment.</strong> Gemma 4 E2B Q6_K at ~2 GB is deployable on consumer hardware (RTX 3060 12 GB, RTX 4060, Apple M3 Pro). Gemma 4 31B-it at ~20 GB requires a workstation GPU (RTX 5090, A6000, or equivalent). All local latencies measured on RTX 5090; smaller GPUs will be slower.
+    </p>
+
+    <div class="pull-quote">
       <p>
-        Beyond cost, some workloads can't legally or contractually leave the building. For
-        organizations with data-residency requirements, customer-contract constraints, or
-        sovereign-cloud mandates, the cloud-vs-local question is already answered. The remaining
-        question is whether local accuracy is good enough—and on the tasks measured here, it is.
+        "For a team at 1M tool calls per month, Haiku 4.5 costs $1,000/month. Claude Opus 4.7 costs $5,000/month. The Adjusted scores are identical."
       </p>
     </div>
 
-    <!-- SECTION 5: VARIANCE -->
-    <h2>The Variance Problem</h2>
-
-    <p>
-      A finding that should concern every organization relying on AI: the same vendor name on your
-      invoice doesn't mean the same accuracy in production. Customers running different Gemini
-      generations have <strong>vastly different experiences without knowing it</strong>.
-    </p>
-
-    <div class="perception-block">
-      <div class="perception-row">
-        <div>Generation</div>
-        <div>Score</div>
-        <div>What the customer thinks</div>
-      </div>
-      <div class="perception-row">
-        <div class="perception-label-cell">3.1 Flash-Lite</div>
-        <div class="perception-score">93%</div>
-        <div class="perception-quote">"Our AI works great"</div>
-      </div>
-      <div class="perception-row">
-        <div class="perception-label-cell">3.0 Flash</div>
-        <div class="perception-score">89%</div>
-        <div class="perception-quote">"Our AI works well"</div>
-      </div>
-      <div class="perception-row">
-        <div class="perception-label-cell">2.5 Flash</div>
-        <div class="perception-score">77%</div>
-        <div class="perception-quote warn">"Our AI works" (1 in 4 tool calls wrong)</div>
-      </div>
-      <div class="perception-row">
-        <div class="perception-label-cell">2.5 Flash-Lite</div>
-        <div class="perception-score">78%</div>
-        <div class="perception-quote warn">"Our AI works" (1 in 4 tool calls wrong)</div>
-      </div>
-    </div>
-
-    <p>
-      The difference between 93% and 77% is <strong>invisible in daily use</strong>—the model
-      still answers questions, still appears helpful. But in production, that 16-point gap means
-      <strong>1 in 6 tool calls goes to the wrong endpoint</strong>. Orders get misrouted. Emails
-      don't send. Database queries target the wrong table.
-    </p>
-
-    <p>
-      Most organizations have never measured this. They adopted a model based on a blog post or a
-      vendor demo, and they have no empirical basis for knowing whether they're at 93% or 77%.
-      <strong>That's the problem we solve.</strong>
-    </p>
-
-    <!-- SECTION 6: METHODOLOGY -->
-    <h2>Methodology</h2>
-
-    <table class="compare-table">
-      <tbody>
-        <tr>
-          <td><strong>Tasks</strong></td>
-          <td>100 handcrafted, covering 10 distinct tools</td>
-        </tr>
-        <tr>
-          <td><strong>Categories</strong></td>
-          <td>Routing (40), Reasoning (25), Anti-Hallucination (20), Ambiguous (15)</td>
-        </tr>
-        <tr>
-          <td><strong>Evaluation</strong></td>
-          <td>Exact-match on tool name + required argument presence</td>
-        </tr>
-        <tr>
-          <td><strong>Temperature</strong></td>
-          <td>0 (fully deterministic)</td>
-        </tr>
-        <tr>
-          <td><strong>Statistical method</strong></td>
-          <td>Wilson score intervals, 99% confidence</td>
-        </tr>
-        <tr>
-          <td><strong>Local models</strong></td>
-          <td>Quantized to Q4_K_M, served via llama.cpp</td>
-        </tr>
-        <tr>
-          <td><strong>Cloud models</strong></td>
-          <td>Google Gemini API (4 models across 2 generations)</td>
-        </tr>
-        <tr>
-          <td><strong>Hardware</strong></td>
-          <td>NVIDIA RTX 5090 (32GB VRAM)</td>
-        </tr>
-        <tr>
-          <td><strong>Reproducibility</strong></td>
-          <td>Complete task set and benchmark harness available on request</td>
-        </tr>
-      </tbody>
-    </table>
-
     <div class="verdict">
       <p>
-        For the most common production use case—routing user requests to the right tool—a
-        $300 used GPU running a 14B local model matches Gemini 3.0 Flash at 88/100 accuracy.
-        The cloud premium buys you nothing measurable.
+        Gemma 4 31B-it scores 95 Strict on-prem. Haiku 4.5 ties Opus 4.7 on Adjusted score in the cloud. Capability parity holds across the benchmark&mdash;the cloud premium is a procurement choice, not a performance requirement.
+      </p>
+    </div>
+
+    <!-- SECTION 5: FUTURE WORK -->
+    <h2>5. Future Work</h2>
+
+    <p>
+      This benchmark is a production instrument, not an academic paper, and its limitations are operational rather than theoretical.
+    </p>
+
+    <div class="finding-card">
+      <div class="finding-num">Limitation 01</div>
+      <div class="finding-title">80% tool-expected distribution is a known bias</div>
+      <p class="finding-body">
+        This benchmark was designed to stress-test routing accuracy, not to balance the full space of "should I call a tool?" judgments. Models optimized for conservative behavior are penalized in Strict even when that behavior is correct. A successor benchmark&mdash;the Fireside Labs Tool-Calling Judgment Benchmark&mdash;will use a balanced distribution (50% tool-expected, 50% None-expected) to measure both triggering precision and abstention accuracy. This will also allow proper measurement of anti-hallucination performance, currently underweighted.
+      </p>
+    </div>
+
+    <div class="finding-card">
+      <div class="finding-num">Limitation 02</div>
+      <div class="finding-title">Per-task variance is not measured</div>
+      <p class="finding-body">
+        Every model was run once per task at temperature 0. Temperature-0 inference is not fully deterministic for all providers, particularly cloud APIs that may apply sampling post-temperature. Multi-run variance measurement is a planned addition for v3.
+      </p>
+    </div>
+
+    <div class="finding-card">
+      <div class="finding-num">Limitation 03</div>
+      <div class="finding-title">Argument validation is key-only</div>
+      <p class="finding-body">
+        Scoring marks <code>args_correct</code> for presence of required argument keys, not argument values. A future strict-mode scoring pass would validate argument values against expected outputs. This would likely lower Strict scores for all models, but ranking order is not expected to change materially for top-tier models&mdash;their failures are primarily routing failures, not argument-value failures.
+      </p>
+    </div>
+
+    <div class="finding-card">
+      <div class="finding-num">Limitation 04</div>
+      <div class="finding-title">Type B classification is regex-based</div>
+      <p class="finding-body">
+        The clarification detector looks for question marks and specific phrases. It does not use a model judge. Edge cases exist&mdash;a model that produces a rhetorical question, or a question about a topic unrelated to the missing argument, will be mis-classified as Type B. Manual review of a random sample of Type B classifications found no systematic errors in this dataset, but the detector is not guaranteed to generalize to new task distributions.
+      </p>
+    </div>
+
+    <!-- ABOUT THIS RESEARCH -->
+    <div class="callout">
+      <div class="callout-label">About This Research</div>
+      <p>
+        <strong>Fireside Labs LLC</strong> builds the evaluation infrastructure that answers the question every AI team should be asking: <em>how well does our model actually work?</em> The benchmark methodology in this paper reduces evaluation noise from &plusmn;20% to &plusmn;3%, tests real-world tool calling rather than academic proxies, and produces statistically rigorous results with Wilson confidence intervals at 99% confidence.
+      </p>
+      <p style="margin-top:12px;">
+        If you are deploying a model for tool-calling workloads and have not validated its accuracy on your specific task distribution, you are operating on a guess. The generation gap within a single vendor's lineup&mdash;13 points within Gemini, 31 points within the GPT-5 family on Strict&mdash;means the vendor name on your invoice tells you almost nothing about the accuracy you are getting.
       </p>
     </div>
 
@@ -817,30 +1143,26 @@
         We Tell You How Well Your Model Actually Works
       </h2>
       <p class="cta-body">
-        Fireside Labs builds the evaluation infrastructure that answers the question every AI team
-        should be asking: <em>how well does our model actually work?</em> Our benchmark methodology
-        reduces evaluation noise from ±20% to ±3%, tests real-world tool calling rather than
-        academic benchmarks, and runs against both cloud APIs and local deployments to produce
-        statistically rigorous results with proper confidence intervals.
+        Fireside Labs LLC builds the evaluation infrastructure that answers the question every AI team should be asking: <em>how well does our model actually work?</em> Our benchmark methodology reduces evaluation noise from &plusmn;20% to &plusmn;3%, tests real-world tool calling rather than academic benchmarks, and runs against both cloud APIs and local deployments to produce statistically rigorous results with proper confidence intervals. This report expanded coverage to all three major cloud providers and introduced the Type&nbsp;A/B failure taxonomy&mdash;a framework for understanding whether a model is silently failing or appropriately asking for clarification.
       </p>
 
       <div class="cta-services">
         <div class="cta-service">
           <div class="cta-service-name">Model Selection</div>
           <p class="cta-service-desc">
-            Find the right model for your specific task profile—not the leaderboard's.
+            Find the right model for your specific task profile&mdash;not the leaderboard's. Local, cloud, or hybrid.
           </p>
         </div>
         <div class="cta-service">
           <div class="cta-service-name">Production Validation</div>
           <p class="cta-service-desc">
-            Confirm your current model meets accuracy requirements at statistical confidence.
+            Confirm your current model meets accuracy requirements at statistical confidence before you ship.
           </p>
         </div>
         <div class="cta-service">
           <div class="cta-service-name">Local Deployment</div>
           <p class="cta-service-desc">
-            Optimize on-prem inference to match or exceed cloud API performance.
+            Optimize on-prem inference to match or exceed cloud API performance on your workload.
           </p>
         </div>
       </div>
@@ -850,14 +1172,14 @@
           Want to know how your model actually performs? Let's start with a conversation.
         </p>
         <a class="cta-contact-link" href="mailto:j.nguyen@firesidelabs.ai">
-          j.nguyen@firesidelabs.ai →
+          j.nguyen@firesidelabs.ai &rarr;
         </a>
       </div>
     </div>
 
     <div class="doc-footer">
-      <div>Fireside Labs &nbsp;·&nbsp; firesidelabs.ai &nbsp;·&nbsp; © 2026</div>
-      <div>Benchmark data collected April 19, 2026. For informational purposes only.</div>
+      <div>Fireside Labs LLC &nbsp;&middot;&nbsp; firesidelabs.ai &nbsp;&middot;&nbsp; &copy; 2026</div>
+      <div>Benchmark data collected April&ndash;May 2026. For informational purposes only.</div>
     </div>
 
   </div>

@@ -71,14 +71,15 @@ export const ComparisonTable = () => {
         </p>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         className="glass-elevated rounded-2xl overflow-hidden"
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         viewport={{ once: true, margin: '-50px' }}
       >
-        <div className="grid grid-cols-[1.5fr_1fr_1fr] border-b border-white/5">
+        {/* Desktop table header — hidden on mobile */}
+        <div className="hidden sm:grid grid-cols-[1.5fr_1fr_1fr] border-b border-white/5">
           <div className="px-8 py-5 font-mono text-xs text-text-muted tracking-widest uppercase">
             Metric
           </div>
@@ -97,18 +98,35 @@ export const ComparisonTable = () => {
             <motion.div
               key={i}
               variants={rowVariants}
-              className="grid grid-cols-[1.5fr_1fr_1fr] border-b border-white/5 last:border-b-0 
-                         hover:bg-white/[0.02] transition-colors duration-300 group"
+              className="border-b border-white/5 last:border-b-0 hover:bg-white/[0.02] transition-colors duration-300 group"
             >
-              <div className="px-8 py-6 flex items-center gap-4 font-medium text-text-primary">
-                <row.icon size={18} className="text-indigo/60 group-hover:text-indigo transition-colors" />
-                {row.label}
+              {/* Desktop row */}
+              <div className="hidden sm:grid grid-cols-[1.5fr_1fr_1fr]">
+                <div className="px-8 py-6 flex items-center gap-4 font-medium text-text-primary">
+                  <row.icon size={18} className="text-indigo/60 group-hover:text-indigo transition-colors flex-shrink-0" />
+                  {row.label}
+                </div>
+                <div className={`px-8 py-6 font-mono text-sm border-l border-white/5 flex items-center ${row.cloudColor}`}>
+                  {row.cloud}
+                </div>
+                <div className={`px-8 py-6 font-mono text-sm border-l border-white/5 bg-indigo-dim/50 flex items-center font-medium ${row.foundryColor}`}>
+                  {row.foundry}
+                </div>
               </div>
-              <div className={`px-8 py-6 font-mono text-sm border-l border-white/5 flex items-center ${row.cloudColor}`}>
-                {row.cloud}
-              </div>
-              <div className={`px-8 py-6 font-mono text-sm border-l border-white/5 bg-indigo-dim/50 flex items-center font-medium ${row.foundryColor}`}>
-                {row.foundry}
+              {/* Mobile stacked card */}
+              <div className="sm:hidden px-5 py-5 flex flex-col gap-3">
+                <div className="flex items-center gap-3 font-medium text-text-primary">
+                  <row.icon size={16} className="text-indigo/60 flex-shrink-0" />
+                  {row.label}
+                </div>
+                <div className={`font-mono text-xs leading-relaxed ${row.cloudColor}`}>
+                  <span className="text-text-muted uppercase tracking-widest text-[10px] block mb-1">Generic AI</span>
+                  {row.cloud}
+                </div>
+                <div className={`font-mono text-xs leading-relaxed font-medium ${row.foundryColor} bg-indigo-dim/40 rounded-lg px-3 py-2`}>
+                  <span className="text-indigo uppercase tracking-widest text-[10px] block mb-1">Fireside Labs</span>
+                  {row.foundry}
+                </div>
               </div>
             </motion.div>
           ))}

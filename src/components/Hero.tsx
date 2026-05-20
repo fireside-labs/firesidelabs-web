@@ -112,7 +112,7 @@ export const Hero = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="mt-20 pt-8 border-t border-white/5 flex justify-center gap-12 md:gap-20"
+          className="mt-16 pt-8 border-t border-white/5 flex justify-center gap-8 sm:gap-12 md:gap-20"
         >
           {[
             { value: 'Your', label: 'Domain' },

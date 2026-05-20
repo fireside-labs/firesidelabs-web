@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -266,11 +266,19 @@
     }
     @media print { .print-hint { display: none; } }
 
-    @media (max-width: 700px) {
-      .cover-title { font-size: 36px; }
-      .cover-inner, .doc { padding: 40px 32px; }
+    @media (max-width: 720px) {
+      .cover-title { font-size: 32px; }
+      .cover-inner { padding: 32px 20px; }
+      .doc { padding: 36px 16px; }
       .config-grid, .cta-services { grid-template-columns: 1fr; }
-    }
+      .compare-table { font-size: 11px; display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+      .compare-table thead, .compare-table tbody, .compare-table tr { display: table; width: 100%; table-layout: auto; }
+      .compare-table th, .compare-table td { padding: 7px 6px; }
+      .running-header { display: none; }
+      .cta-contact { flex-direction: column; gap: 12px; }
+      .cta-section { padding: 32px 20px; }
+      h1 { font-size: 26px; }
+      h2 { font-size: 20px; }    }
   </style>
 </head>
 <body>

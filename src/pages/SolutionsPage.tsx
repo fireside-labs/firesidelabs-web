@@ -186,7 +186,7 @@ const SolutionsPage = () => {
             className="glass-elevated rounded-3xl overflow-hidden"
           >
             {/* Header */}
-            <div className="px-8 md:px-12 pt-10 pb-6">
+            <div className="px-5 md:px-12 pt-8 md:pt-10 pb-6">
               <div className="flex items-center gap-4 mb-6">
                 <span className="text-3xl">{solution.emoji}</span>
                 <h2 className="text-2xl md:text-3xl font-bold tracking-tight">{solution.title}</h2>
@@ -206,7 +206,7 @@ const SolutionsPage = () => {
             </div>
 
             {/* Flow Diagram */}
-            <div className="px-8 md:px-12 py-6 bg-white/[0.01] border-y border-white/5">
+            <div className="px-5 md:px-12 py-6 bg-white/[0.01] border-y border-white/5">
               <div className="font-mono text-[10px] tracking-widest text-text-muted uppercase mb-4 text-center">
                 How It Works
               </div>
@@ -214,7 +214,7 @@ const SolutionsPage = () => {
             </div>
 
             {/* Industries */}
-            <div className="px-8 md:px-12 py-8">
+            <div className="px-5 md:px-12 py-8">
               <div className="font-mono text-[10px] tracking-widest text-text-muted uppercase mb-4">
                 Who Uses This
               </div>
@@ -243,11 +243,11 @@ const SolutionsPage = () => {
                   whileHover={{ scale: 1.02, boxShadow: '0 0 25px rgba(200, 117, 51, 0.4)' }}
                   whileTap={{ scale: 0.98 }}
                   className="group flex items-center gap-2 px-6 py-3 bg-indigo text-black font-semibold rounded-xl
-                             text-sm tracking-wide uppercase transition-all duration-300 glow-indigo cursor-pointer"
+                             text-sm tracking-wide uppercase transition-all duration-300 glow-indigo cursor-pointer w-full sm:w-auto justify-center sm:justify-start"
                 >
-                  <Flame size={16} />
-                  Have a Fireside about {solution.title}
-                  <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                  <Flame size={16} className="flex-shrink-0" />
+                  <span className="truncate">Have a Fireside about {solution.title}</span>
+                  <ArrowRight size={14} className="transition-transform group-hover:translate-x-1 flex-shrink-0" />
                 </motion.button>
               </Link>
             </div>

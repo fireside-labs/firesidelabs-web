@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { Flame, Cpu } from 'lucide-react';
+import { Flame, Cpu, Menu, X } from 'lucide-react';
 import { EmberParticles } from './EmberParticles';
 
 const ACCENT = '#C87533';
@@ -9,6 +9,7 @@ const PARTICLE_GLOW = '#FFB366';
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -17,9 +18,10 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Scroll to top on route change
+  // Scroll to top on route change; close mobile menu
   useEffect(() => {
     window.scrollTo(0, 0);
+    setMobileMenuOpen(false);
   }, [location.pathname]);
 
   const navItems = [
@@ -55,6 +57,16 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             />
             <span className="text-lg font-bold tracking-[-0.02em]">FIRESIDE LABS</span>
           </Link>
+
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-text-secondary hover:text-text-primary transition-colors"
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+
           <div className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
               <Link
@@ -108,6 +120,46 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </div>
       </motion.nav>
+
+      {/* Mobile nav drawer */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden fixed top-[60px] left-0 w-full z-40 glass border-b border-white/5 px-6 py-6 flex flex-col gap-4"
+          >
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                to={item.to}
+                className={`text-base font-medium py-2 transition-colors duration-200 ${
+                  location.pathname === item.to
+                    ? 'text-text-primary'
+                    : 'text-text-secondary hover:text-text-primary'
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+            <Link to="/foundry" className="text-base font-medium py-2 text-text-secondary hover:text-text-primary transition-colors">
+              Foundry Runtime
+            </Link>
+            <Link to="/contact">
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                className="mt-2 w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer"
+                style={{ backgroundColor: ACCENT, color: '#000' }}
+              >
+                <Flame size={14} />
+                Have a Fireside
+              </motion.button>
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <main id="main">{children}</main>
 

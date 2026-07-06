@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — Wayward</title>
+<meta name="description" content="How Wayward handles your data. We don't sell it, track you, or run ads.">
+<style>
+  :root{
+    --bg:#FBF7F0; --card:#FFFFFF; --ink:#2A2622; --muted:#6B6259;
+    --line:#E8E0D4; --coral:#E8927C; --gold:#F4B860; --link:#C26B52;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding:0 20px;
+  }
+  .wrap{max-width:720px; margin:0 auto; padding:56px 0 96px}
+  .kicker{
+    display:inline-block; font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--link); font-weight:600; margin-bottom:14px;
+  }
+  h1{font-family:Georgia,"Times New Roman",serif; font-size:38px; line-height:1.1; margin:0 0 10px; font-weight:600}
+  h2{font-family:Georgia,serif; font-size:23px; margin:44px 0 12px; font-weight:600}
+  h3{font-size:17px; margin:26px 0 6px; font-weight:600}
+  p,li{color:#38332E}
+  .updated{color:var(--muted); font-size:14px; margin:0 0 8px}
+  .lede{font-size:18px; color:#4A443C; margin:18px 0 8px}
+  a{color:var(--link); text-decoration:underline; text-underline-offset:2px}
+  ul{padding-left:22px} li{margin:6px 0}
+  .band{height:6px; border-radius:6px; margin:28px 0 8px;
+    background:linear-gradient(90deg,#2A3550,#8A6FA3,var(--coral),var(--gold));}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px 22px; margin:18px 0}
+  .card h3{margin-top:0}
+  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:15px}
+  th,td{text-align:left; padding:10px 8px; border-bottom:1px solid var(--line); vertical-align:top}
+  th{color:var(--muted); font-weight:600; font-size:13px; letter-spacing:.03em; text-transform:uppercase}
+  .foot{margin-top:52px; padding-top:22px; border-top:1px solid var(--line); color:var(--muted); font-size:14px}
+  .pill{display:inline-block; background:#F3ECE0; border:1px solid var(--line); border-radius:999px; padding:3px 11px; font-size:13px; color:#5A5148; margin:2px 4px 2px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="kicker">Wayward</span>
+  <h1>Privacy Policy</h1>
+  <p class="updated">Last updated: 6 July 2026</p>
+  <div class="band" aria-hidden="true"></div>
+
+  <p class="lede">Wayward helps you track the Schengen 90/180-day rule. Your travel data is yours. We built the app to work entirely on your device, with cloud sync only if you choose to sign in — and we never sell your data, run ads, or track you across other apps or websites.</p>
+
+  <h2>Who we are</h2>
+  <p>Wayward is operated by <strong>Fireside Labs LLC</strong>, 455 E Continental Dr, Tempe, AZ 85288-1056, United States. If you have any questions about this policy, contact us at <a href="mailto:support@firesidelabs.ai">support@firesidelabs.ai</a>.</p>
+
+  <h2>The short version</h2>
+  <div class="card">
+    <ul>
+      <li><strong>Works offline.</strong> You can use Wayward fully without an account. Trips are stored on your device.</li>
+      <li><strong>Sign-in is optional.</strong> Create an account only if you want cloud backup, sync across devices, or Couples mode.</li>
+      <li><strong>No ads. No trackers. No analytics SDKs.</strong> We don't use Google Analytics, Facebook, Sentry, or any third-party tracking.</li>
+      <li><strong>We never sell your data</strong> and never share it for advertising.</li>
+      <li><strong>Smart Scan runs on your device.</strong> It reads photo dates and locations locally to suggest trips — your photos are never uploaded to us.</li>
+    </ul>
+  </div>
+
+  <h2>What data we handle, and why</h2>
+  <table>
+    <thead><tr><th>Data</th><th>Why</th><th>Where it lives</th></tr></thead>
+    <tbody>
+      <tr><td>Trips you log (dates, countries, cities)</td><td>To calculate your 90/180 compliance</td><td>On your device; in the cloud only if you sign in</td></tr>
+      <tr><td>Email address &amp; sign-in identifier</td><td>To create and secure your optional account</td><td>Our authentication provider (Supabase)</td></tr>
+      <tr><td>Couple connection (a link between two accounts)</td><td>To share one joint 90/180 window in Couples mode</td><td>Cloud (only when both partners opt in)</td></tr>
+      <tr><td>Subscription status</td><td>To unlock and restore Premium features</td><td>Apple &amp; RevenueCat</td></tr>
+      <tr><td>Photo library metadata (dates, location)</td><td>Smart Scan, to suggest past trips</td><td>Read on-device only; not uploaded</td></tr>
+      <tr><td>Notification token</td><td>To send reminders you've enabled</td><td>Apple Push Notification service</td></tr>
+    </tbody>
+  </table>
+  <p>We do <strong>not</strong> collect your name, contacts, browsing history, precise background location, or advertising identifiers.</p>
+
+  <h2>Signing in</h2>
+  <p>If you choose to sign in, you can use <strong>Sign in with Apple</strong>, <strong>Sign in with Google</strong>, or an <strong>email magic link</strong>. We receive an email address and an account identifier so we can sync your trips and enable Couples mode. Sign in with Apple lets you hide your email with Apple's private relay if you prefer. You can delete your account at any time (see below).</p>
+
+  <h2>Smart Scan &amp; photos</h2>
+  <p>If you use Smart Scan, Wayward asks permission to read your photo library. It looks only at each photo's <em>metadata</em> — the date taken and, where available, the location — to detect international trips and suggest them for you to confirm. This analysis happens entirely on your device. <strong>We do not upload, copy, or store your photos.</strong> You can decline photo access and log trips manually instead.</p>
+
+  <h2>Service providers</h2>
+  <p>We rely on a small number of trusted providers to run the app. They process data only to provide their service to us, under their own privacy commitments:</p>
+  <p>
+    <span class="pill">Supabase — account &amp; trip sync</span>
+    <span class="pill">RevenueCat — subscription management</span>
+    <span class="pill">Apple — App Store, purchases, Sign in with Apple, push</span>
+    <span class="pill">Google — Sign in with Google</span>
+  </p>
+
+  <h2>How your data is protected</h2>
+  <p>Cloud data is transmitted over encrypted connections (HTTPS/TLS) and stored on secured infrastructure with access controls that restrict your trips to your account (and your partner's, in Couples mode). No method of storage or transmission is 100% secure, but we take reasonable measures to protect your information.</p>
+
+  <h2>Your choices &amp; rights</h2>
+  <ul>
+    <li><strong>Use without an account</strong> — no personal data leaves your device.</li>
+    <li><strong>Access &amp; export</strong> — export a PDF record of your trips from within the app.</li>
+    <li><strong>Delete your account &amp; cloud data</strong> — email <a href="mailto:support@firesidelabs.ai">support@firesidelabs.ai</a> and we will delete your account and associated cloud data.</li>
+    <li><strong>Disconnect a couple</strong> — either partner can end the connection at any time.</li>
+    <li><strong>Revoke permissions</strong> — turn off photo access or notifications anytime in iOS Settings.</li>
+  </ul>
+  <p>Depending on where you live (for example the EU/UK under GDPR, or California under the CCPA), you may have rights to access, correct, or delete your personal data. We honor these requests for all users — just contact us.</p>
+
+  <h2>Children</h2>
+  <p>Wayward is not directed to children under 13, and we do not knowingly collect data from them.</p>
+
+  <h2>Changes to this policy</h2>
+  <p>If we make material changes, we'll update the date at the top of this page and, where appropriate, notify you in the app.</p>
+
+  <div class="foot">
+    <p>Wayward is a planning tool, not legal advice. Always confirm entry rules with official sources.<br>
+    © 2026 Fireside Labs LLC · <a href="/wayward/terms">Terms of Service</a> · <a href="/wayward/support">Support</a></p>
+  </div>
+</div>
+</body>
+</html>

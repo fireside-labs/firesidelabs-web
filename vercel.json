@@ -6,7 +6,10 @@
     { "source": "/foundry", "destination": "/", "permanent": true }
   ],
   "rewrites": [
-    { "source": "/((?!papers/|film/).*)", "destination": "/index.html" }
+    { "source": "/wayward/privacy", "destination": "/wayward/privacy.html" },
+    { "source": "/wayward/terms", "destination": "/wayward/terms.html" },
+    { "source": "/wayward/support", "destination": "/wayward/support.html" },
+    { "source": "/((?!papers/|film/|wayward/).*)", "destination": "/index.html" }
   ],
   "headers": [
     {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { Flame, Cpu, Menu, X } from 'lucide-react';
+import { Flame, Menu, X } from 'lucide-react';
 import { EmberParticles } from './EmberParticles';
 
 const ACCENT = '#C87533';
@@ -25,14 +25,14 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
   }, [location.pathname]);
 
   const navItems = [
-    { label: 'Solutions', to: '/solutions' },
-    { label: 'Calibration', to: '/calibration' },
-    { label: 'Benchmarks', to: '/benchmarks' },
+    { label: 'Services', to: '/services' },
+    { label: 'Work', to: '/work' },
     { label: 'Research', to: '/research' },
+    { label: 'About', to: '/about' },
   ];
 
   // Particle intensity: subtle on text-dense pages where embers compete with content.
-  const subtleParticleRoutes = new Set(['/solutions', '/research']);
+  const subtleParticleRoutes = new Set(['/services', '/research', '/work', '/about']);
   const particleIntensity = subtleParticleRoutes.has(location.pathname) ? 'subtle' : 'normal';
 
   return (
@@ -46,7 +46,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className={`fixed top-0 left-0 w-full z-50 px-6 md:px-10 py-4 transition-all duration-500 ${
-          scrolled ? 'glass border-b border-white/5' : 'bg-transparent'
+          scrolled ? 'glass-nav border-b border-white/5' : 'bg-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -81,27 +81,6 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                 {item.label}
               </Link>
             ))}
-            <Link to="/foundry">
-              <motion.div
-                whileHover={{ scale: 1.03, boxShadow: '0 0 20px rgba(200, 117, 51, 0.25)' }}
-                whileTap={{ scale: 0.97 }}
-                className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold tracking-wide uppercase border cursor-pointer transition-all duration-300"
-                style={{ borderColor: 'rgba(200, 117, 51, 0.5)', color: ACCENT }}
-              >
-                <span className="relative flex h-1.5 w-1.5">
-                  <span
-                    className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                    style={{ backgroundColor: ACCENT }}
-                  />
-                  <span
-                    className="relative inline-flex rounded-full h-1.5 w-1.5"
-                    style={{ backgroundColor: ACCENT }}
-                  />
-                </span>
-                <Cpu size={14} />
-                Test Local AI
-              </motion.div>
-            </Link>
             <Link to="/contact">
               <motion.button
                 whileHover={{ scale: 1.03 }}
@@ -129,7 +108,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden fixed top-[60px] left-0 w-full z-40 glass border-b border-white/5 px-6 py-6 flex flex-col gap-4"
+            className="md:hidden fixed top-[60px] left-0 w-full z-40 glass-nav border-b border-white/5 px-6 py-6 flex flex-col gap-4"
           >
             {navItems.map((item) => (
               <Link
@@ -144,9 +123,6 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                 {item.label}
               </Link>
             ))}
-            <Link to="/foundry" className="text-base font-medium py-2 text-text-secondary hover:text-text-primary transition-colors">
-              Foundry Runtime
-            </Link>
             <Link to="/contact">
               <motion.button
                 whileTap={{ scale: 0.97 }}
@@ -185,22 +161,16 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                 </Link>
               ))}
               <Link
-                to="/security"
+                to="/benchmarks"
                 className="text-xs text-text-muted hover:text-text-secondary transition-colors font-mono tracking-wider uppercase"
               >
-                Security
+                Benchmarks
               </Link>
               <Link
                 to="/contact"
                 className="text-xs text-text-muted hover:text-text-secondary transition-colors font-mono tracking-wider uppercase"
               >
                 Contact
-              </Link>
-              <Link
-                to="/foundry"
-                className="text-xs text-text-muted hover:text-text-secondary transition-colors font-mono tracking-wider uppercase"
-              >
-                Foundry Runtime
               </Link>
             </div>
           </div>

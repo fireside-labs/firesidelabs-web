@@ -1,16 +1,15 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from './components/Layout';
 
 // Route-level code splitting — each page becomes its own chunk.
 const HomePage = lazy(() => import('./pages/HomePage'));
-const SolutionsPage = lazy(() => import('./pages/SolutionsPage'));
-const CalibrationPage = lazy(() => import('./pages/CalibrationPage'));
+const ServicesPage = lazy(() => import('./pages/ServicesPage'));
+const WorkPage = lazy(() => import('./pages/WorkPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ResearchPage = lazy(() => import('./pages/ResearchPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const BenchmarksPage = lazy(() => import('./pages/BenchmarksPage'));
-const SecurityPage = lazy(() => import('./pages/SecurityPage'));
-const FoundryPage = lazy(() => import('./pages/FoundryPage'));
 
 const RouteFallback = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
@@ -25,13 +24,18 @@ function App() {
         <Suspense fallback={<RouteFallback />}>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/solutions" element={<SolutionsPage />} />
-            <Route path="/calibration" element={<CalibrationPage />} />
+            <Route path="/services" element={<ServicesPage />} />
+            <Route path="/work" element={<WorkPage />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/research" element={<ResearchPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/benchmarks" element={<BenchmarksPage />} />
-            <Route path="/security" element={<SecurityPage />} />
-            <Route path="/foundry" element={<FoundryPage />} />
+            {/* Legacy routes from the pre-studio site */}
+            <Route path="/solutions" element={<Navigate to="/services" replace />} />
+            <Route path="/calibration" element={<Navigate to="/services" replace />} />
+            <Route path="/security" element={<Navigate to="/services" replace />} />
+            <Route path="/foundry" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
       </Layout>

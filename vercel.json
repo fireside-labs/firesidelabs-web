@@ -1,5 +1,11 @@
 {
+  "redirects": [
+    { "source": "/solutions", "destination": "/services", "permanent": true },
+    { "source": "/calibration", "destination": "/services", "permanent": true },
+    { "source": "/security", "destination": "/services", "permanent": true },
+    { "source": "/foundry", "destination": "/", "permanent": true }
+  ],
   "rewrites": [
-    { "source": "/((?!papers/).*)", "destination": "/index.html" }
+    { "source": "/((?!papers/|film/).*)", "destination": "/index.html" }
   ]
 }

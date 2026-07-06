@@ -30,7 +30,7 @@ const papers: Paper[] = [
   },
   {
     title: 'Do You Actually Need a Cloud API?',
-    description: 'A 100-task, multi-architecture benchmark at 99% statistical confidence: four separate local models reach parity with Gemini 3.0 Flash at $0/call, and our chimera is the only model in the entire field to score perfectly on direct tool routing.',
+    description: 'A 100-task, multi-architecture benchmark at 99% statistical confidence: four separate local models reach parity with Gemini 3.0 Flash at $0/call, and our merged specialist model is the only one in the entire field to score perfectly on direct tool routing.',
     tag: 'DEPLOYMENT ECONOMICS',
     file: '/papers/Local_vs_Cloud_Tool_Calling.html',
     gated: false,
@@ -304,7 +304,7 @@ const ResearchPage = () => {
             <span className="text-gradient">the field.</span>
           </h1>
           <p className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed mb-6">
-            Practical research on enterprise AI, what works, what doesn’t, and what we have learned from real deployments.
+            Read this before you hire anyone to build you AI, including us. What works, what breaks, and what it costs, measured on real tasks.
           </p>
         </motion.div>
 
@@ -319,11 +319,11 @@ const ResearchPage = () => {
             The thesis
           </div>
           <p className="text-sm md:text-[15px] text-text-secondary leading-relaxed">
-            Two-plus years studying production enterprise AI surfaced three failure modes
-            most vendors won’t name: models hallucinate on domain-specific work, confidence
-            scores don’t predict accuracy, and standard benchmarks measure recall of a familiar
-            format more than reasoning. The papers below are the foundation of how we build
-            and calibrate models that hold up in regulated environments.
+            Years of studying production AI surfaced three failure modes most vendors won’t
+            name: models hallucinate on domain-specific work, confidence scores don’t predict
+            accuracy, and standard benchmarks measure recall of a familiar format more than
+            reasoning. The papers below are why our recommendations come with measurements
+            attached, and why we know where the money is before we build.
           </p>
         </motion.div>
 

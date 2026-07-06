@@ -80,6 +80,15 @@ body {
   }
 }
 
+/* Navbar / overlay surface — dark and opaque enough that scrolling content
+   never fights the nav text, with blur as enhancement rather than load-bearing. */
+.glass-nav {
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
 .glass-elevated {
   /* Solid fallback for Samsung Internet < v14 where backdrop-filter is unsupported. */
   background: rgba(18, 18, 26, 0.92);
@@ -128,6 +137,10 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  /* Italic Fraunces glyphs overhang their layout box; without this the
+     background-clip crops the final letter. */
+  padding-right: 0.08em;
+  margin-right: -0.08em;
 }
 
 .text-gradient-warning {

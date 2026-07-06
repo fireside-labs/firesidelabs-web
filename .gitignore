@@ -34,10 +34,16 @@ Thumbs.db
 
 # Internal / OPSEC-sensitive — never push to GitHub
 NOTES.md
+REDESIGN.md
+_FABLE5_BRIEF.md
 design-proposals/
 papers-archive-unlinked/
 src.backup-pre-redesign/
 index.html.backup-pre-redesign
+
+# Browser-automation artifacts
+.playwright-mcp/
+home-full.jpeg
 
 # Local screenshots (regenerate-able; bloat the repo)
 *_desktop.png

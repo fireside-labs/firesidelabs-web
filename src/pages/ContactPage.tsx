@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Clock, Building2 } from 'lucide-react';
+import { ShieldCheck, Clock, Flame, MessagesSquare } from 'lucide-react';
 
 const ContactPage = () => {
   useEffect(() => {
@@ -59,15 +59,14 @@ const ContactPage = () => {
           className="text-center mb-16"
         >
           <motion.div
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            className="text-6xl mb-6"
+            animate={{ scale: [1, 1.08, 1] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-dim mb-8"
           >
-            🔥
+            <Flame size={28} className="text-indigo" />
           </motion.div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-[-0.03em] leading-tight mb-6">
-            Have a{' '}
-            <span className="text-gradient">Fireside.</span>
+          <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-semibold leading-tight mb-6">
+            Have a <span className="text-gradient italic">Fireside.</span>
           </h1>
           <p className="text-lg text-text-secondary max-w-xl mx-auto leading-relaxed">
             15 minutes. No pitch. No deck. Just tell us what's costing you time and money
@@ -85,7 +84,7 @@ const ContactPage = () => {
           {[
             { icon: Clock, label: '15 minutes' },
             { icon: ShieldCheck, label: 'No data required' },
-            { icon: Building2, label: 'Enterprise-focused' },
+            { icon: MessagesSquare, label: 'Straight answers' },
           ].map((item, i) => (
             <div key={i} className="flex items-center gap-2 text-text-muted text-sm">
               <item.icon size={16} className="text-indigo/60" />

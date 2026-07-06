@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Flame, Hammer, SlidersHorizontal, Compass, FileText, ShieldCheck, MessagesSquare } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { MotionLink } from '../MotionLink';
 import { SceneVideo } from './SceneVideo';
 import { CountUp } from './CountUp';
 
@@ -11,9 +11,9 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 const SceneOpen = () => (
   <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-    <SceneVideo base="/film/scene1_hearth" />
+    <SceneVideo base="/film/scene1_hearth" priority />
     {/* Legibility scrim + hand-off into the vanta page background */}
-    <div className="absolute inset-0 z-[1] bg-gradient-to-b from-vanta/60 via-vanta/30 to-vanta pointer-events-none" />
+    <div className="absolute inset-0 z-[1] bg-gradient-to-b from-vanta/60 via-vanta/45 to-vanta pointer-events-none" />
 
     <div className="relative z-10 text-center max-w-4xl mx-auto px-6 pt-24 pb-32">
       <motion.h1
@@ -44,28 +44,26 @@ const SceneOpen = () => (
         transition={{ duration: 0.8, delay: 0.65, ease: EASE }}
         className="flex flex-col sm:flex-row gap-4 justify-center items-center"
       >
-        <Link to="/contact">
-          <motion.button
-            whileHover={{ scale: 1.02, boxShadow: '0 0 30px rgba(200, 117, 51, 0.5)' }}
-            whileTap={{ scale: 0.98 }}
-            className="group flex items-center gap-3 px-8 py-4 bg-indigo text-black font-semibold rounded-xl
-                       text-sm tracking-wide uppercase transition-all duration-300 glow-indigo cursor-pointer"
-          >
-            <Flame size={18} />
-            Have a Fireside
-            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-          </motion.button>
-        </Link>
-        <Link to="/work">
-          <motion.button
-            whileHover={{ scale: 1.02, borderColor: 'rgba(200, 117, 51, 0.5)' }}
-            whileTap={{ scale: 0.98 }}
-            className="flex items-center gap-3 px-8 py-4 glass rounded-xl text-sm font-semibold
-                       tracking-wide uppercase text-text-primary transition-all duration-300 cursor-pointer"
-          >
-            See the work
-          </motion.button>
-        </Link>
+        <MotionLink
+          to="/contact"
+          whileHover={{ scale: 1.02, boxShadow: '0 0 30px rgba(200, 117, 51, 0.5)' }}
+          whileTap={{ scale: 0.98 }}
+          className="group flex items-center gap-3 px-8 py-4 bg-indigo text-black font-semibold rounded-xl
+                     text-sm tracking-wide uppercase transition-all duration-300 glow-indigo cursor-pointer"
+        >
+          <Flame size={18} />
+          Have a Fireside
+          <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+        </MotionLink>
+        <MotionLink
+          to="/work"
+          whileHover={{ scale: 1.02, borderColor: 'rgba(200, 117, 51, 0.5)' }}
+          whileTap={{ scale: 0.98 }}
+          className="flex items-center gap-3 px-8 py-4 glass rounded-xl text-sm font-semibold
+                     tracking-wide uppercase text-text-primary transition-all duration-300 cursor-pointer"
+        >
+          See the work
+        </MotionLink>
       </motion.div>
     </div>
 
@@ -102,15 +100,20 @@ const SceneProblem = () => {
     <section ref={ref} className="relative h-[280vh]">
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
         <SceneVideo base="/film/scene2_network" />
-        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-vanta via-vanta/40 to-vanta pointer-events-none" />
+        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-vanta via-vanta/50 to-vanta pointer-events-none" />
 
         <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
-          <motion.h2
-            style={{ opacity: lineAOpacity, y: lineAY }}
-            className="absolute inset-x-6 top-1/2 -translate-y-1/2 font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight"
-          >
-            Everyone is selling you AI.
-          </motion.h2>
+          {/* Plain wrapper does the static centering; framer-motion owns the inner
+              transform, so a class-based -translate-y-1/2 on the motion element
+              would be overwritten. */}
+          <div className="absolute inset-x-6 top-1/2 -translate-y-1/2">
+            <motion.h2
+              style={{ opacity: lineAOpacity, y: lineAY }}
+              className="font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight"
+            >
+              Everyone is selling you AI.
+            </motion.h2>
+          </div>
           <motion.h2
             style={{ opacity: lineBOpacity, y: lineBY }}
             className="font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight mb-8"
@@ -139,7 +142,7 @@ const PILLARS = [
   {
     icon: Compass,
     title: 'AI Strategy & Build',
-    body: 'From "where do we even start" to a deployed system that pays for itself. Sometimes a private LLM. Sometimes a forecasting model. Sometimes OCR on a Mac mini in the closet.',
+    body: 'From "where do we even start" to a deployed system that pays for itself. Whatever the right tool is for the actual problem: a private LLM, a forecasting model, a vision pipeline.',
     tag: 'From problem to production',
   },
   {
@@ -160,7 +163,7 @@ const SceneDiscipline = () => (
   <>
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <SceneVideo base="/film/scene3_forge" />
-      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-vanta via-vanta/35 to-vanta pointer-events-none" />
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-vanta via-vanta/50 to-vanta pointer-events-none" />
 
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
         <motion.div
@@ -189,7 +192,7 @@ const SceneDiscipline = () => (
           viewport={{ once: true, margin: '-20% 0px' }}
           className="text-lg md:text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed"
         >
-          A decade of applying models to P&amp;L. Regression and K-means then. LLMs and VLMs now.
+          A decade of applying models to P&amp;L. Regression and K-means then. LLMs and vision models now.
           <span className="text-text-primary font-medium">
             {' '}The right model for the actual problem, deployed where it pays back, measured in
             outcomes.
@@ -312,17 +315,16 @@ const SceneProof = () => (
           production cloud tier on tool-routing.
         </p>
       </div>
-      <Link to="/research" className="shrink-0">
-        <motion.button
-          whileHover={{ scale: 1.02, borderColor: 'rgba(200, 117, 51, 0.5)' }}
-          whileTap={{ scale: 0.98 }}
-          className="flex items-center gap-2 px-6 py-3 glass rounded-xl text-sm font-semibold
-                     tracking-wide uppercase text-text-primary transition-all duration-300 cursor-pointer"
-        >
-          Read the research
-          <ArrowRight size={15} />
-        </motion.button>
-      </Link>
+      <MotionLink
+        to="/research"
+        whileHover={{ scale: 1.02, borderColor: 'rgba(200, 117, 51, 0.5)' }}
+        whileTap={{ scale: 0.98 }}
+        className="shrink-0 flex items-center gap-2 px-6 py-3 glass rounded-xl text-sm font-semibold
+                   tracking-wide uppercase text-text-primary transition-all duration-300 cursor-pointer"
+      >
+        Read the research
+        <ArrowRight size={15} />
+      </MotionLink>
     </motion.div>
   </section>
 );
@@ -332,7 +334,7 @@ const SceneProof = () => (
 const SceneClose = () => (
   <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
     <SceneVideo base="/film/scene5_fireside" />
-    <div className="absolute inset-0 z-[1] bg-gradient-to-b from-vanta via-vanta/45 to-vanta/80 pointer-events-none" />
+    <div className="absolute inset-0 z-[1] bg-gradient-to-b from-vanta via-vanta/55 to-vanta/85 pointer-events-none" />
 
     <div className="relative z-10 text-center max-w-3xl mx-auto px-6">
       <motion.h2
@@ -362,18 +364,17 @@ const SceneClose = () => (
         transition={{ duration: 0.8, delay: 0.3, ease: EASE }}
         viewport={{ once: true, margin: '-20% 0px' }}
       >
-        <Link to="/contact">
-          <motion.button
-            whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(200, 117, 51, 0.5)' }}
-            whileTap={{ scale: 0.98 }}
-            className="group inline-flex items-center gap-3 px-10 py-5 bg-indigo text-black font-bold rounded-xl
-                       text-base tracking-wide uppercase transition-all duration-300 glow-indigo-strong cursor-pointer"
-          >
-            <Flame size={20} />
-            Have a Fireside
-            <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
-          </motion.button>
-        </Link>
+        <MotionLink
+          to="/contact"
+          whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(200, 117, 51, 0.5)' }}
+          whileTap={{ scale: 0.98 }}
+          className="group inline-flex items-center gap-3 px-10 py-5 bg-indigo text-black font-bold rounded-xl
+                     text-base tracking-wide uppercase transition-all duration-300 glow-indigo-strong cursor-pointer"
+        >
+          <Flame size={20} />
+          Have a Fireside
+          <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+        </MotionLink>
       </motion.div>
 
       <motion.div

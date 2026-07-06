@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Flame, FileText, Briefcase } from 'lucide-react';
+import { MotionLink } from '../components/MotionLink';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -8,12 +9,12 @@ const TIMELINE = [
   {
     era: 'Then',
     title: 'Regression and K-means',
-    body: 'A decade of applying ML and statistics to P&L outcomes inside large operations: a $1.1M cost reduction at a national health insurer through process redesign, $8M in working capital unlocked through predictive models, a 13% no-show reduction at a multi-location healthcare operator.',
+    body: 'A decade of ML and statistics inside large operations: claims floors, scheduling desks, working-capital planning. The kind of rooms where a model that stops paying gets shut off, and the analyst answers for it.',
   },
   {
     era: 'Now',
-    title: 'LLMs and VLMs',
-    body: 'The same discipline applied to the current generation of tools: private language-model deployments, vision pipelines, forecasting systems, and the published research to prove we know exactly where these models break.',
+    title: 'LLMs and vision models',
+    body: 'The same discipline applied to the current generation of tools: private language-model deployments, vision pipelines, forecasting systems, and published research on exactly where these models break.',
   },
   {
     era: 'Always',
@@ -102,7 +103,7 @@ const AboutPage = () => {
             className="glass-elevated rounded-2xl p-8"
           >
             <FileText size={22} className="text-indigo mb-4" />
-            <h3 className="text-lg font-bold mb-3">We publish our research</h3>
+            <h3 className="text-lg font-bold mb-3">I publish the research</h3>
             <p className="text-text-secondary leading-relaxed text-[15px] mb-5">
               20+ papers on where AI works, where it breaks, and what it costs. Read them
               before you hire anyone, including us.
@@ -122,7 +123,7 @@ const AboutPage = () => {
             className="glass-elevated rounded-2xl p-8"
           >
             <Briefcase size={22} className="text-indigo mb-4" />
-            <h3 className="text-lg font-bold mb-3">We show our record</h3>
+            <h3 className="text-lg font-bold mb-3">The record is public</h3>
             <p className="text-text-secondary leading-relaxed text-[15px] mb-5">
               The outcomes are on the work page, measured in dollars and percentage points
               rather than testimonials.
@@ -149,18 +150,17 @@ const AboutPage = () => {
             If you run operations at a mid-market business and you&apos;re trying to figure out
             where AI actually pays back instead of where it&apos;s hyped, let&apos;s talk.
           </p>
-          <Link to="/contact">
-            <motion.button
-              whileHover={{ scale: 1.02, boxShadow: '0 0 30px rgba(200, 117, 51, 0.5)' }}
-              whileTap={{ scale: 0.98 }}
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-indigo text-black font-semibold rounded-xl
-                         text-sm tracking-wide uppercase transition-all duration-300 glow-indigo cursor-pointer"
-            >
-              <Flame size={18} />
-              Have a Fireside
-              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-            </motion.button>
-          </Link>
+          <MotionLink
+            to="/contact"
+            whileHover={{ scale: 1.02, boxShadow: '0 0 30px rgba(200, 117, 51, 0.5)' }}
+            whileTap={{ scale: 0.98 }}
+            className="group inline-flex items-center gap-3 px-8 py-4 bg-indigo text-black font-semibold rounded-xl
+                       text-sm tracking-wide uppercase transition-all duration-300 glow-indigo cursor-pointer"
+          >
+            <Flame size={18} />
+            Have a Fireside
+            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+          </MotionLink>
         </motion.div>
       </div>
     </div>

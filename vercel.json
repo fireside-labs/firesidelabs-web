@@ -7,5 +7,13 @@
   ],
   "rewrites": [
     { "source": "/((?!papers/|film/).*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/film/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
   ]
 }

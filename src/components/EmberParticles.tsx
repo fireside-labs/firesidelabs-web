@@ -68,6 +68,9 @@ export const EmberParticles = ({ accentColor, glowColor, intensity = 'normal' }:
       };
     };
 
+    // Reset before seeding: intensity changes re-run this effect, and the
+    // previous pool would otherwise stack on top of the new seeds.
+    particlesRef.current = [];
     for (let i = 0; i < SEED_COUNT; i++) {
       const p = createParticle();
       p.y = Math.random() * canvas.height;

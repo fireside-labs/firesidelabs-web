@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import {
   ArrowRight,
   Flame,
@@ -14,6 +13,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { PerimeterDiagram } from '../components/PerimeterDiagram';
+import { MotionLink } from '../components/MotionLink';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -202,18 +202,17 @@ const ServicesPage = () => {
             and money, and we&apos;ll point you at the highest-payback move, even if it
             isn&apos;t us.
           </p>
-          <Link to="/contact">
-            <motion.button
-              whileHover={{ scale: 1.02, boxShadow: '0 0 30px rgba(200, 117, 51, 0.5)' }}
-              whileTap={{ scale: 0.98 }}
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-indigo text-black font-semibold rounded-xl
-                         text-sm tracking-wide uppercase transition-all duration-300 glow-indigo cursor-pointer"
-            >
-              <Flame size={18} />
-              Have a Fireside
-              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-            </motion.button>
-          </Link>
+          <MotionLink
+            to="/contact"
+            whileHover={{ scale: 1.02, boxShadow: '0 0 30px rgba(200, 117, 51, 0.5)' }}
+            whileTap={{ scale: 0.98 }}
+            className="group inline-flex items-center gap-3 px-8 py-4 bg-indigo text-black font-semibold rounded-xl
+                       text-sm tracking-wide uppercase transition-all duration-300 glow-indigo cursor-pointer"
+          >
+            <Flame size={18} />
+            Have a Fireside
+            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+          </MotionLink>
         </motion.div>
       </div>
     </div>

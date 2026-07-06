@@ -3,9 +3,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { Flame, Menu, X } from 'lucide-react';
 import { EmberParticles } from './EmberParticles';
+import { MotionLink } from './MotionLink';
 
 const ACCENT = '#C87533';
 const PARTICLE_GLOW = '#FFB366';
+
+const PAGE_TITLES: Record<string, string> = {
+  '/': 'Fireside Labs · AI That Pays Back',
+  '/services': 'Services · Fireside Labs',
+  '/work': 'Work · Fireside Labs',
+  '/about': 'About · Fireside Labs',
+  '/research': 'Research · Fireside Labs',
+  '/benchmarks': 'Benchmarks · Fireside Labs',
+  '/contact': 'Have a Fireside · Fireside Labs',
+};
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
   const [scrolled, setScrolled] = useState(false);
@@ -18,11 +29,24 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Scroll to top on route change; close mobile menu
+  // Scroll to top on route change; close mobile menu.
+  // 'instant' opts out of the global smooth scroll-behavior, which would
+  // otherwise animate a multi-second scroll from page bottom on footer clicks.
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'instant' });
     setMobileMenuOpen(false);
+    document.title = PAGE_TITLES[location.pathname] ?? PAGE_TITLES['/'];
   }, [location.pathname]);
+
+  // Escape dismisses the mobile drawer.
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mobileMenuOpen]);
 
   const navItems = [
     { label: 'Services', to: '/services' },
@@ -63,6 +87,8 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-text-secondary hover:text-text-primary transition-colors"
             onClick={() => setMobileMenuOpen((v) => !v)}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-nav-drawer"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -81,21 +107,20 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                 {item.label}
               </Link>
             ))}
-            <Link to="/contact">
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="group flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer"
-                style={{
-                  backgroundColor: ACCENT,
-                  color: '#000',
-                  boxShadow: `0 0 15px rgba(200, 117, 51, 0.15)`,
-                }}
-              >
-                <Flame size={14} />
-                Have a Fireside
-              </motion.button>
-            </Link>
+            <MotionLink
+              to="/contact"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="group flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer"
+              style={{
+                backgroundColor: ACCENT,
+                color: '#000',
+                boxShadow: `0 0 15px rgba(200, 117, 51, 0.15)`,
+              }}
+            >
+              <Flame size={14} />
+              Have a Fireside
+            </MotionLink>
           </div>
         </div>
       </motion.nav>
@@ -108,6 +133,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
+            id="mobile-nav-drawer"
             className="md:hidden fixed top-[60px] left-0 w-full z-40 glass-nav border-b border-white/5 px-6 py-6 flex flex-col gap-4"
           >
             {navItems.map((item) => (
@@ -123,16 +149,15 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                 {item.label}
               </Link>
             ))}
-            <Link to="/contact">
-              <motion.button
-                whileTap={{ scale: 0.97 }}
-                className="mt-2 w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer"
-                style={{ backgroundColor: ACCENT, color: '#000' }}
-              >
-                <Flame size={14} />
-                Have a Fireside
-              </motion.button>
-            </Link>
+            <MotionLink
+              to="/contact"
+              whileTap={{ scale: 0.97 }}
+              className="mt-2 w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer"
+              style={{ backgroundColor: ACCENT, color: '#000' }}
+            >
+              <Flame size={14} />
+              Have a Fireside
+            </MotionLink>
           </motion.div>
         )}
       </AnimatePresence>

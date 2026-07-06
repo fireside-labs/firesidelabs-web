@@ -16,6 +16,10 @@ interface Paper {
 
 const AUTHOR = 'Jordan Nguyen';
 
+// The first N papers are the operator-facing gateway tier; the rest are
+// technical depth. Order in the array is the tier structure.
+const GATEWAY_COUNT = 4;
+
 const papers: Paper[] = [
   // ── TIER A · GATEWAY ──
   {
@@ -40,7 +44,7 @@ const papers: Paper[] = [
   },
   {
     title: 'Build vs. Buy: An Honest Guide to Enterprise AI',
-    description: 'When off-the-shelf tools work, when they don’t, and a practical decision framework for CTOs navigating the build-or-buy question.',
+    description: 'When off-the-shelf tools work, when they don’t, and a practical decision framework for the build-or-buy question.',
     tag: 'STRATEGY',
     file: '/papers/Build_vs_Buy_Enterprise_AI.html',
     gated: false,
@@ -50,7 +54,7 @@ const papers: Paper[] = [
   },
   {
     title: 'Beyond Top-1 Accuracy',
-    description: 'The leaderboard says your model is ready. Your customers will tell you otherwise. A methodology for measuring production reliability—stability under paraphrase, canon resistance, conditional-apology blind spots—with named-model recommendations and deploy-blockers across 8 small language models.',
+    description: 'The leaderboard says your model is ready. Your customers will tell you otherwise. A methodology for measuring production reliability: stability under paraphrase, canon resistance, conditional-apology blind spots. Named-model recommendations and deploy-blockers across 8 small language models.',
     tag: 'PRODUCTION RELIABILITY',
     file: '/papers/Beyond_Top1_Accuracy_LLM_Production_Reliability.html',
     gated: false,
@@ -107,12 +111,12 @@ const papers: Paper[] = [
     gated: false,
     date: 'Apr 2025',
     readTime: '14 min',
-    pullQuote: 'The problem isn’t that AI is impossibly complicated. The problem is that almost everyone explaining it has a reason to make it sound complicated, it sells a product, or it justifies a budget.',
+    pullQuote: 'AI is not impossibly complicated. Almost everyone explaining it simply has a reason to make it sound complicated: it sells a product, or it justifies a budget.',
   },
   // ── TIER C · METHODOLOGY & CREDIBILITY ──
   {
     title: 'Harness Configuration Is the Hidden Variable',
-    description: 'We fixed the benchmark harness configuration—not the model, not the hardware—and Qwen3.6\'s HumanEval score moved by 45.7 points. Two related failure modes documented: verbose-thinking truncation and permission-prompt sensitivity, with a 30-hour case study and 6-model permission-prompt sweep.',
+    description: 'We fixed the benchmark harness configuration (the model and hardware untouched) and Qwen3.6\'s HumanEval score moved by 45.7 points. Two related failure modes documented: verbose-thinking truncation and permission-prompt sensitivity, with a 30-hour case study and 6-model permission-prompt sweep.',
     tag: 'BENCHMARK INTEGRITY',
     file: '/papers/Harness_Configuration_Hidden_Variable.html',
     gated: false,
@@ -122,7 +126,7 @@ const papers: Paper[] = [
   },
   {
     title: 'Free Lunch at 8B, Free Loss at 14B',
-    description: 'The same recipe adds 3.5 points at 8B and costs 9.9 points at 14B—a complete inversion in capability ROI across host model scale. An empirical cross-scale study of targeted layer modifications on small language models. Includes a methodology caveat on the graft+prune confound at 14B.',
+    description: 'The same recipe adds 3.5 points at 8B and costs 9.9 points at 14B: a complete inversion in capability ROI across host model scale. An empirical cross-scale study of targeted layer modifications on small language models. Includes a methodology caveat on the graft+prune confound at 14B.',
     tag: 'CAPABILITY ROI',
     file: '/papers/Free_Lunch_at_8B_Free_Loss_at_14B.html',
     gated: false,
@@ -158,7 +162,7 @@ const papers: Paper[] = [
     gated: false,
     date: 'May 2026',
     readTime: '13 min',
-    pullQuote: 'At ~3GB VRAM—runs on consumer cards including mobile-class hardware—the 2B-effective PLE model is competitive with workstation-class 17GB MoEs on multi-step bash workflows. Bigger model is not better.',
+    pullQuote: 'At ~3GB VRAM, small enough for consumer cards and mobile-class hardware, the 2B-effective PLE model is competitive with workstation-class 17GB MoEs on multi-step bash workflows. Bigger model is not better.',
   },
   {
     title: '16 Points Separate the Wrong Architecture From the Right One',
@@ -178,17 +182,17 @@ const papers: Paper[] = [
     gated: false,
     date: 'May 2026',
     readTime: '11 min',
-    pullQuote: 'Cosine-merge cannot reduce these models without modification. Orthogonality isn\'t a bug in modern MoE training—it\'s a feature, designed in by 128 small experts competing under strict top-K routing.',
+    pullQuote: 'Cosine-merge cannot reduce these models without modification. Modern MoE training designs the orthogonality in: 128 small experts competing under strict top-K routing leave nothing redundant to merge.',
   },
   {
     title: 'HTTP Timeouts as Silent Sabotage',
-    description: 'How a single fixed timeout in an inference benchmark can suppress large-model scores by 5–15 percentage points—and why this single configuration choice quietly distorts most public leaderboards.',
+    description: 'How a single fixed timeout in an inference benchmark can suppress large-model scores by 5–15 percentage points, and why this single configuration choice quietly distorts most public leaderboards.',
     tag: 'BENCHMARKING METHODS',
     file: '/papers/HTTP_Timeouts_Silent_Sabotage.html',
     gated: false,
     date: 'Apr 2026',
     readTime: '8 min',
-    pullQuote: 'A 240-second timeout is wrong for every model. Smaller models finish in two seconds. Larger models, if you let them think, will spend forty-five—and arrive at the right answer. Cut them off and you have not measured a model; you have measured your patience.',
+    pullQuote: 'A 240-second timeout is wrong for every model. Smaller models finish in two seconds. Larger models, if you let them think, will spend forty-five and arrive at the right answer. Cut them off and you have not measured a model; you have measured your patience.',
   },
   {
     title: 'Letter-Shuffle: A Contamination Probe',
@@ -258,29 +262,30 @@ const ResearchPage = () => {
     };
   }, [gateModal]);
 
-  const handleGatedDownload = async (e: React.FormEvent) => {
+  const handleGatedDownload = (e: React.FormEvent) => {
     e.preventDefault();
     if (!gateModal) return;
 
+    // Open within the submit gesture's user activation; Safari/Firefox block
+    // window.open fired from a later timeout and the lead would dead-end.
+    window.open(gateModal.file, '_blank', 'noopener');
+
     const FORMSPREE_ID = 'xlgalpdy';
-    try {
-      await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          paper: gateModal.title,
-          source: 'research_page_gate',
-          _subject: `New lead: ${gateModal.title}`,
-        }),
-      });
-    } catch (err) {
+    fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        paper: gateModal.title,
+        source: 'research_page_gate',
+        _subject: `New lead: ${gateModal.title}`,
+      }),
+    }).catch((err) => {
       console.error('Lead capture failed:', err);
-    }
+    });
 
     setSubmitted(true);
     setTimeout(() => {
-      window.open(gateModal.file, '_blank');
       setGateModal(null);
       setSubmitted(false);
       setEmail('');
@@ -299,9 +304,8 @@ const ResearchPage = () => {
           <div className="font-mono text-sm text-indigo tracking-widest uppercase mb-4">
             Research
           </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-[-0.03em] leading-tight mb-6">
-            Insights from{' '}
-            <span className="text-gradient">the field.</span>
+          <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-semibold leading-tight mb-6">
+            What works, what <span className="text-gradient italic">breaks.</span>
           </h1>
           <p className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed mb-6">
             Read this before you hire anyone to build you AI, including us. What works, what breaks, and what it costs, measured on real tasks.
@@ -327,8 +331,24 @@ const ResearchPage = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-6 max-w-3xl mx-auto mb-20">
-          {papers.map((paper, i) => (
+        <p className="text-center text-sm text-text-muted mb-14">
+          Prefer live numbers?{' '}
+          <Link to="/benchmarks" className="text-indigo hover:underline">
+            See the model leaderboard
+          </Link>{' '}
+          from our flagship benchmark.
+        </p>
+
+        {[
+          { heading: 'Start here if you run a business', items: papers.slice(0, GATEWAY_COUNT) },
+          { heading: 'For your technical team', items: papers.slice(GATEWAY_COUNT) },
+        ].map((tier) => (
+        <div key={tier.heading} className="max-w-3xl mx-auto mb-16">
+          <h2 className="font-mono text-xs tracking-[0.35em] text-indigo uppercase mb-6">
+            {tier.heading}
+          </h2>
+          <div className="grid grid-cols-1 gap-6">
+          {tier.items.map((paper, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
@@ -369,7 +389,7 @@ const ResearchPage = () => {
                       className="inline-flex items-center gap-2 px-4 py-2 bg-indigo text-black rounded-lg text-xs font-semibold uppercase tracking-wide transition-all duration-300 cursor-pointer hover:shadow-[0_0_20px_rgba(200,117,51,0.3)]"
                     >
                       <Lock size={12} />
-                      Download · Free with Email
+                      Read with your work email
                     </button>
                   ) : (
                     <a
@@ -386,7 +406,9 @@ const ResearchPage = () => {
               </div>
             </motion.div>
           ))}
+          </div>
         </div>
+        ))}
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -445,7 +467,7 @@ const ResearchPage = () => {
                   <div className="text-3xl mb-4">📄</div>
                   <h3 id="paper-modal-title" className="text-xl font-bold mb-2">{gateModal.title}</h3>
                   <p className="text-sm text-text-secondary mb-6">
-                    Enter your work email and we will open the paper immediately. No spam, just research.
+                    Enter your work email and we will open the paper immediately. We won&apos;t share your email or send you anything you didn&apos;t ask for.
                   </p>
                   <form onSubmit={handleGatedDownload} className="space-y-4">
                     <div className="relative">

@@ -96,7 +96,7 @@ const BenchmarksPage = () => {
             <span className="text-gradient">local and cloud.</span>
           </h1>
           <p className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
-            23 models, 4 providers, 100 tasks each—all scored at 99% statistical confidence. A free local model now matches Google's flagship cloud tier on tool-calling accuracy. The Type&nbsp;A/B failure framework in the full paper reveals what the Strict leaderboard alone cannot.
+            23 models, 4 providers, 100 tasks each, all scored at 99% statistical confidence. A free local model now matches Google's flagship cloud tier on tool-calling accuracy. The Type&nbsp;A/B failure framework in the full paper reveals what the Strict leaderboard alone cannot.
           </p>
         </motion.div>
       </section>
@@ -201,7 +201,7 @@ const BenchmarksPage = () => {
               </li>
               <li className="flex gap-3">
                 <span className="text-[#C87533] flex-shrink-0">✦</span>
-                <span><strong className="text-text-primary">Production-grade tasks</strong>: tool calling, multi-step routing, ambiguous inputs—the exact scenarios where models break in the real world.</span>
+                <span><strong className="text-text-primary">Production-grade tasks</strong>: tool calling, multi-step routing, ambiguous inputs. The exact scenarios where models break in the real world.</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-[#C87533] flex-shrink-0">✦</span>
@@ -231,7 +231,7 @@ const BenchmarksPage = () => {
             Leaderboard highlights
           </h2>
           <p className="text-text-secondary text-sm mb-8 max-w-2xl">
-            Seven representative rows from the full 23-model dataset—one local, three Anthropic, two Google, one OpenAI. <strong className="text-text-primary">Strict</strong> = exact-match accuracy; <strong className="text-text-primary">Adjusted</strong> = Strict plus clarifying-question rescues. See the paper for Wilson confidence intervals, Type&nbsp;A/B counts, and the full table.
+            Seven representative rows from the full 23-model dataset: one local, three Anthropic, two Google, one OpenAI. <strong className="text-text-primary">Strict</strong> = exact-match accuracy; <strong className="text-text-primary">Adjusted</strong> = Strict plus clarifying-question rescues. See the paper for Wilson confidence intervals, Type&nbsp;A/B counts, and the full table.
           </p>
         </motion.div>
 
@@ -324,7 +324,7 @@ const BenchmarksPage = () => {
                 See the full 23-model leaderboard.
               </h2>
               <p className="text-text-secondary text-sm leading-relaxed">
-                The complete paper includes Wilson 99% confidence intervals, Type&nbsp;A/B failure classification for every model, per-provider analysis, and the cost decision table. It answers whether cloud spend is justified for your workload—with the data to back it up.
+                The complete paper includes Wilson 99% confidence intervals, Type&nbsp;A/B failure classification for every model, per-provider analysis, and the cost decision table. It answers whether cloud spend is justified for your workload, with the data to back it up.
               </p>
             </div>
             <div className="flex-shrink-0">
@@ -359,7 +359,7 @@ const BenchmarksPage = () => {
             </div>
             <div>
               <h2 className="text-2xl font-bold">Benchmarking as a Service</h2>
-              <p className="text-text-muted text-sm">Know exactly what your model can and cannot do—before it costs you.</p>
+              <p className="text-text-muted text-sm">Know exactly what your model can and cannot do, before it costs you.</p>
             </div>
           </div>
 
@@ -375,7 +375,7 @@ const BenchmarksPage = () => {
               },
               {
                 title: 'Honest Reporting',
-                description: 'Deterministic scoring with variance analysis. We measure first-attempt reliability, not just cherry-picked best-of-N results.',
+                description: 'Deterministic scoring with variance analysis. We measure the first-attempt reliability your users actually experience.',
               },
             ].map((service, i) => (
               <motion.div

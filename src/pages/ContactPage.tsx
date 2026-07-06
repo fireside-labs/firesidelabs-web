@@ -34,6 +34,11 @@ const ContactPage = () => {
       };
     })(window as any, 'https://app.cal.com/embed/embed.js', 'init');
 
+    // Bail if the calendar is already embedded (StrictMode double-invoke in
+    // dev, or a revisit while the Cal loader persists on window).
+    const container = document.getElementById('cal-inline');
+    if (container && container.childElementCount > 0) return;
+
     const Cal = (window as any).Cal;
     Cal('init', { origin: 'https://cal.com' });
     Cal('inline', {
@@ -83,7 +88,7 @@ const ContactPage = () => {
         >
           {[
             { icon: Clock, label: '15 minutes' },
-            { icon: ShieldCheck, label: 'No data required' },
+            { icon: ShieldCheck, label: 'Zero data access required' },
             { icon: MessagesSquare, label: 'Straight answers' },
           ].map((item, i) => (
             <div key={i} className="flex items-center gap-2 text-text-muted text-sm">

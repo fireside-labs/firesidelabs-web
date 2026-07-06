@@ -30,5 +30,12 @@ export const CountUp = ({
     return () => unsubscribe();
   }, [spring, format]);
 
-  return <span ref={ref} className={className}>{format(0)}</span>;
+  return (
+    <span className={className}>
+      {/* Assistive tech and crawlers get the final value; the ~60fps
+          textContent mutation is hidden from them. */}
+      <span ref={ref} aria-hidden="true">{format(0)}</span>
+      <span className="sr-only">{format(value)}</span>
+    </span>
+  );
 };

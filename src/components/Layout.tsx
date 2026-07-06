@@ -135,6 +135,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             transition={{ duration: 0.2 }}
             id="mobile-nav-drawer"
             className="md:hidden fixed top-[60px] left-0 w-full z-40 glass-nav border-b border-white/5 px-6 py-6 flex flex-col gap-4"
+            style={{ background: 'rgba(10, 10, 15, 0.97)' }}
           >
             {navItems.map((item) => (
               <Link

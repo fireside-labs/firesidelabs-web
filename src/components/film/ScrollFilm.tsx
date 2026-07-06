@@ -240,7 +240,7 @@ const OUTCOMES = [
     value: 8,
     format: (n: number) => `$${Math.round(n)}M`,
     label: 'Working capital unlocked',
-    detail: 'Predictive models',
+    detail: 'Predictive models, transportation & logistics',
   },
   {
     value: 13,

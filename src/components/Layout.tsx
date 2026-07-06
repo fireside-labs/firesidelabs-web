@@ -201,7 +201,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
           </div>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 pt-6 border-t border-white/5">
             <div className="font-mono text-[11px] text-text-muted tracking-widest">
-              FIRESIDE LABS, INC. · hello@firesidelabs.ai
+              FIRESIDE LABS, INC. · j.nguyen@firesidelabs.ai
             </div>
             <div className="font-mono text-[11px] text-text-muted tracking-widest">
               © {new Date().getFullYear()} ALL RIGHTS RESERVED.

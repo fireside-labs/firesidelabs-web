@@ -20,7 +20,7 @@ const CASES = [
   {
     stat: '$8M',
     statLabel: 'Working capital unlocked',
-    client: 'Enterprise operator',
+    client: 'Transportation & logistics operator',
     tag: 'Predictive modeling',
     challenge:
       'Capital sat idle as a buffer because nobody could forecast demand precisely enough to run leaner.',

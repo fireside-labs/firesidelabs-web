@@ -74,13 +74,13 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
         }`}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 group">
+          <a href="/" className="flex items-center gap-3 group">
             <div
               className="w-3 h-3 rounded-sm transition-all duration-500 group-hover:scale-125"
               style={{ backgroundColor: ACCENT, boxShadow: `0 0 10px rgba(200, 117, 51, 0.4)` }}
             />
             <span className="text-lg font-bold tracking-[-0.02em]">FIRESIDE LABS</span>
-          </Link>
+          </a>
 
           {/* Mobile hamburger */}
           <button
@@ -169,13 +169,13 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
       <footer className="border-t border-white/5 py-12">
         <div className="max-w-6xl mx-auto px-6 flex flex-col gap-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <Link to="/" className="flex items-center gap-3">
+            <a href="/" className="flex items-center gap-3">
               <div
                 className="w-2 h-2 rounded-sm"
                 style={{ backgroundColor: ACCENT }}
               />
               <span className="text-sm font-semibold tracking-tight">FIRESIDE LABS</span>
-            </Link>
+            </a>
             <div className="flex flex-wrap gap-x-6 gap-y-2">
               {navItems.map((item) => (
                 <Link

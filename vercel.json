@@ -9,9 +9,15 @@
     { "source": "/wayward/privacy", "destination": "/wayward/privacy.html" },
     { "source": "/wayward/terms", "destination": "/wayward/terms.html" },
     { "source": "/wayward/support", "destination": "/wayward/support.html" },
-    { "source": "/((?!papers/|film/|wayward/).*)", "destination": "/index.html" }
+    { "source": "/((?!$|papers/|film/|home/|wayward/|assets/).*)", "destination": "/app.html" }
   ],
   "headers": [
+    {
+      "source": "/home/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
     {
       "source": "/film/(.*)",
       "headers": [

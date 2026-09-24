@@ -4,7 +4,6 @@ import { MotionConfig } from 'framer-motion';
 import { Layout } from './components/Layout';
 
 // Route-level code splitting — each page becomes its own chunk.
-const HomePage = lazy(() => import('./pages/HomePage'));
 const ServicesPage = lazy(() => import('./pages/ServicesPage'));
 const WorkPage = lazy(() => import('./pages/WorkPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
@@ -12,6 +11,13 @@ const ResearchPage = lazy(() => import('./pages/ResearchPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const BenchmarksPage = lazy(() => import('./pages/BenchmarksPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+
+// The homepage is a separate static document (index.html), so any in-app
+// navigation to it has to be a full page load.
+const HomeRedirect = () => {
+  window.location.replace('/');
+  return null;
+};
 
 const RouteFallback = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
@@ -69,7 +75,7 @@ function App() {
           <ChunkErrorBoundary>
             <Suspense fallback={<RouteFallback />}>
               <Routes>
-                <Route path="/" element={<HomePage />} />
+                <Route path="/" element={<HomeRedirect />} />
                 <Route path="/services" element={<ServicesPage />} />
                 <Route path="/work" element={<WorkPage />} />
                 <Route path="/about" element={<AboutPage />} />
@@ -80,7 +86,7 @@ function App() {
                 <Route path="/solutions" element={<Navigate to="/services" replace />} />
                 <Route path="/calibration" element={<Navigate to="/services" replace />} />
                 <Route path="/security" element={<Navigate to="/services" replace />} />
-                <Route path="/foundry" element={<Navigate to="/" replace />} />
+                <Route path="/foundry" element={<HomeRedirect />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Suspense>

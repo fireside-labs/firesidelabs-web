@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..800&family=Manrope:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="/home/scrollcraft.css">
+<link rel="stylesheet" href="/home/scrollcraft-030.css">
 
 <script>
   (function(c,l,a,r,i,t,y){
@@ -133,6 +133,7 @@
   .seam__label--pilot  { right: calc(100% + 0.9rem); color: var(--pilot-ink-soft); }
   .seam__label--payback{ left: 0.9rem; color: var(--sc-accent); }
 
+  .seam.is-out .seam__mark, .seam.is-out .seam__notch { visibility: hidden; }
   .seam__index { position: absolute; left: 0; top: 0; bottom: 0; margin: 0; padding: 0; list-style: none; }
   .seam__index li { position: absolute; left: 0; transform: translate(-50%, -50%); }
   .seam__notch {
@@ -319,7 +320,10 @@
     .split { grid-template-columns: 1fr; }
     .pilot-side { background: var(--pilot-canvas); padding: 2.25rem var(--sc-gutter); }
     .pay-side { padding: 2.25rem var(--sc-gutter); }
-    .top-links { display: none; }
+    .top-links {
+      top: auto; bottom: 1.25rem; right: auto; left: var(--sc-gutter);
+      gap: 1.25rem; flex-wrap: wrap;
+    }
 
     .mobile-fuse {
       display: block; position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 6;
@@ -571,7 +575,7 @@
 
 </main>
 
-<script src="/home/scrollcraft.js"></script>
+<script src="/home/scrollcraft-030.js"></script>
 <script>
 (function () {
   var sc = ScrollCraft.mount(document.body);
@@ -606,6 +610,7 @@
   }
 
   var notches = document.querySelectorAll('.seam__notch');
+  var seam = document.querySelector('.seam');
   function frame() {
     var y = scrollY;
     var t = { doubt: docTop(A.doubt.el), record: docTop(A.record.el), method: docTop(A.method.el), fire: docTop(A.fire.el) };
@@ -615,7 +620,9 @@
     set('--fuse', fuse);
     set('--split', split);
     set('--burn', y >= t.fire && fp < 0.3 && !reduced.matches ? 1 : 0);
-    set('--seam-o', y < t.fire ? 1 : clamp(split / 33 * 1.4 - 0.4));
+    var seamO = y < t.fire ? 1 : clamp(split / 33 * 1.4 - 0.4);
+    set('--seam-o', seamO);
+    seam.classList.toggle('is-out', seamO < 0.05);
     set('--sheet', reduced.matches ? (fp > 0 ? 0 : 1) : 1 - step(fp, 0, 0.24));
     for (var i = 0; i < notches.length; i++) {
       var target = t[notches[i].getAttribute('data-jump')];

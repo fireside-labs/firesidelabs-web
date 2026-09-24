@@ -4,27 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<meta name="theme-color" content="#0F0A07">
+<meta name="theme-color" content="#0E0A08">
 <link rel="canonical" href="https://www.firesidelabs.ai">
 
 <title>Fireside Labs · AI That Pays Back</title>
-<meta name="description" content="Fireside Labs is an AI studio for mid-market operators. We find the places AI actually returns money in your business. Then we build it, deploy it, and measure it.">
+<meta name="description" content="Fireside Labs builds AI for operators and measures what it returns. Conversation intelligence, visual search and predictive models that pay back.">
 <meta name="robots" content="index, follow">
 
 <meta property="og:title" content="Fireside Labs · AI That Pays Back">
-<meta property="og:description" content="An AI studio for mid-market operators. We find where AI actually returns money in your business, then build it, deploy it, and measure it.">
+<meta property="og:description" content="We build AI for operators, then measure what it returns.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.firesidelabs.ai">
-<meta property="og:image" content="https://www.firesidelabs.ai/film/scene1_hearth.jpg">
+<meta property="og:image" content="https://www.firesidelabs.ai/forge/forge-leg1-v1.webp">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Fireside Labs · AI That Pays Back">
-<meta name="twitter:description" content="An AI studio for mid-market operators. We find where AI actually returns money in your business, then build it, deploy it, and measure it.">
-<meta name="twitter:image" content="https://www.firesidelabs.ai/film/scene1_hearth.jpg">
+<meta name="twitter:description" content="We build AI for operators, then measure what it returns.">
+<meta name="twitter:image" content="https://www.firesidelabs.ai/forge/forge-leg1-v1.webp">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..800&family=Manrope:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/home/scrollcraft-030.css">
+<link rel="preload" as="image" href="/forge/forge-leg1-v1.webp">
 
 <script>
   (function(c,l,a,r,i,t,y){
@@ -36,356 +37,192 @@
 
 <style>
   :root {
-    /* Payback ground: the page's own theme */
-    --sc-canvas:     #0F0A07;
-    --sc-surface:    #1A120C;
-    --sc-ink:        #F2E8DA;
-    --sc-ink-soft:   #BCAB99;
-    --sc-accent:     #D4843F;
-    --sc-accent-ink: #160C05;
+    --sc-canvas:     #0E0A08;
+    --sc-surface:    #19120D;
+    --sc-ink:        #F4EADC;
+    --sc-ink-soft:   #C9B8A4;
+    --sc-accent:     #E08A45;
+    --sc-accent-ink: #170C05;
     --sc-font-display: "Fraunces", Georgia, serif;
     --sc-font-text:    "Manrope", system-ui, sans-serif;
 
-    /* Pilot ground: cool, flat, no accent */
-    --pilot-canvas:  #DCE0E5;
-    --pilot-rule:    #BFC6CE;
-    --pilot-ink:     #1F2833;
-    --pilot-ink-soft:#4A5361;
-    --pilot-ink-dim: #5A6370;
-
-    --copper:  #C87533;
-    --ember:   #FFB25C;
-    --char:    #2A1A10;
-
-    /* Written by the page script from scroll. */
-    --split: 50;
-    --fuse: 0;
-    --burn: 0;
-    --heat: 0;
-    --sheet: 1;
+    --copper: #C87533;
+    --ember:  #FFB25C;
+    --iron-edge: rgba(255, 214, 170, 0.10);
   }
 
   body { background: var(--sc-canvas); }
 
-  /* ── The pilot ground and the fuse seam (fixed chrome) ─────────────── */
+  /* Posters sit in <picture> for the phone crop, so position that wrapper. */
+  .sc-world__seg > picture { position: absolute; inset: 0; z-index: 0; }
+  .sc-world__seg > picture > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
-  .pilot-ground {
-    position: fixed; inset: 0; z-index: 1;
-    background: var(--pilot-canvas);
-    transform: translateX(calc(var(--split) * 1% - 100%));
+  /* ── Chrome: wordmark and the one ask ───────────────────────── */
+  .bar {
+    position: fixed; inset: 0 0 auto 0; z-index: 70;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem var(--sc-gutter);
     pointer-events: none;
   }
-  /* The char edge only exists while the column is burning. */
-  .pilot-ground::after {
-    content: ""; position: absolute; top: 0; bottom: 0; right: -3rem; width: 6rem;
-    background: linear-gradient(90deg,
-      color-mix(in oklab, var(--pilot-canvas) 0%, transparent) 0%,
-      #6B4A33 36%, var(--char) 48%, var(--copper) 56%, var(--ember) 60%, transparent 76%);
-    opacity: var(--burn);
-    animation: flicker 180ms steps(2) infinite alternate;
+  .bar a { pointer-events: auto; }
+  .mark {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    color: var(--sc-ink); text-decoration: none;
+    font: 700 0.95rem/1 var(--sc-font-text); letter-spacing: 0.01em;
+    text-shadow: 0 1px 12px rgba(0,0,0,0.6);
   }
-  @keyframes flicker { to { filter: brightness(1.25); } }
-
-  .seam-wrap { position: fixed; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
-  .seam {
-    position: absolute; top: 0; bottom: 0; left: 0; width: 100%;
-    transform: translateX(calc(var(--split) * 1%));
-    opacity: var(--seam-o, 1);
-  }
-  .seam__cord, .seam__char {
-    position: absolute; left: -1px; width: 2px; transform-origin: top;
-  }
-  .seam__cord {
-    top: 0; bottom: 0;
-    background: repeating-linear-gradient(180deg, #A89276 0 5px, #8C7760 5px 8px);
-  }
-  .seam__char {
-    top: 0; height: 100%;
-    background: linear-gradient(180deg, #120B07, #3A2517 92%, var(--copper));
-    transform: scaleY(var(--fuse));
-  }
-  .seam__ember {
-    position: absolute; left: 0; top: 0;
-    width: 0.75rem; height: 0.75rem; margin: -0.375rem 0 0 -0.375rem;
-    border-radius: 50%;
-    background: radial-gradient(circle, #FFF1D6 0 22%, var(--ember) 40%, var(--copper) 62%, transparent 72%);
-    box-shadow: 0 0.2rem 1.4rem 0.3rem rgba(255, 140, 50, calc(0.35 + var(--heat) * 0.4));
-    transform: translateY(calc(var(--fuse) * 100vh)) scale(calc(1 + var(--heat) * 0.6));
-    animation: ember 900ms ease-in-out infinite alternate;
-  }
-  @keyframes ember { to { filter: brightness(1.35) saturate(1.2); } }
-
-  .seam__mark {
-    position: absolute; top: 1.1rem; left: 0; transform: translateX(-50%);
-    display: flex; align-items: center; gap: 0.5rem;
-    padding: 0.4rem 0.75rem 0.4rem 0.55rem; border-radius: 999px;
-    background: #140D09; color: var(--sc-ink);
-    box-shadow: 0 0.5rem 1.5rem -0.5rem rgba(10, 5, 2, 0.6), inset 0 1px 0 rgba(255, 230, 200, 0.08);
-    font: 700 0.8rem/1 var(--sc-font-text); letter-spacing: 0.02em; text-decoration: none;
-    pointer-events: auto; white-space: nowrap;
-  }
-  .seam__mark svg { width: 1.1rem; height: 1.1rem; }
-  .seam__label {
-    position: absolute; top: 4.1rem;
-    font: 600 0.72rem/1 var(--sc-font-text); letter-spacing: 0.14em; text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .seam__label--pilot  { right: calc(100% + 0.9rem); color: var(--pilot-ink-soft); }
-  .seam__label--payback{ left: 0.9rem; color: var(--sc-accent); }
-
-  .seam.is-out .seam__mark, .seam.is-out .seam__notch { visibility: hidden; }
-  .seam__index { position: absolute; left: 0; top: 0; bottom: 0; margin: 0; padding: 0; list-style: none; }
-  .seam__index li { position: absolute; left: 0; transform: translate(-50%, -50%); }
-  .seam__notch {
-    display: grid; place-items: center; width: 1.75rem; height: 1.75rem; padding: 0;
-    background: none; border: 0; cursor: pointer; pointer-events: auto; border-radius: 50%;
-  }
-  .seam__notch::before {
-    content: ""; width: 0.55rem; height: 2px; background: #8C7760; border-radius: 2px;
-    transition: transform 160ms var(--sc-ease-out), background-color 160ms var(--sc-ease-out);
-  }
-  .seam__notch.is-burnt::before { background: var(--copper); }
-  .seam__notch span {
-    position: absolute; left: calc(100% + 0.2rem); top: 50%; translate: 0 -50%;
-    padding: 0.3rem 0.55rem; border-radius: 0.4rem; background: #140D09; color: var(--sc-ink);
-    font: 600 0.75rem/1 var(--sc-font-text); white-space: nowrap;
-    opacity: 0; transform: translateX(-0.25rem);
-    transition: opacity 160ms var(--sc-ease-out), transform 160ms var(--sc-ease-out);
-    pointer-events: none;
-  }
-  .seam__notch:focus-visible span,
-  .seam__notch:hover span { opacity: 1; transform: none; }
-  @media (hover: hover) and (pointer: fine) {
-    .seam__notch:hover::before { transform: scaleX(1.8); }
-  }
-  .seam__notch:focus-visible { outline: 2px solid var(--sc-accent); outline-offset: 2px; }
-
-  /* ── Acts ─────────────────────────────────────────────────────────── */
-
-  main > section { position: relative; z-index: 2; }
-  main > section#fire { z-index: 0; }
-
-  .split {
-    display: grid; grid-template-columns: 50% 50%;
-    min-height: 100%;
-  }
-  .pilot-side { padding-inline: var(--sc-gutter) clamp(2rem, 4vw, 4rem); color: var(--pilot-ink); }
-  .pay-side   { padding-inline: clamp(2.5rem, 5vw, 5.5rem) var(--sc-gutter); }
-
-  /* Act 1 */
-  #open .sc-stage { display: grid; }
-  #open .split { align-items: center; padding-block: 7rem 4rem; }
-  .pilot-h {
-    margin: 0; font: 500 clamp(1.9rem, 1.3rem + 2.2vw, 3.2rem)/1.08 var(--sc-font-text);
-    letter-spacing: -0.02em; color: var(--pilot-ink); max-width: 14ch; text-wrap: balance;
-  }
-  .pilot-sub { margin: 1.25rem 0 0; color: var(--pilot-ink-soft); font-size: var(--sc-t-base); max-width: 30ch; }
-  .pay-h {
-    margin: 0; font-family: var(--sc-font-display); font-weight: 600;
-    font-size: clamp(3rem, 1.6rem + 5.2vw, 6.6rem); line-height: 0.96;
-    letter-spacing: -0.035em; font-variation-settings: "opsz" 144;
-    text-wrap: balance; max-width: 9ch;
-  }
-  .pay-h em { font-style: italic; font-weight: 500; color: var(--sc-accent); }
-  .pay-lede { margin: 1.75rem 0 2.25rem; max-width: 36ch; color: var(--sc-ink-soft); font-size: var(--sc-t-lg); line-height: 1.5; }
-
+  .mark svg { width: 1.25rem; height: 1.25rem; }
   .cta {
-    display: inline-flex; align-items: center; gap: 0.6rem;
-    padding: 0.95rem 1.4rem 0.95rem 1.15rem; border-radius: 0.6rem;
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    padding: 0.85rem 1.25rem 0.85rem 1.05rem; border-radius: 0.6rem;
     background: var(--copper); color: var(--sc-accent-ink);
-    font: 700 0.95rem/1 var(--sc-font-text); letter-spacing: 0.01em; text-decoration: none;
-    box-shadow: 0 0.6rem 1.6rem -0.6rem rgba(200, 117, 51, 0.55), inset 0 1px 0 rgba(255, 220, 180, 0.35);
+    font: 700 0.92rem/1 var(--sc-font-text); text-decoration: none; white-space: nowrap;
+    box-shadow: 0 0.6rem 1.6rem -0.6rem rgba(200, 117, 51, 0.6), inset 0 1px 0 rgba(255, 220, 180, 0.35);
     transition: transform 140ms var(--sc-ease-out), background-color 160ms var(--sc-ease-out);
   }
-  .cta svg { width: 1.05rem; height: 1.05rem; }
+  .cta svg { width: 1rem; height: 1rem; }
   .cta:active { transform: scale(0.97); }
-  .cta:focus-visible { outline: 2px solid var(--ember); outline-offset: 3px; }
+  .cta:focus-visible, .mark:focus-visible, .map button:focus-visible, .foot a:focus-visible {
+    outline: 2px solid var(--ember); outline-offset: 3px; border-radius: 0.4rem;
+  }
   @media (hover: hover) and (pointer: fine) { .cta:hover { background: #D6843F; } }
+  .bar .cta { padding: 0.7rem 1rem 0.7rem 0.9rem; font-size: 0.85rem; }
 
-  .top-links {
-    position: absolute; top: 1.35rem; right: var(--sc-gutter); z-index: 3;
-    display: flex; gap: 1.5rem; margin: 0; padding: 0; list-style: none;
+  /* ── The forge map (signature move) ─────────────────────────── */
+  .map {
+    position: fixed; right: var(--sc-gutter); top: 50%; z-index: 65;
+    transform: translateY(-50%);
+    margin: 0; padding: 0.9rem 0.8rem; list-style: none;
+    background: rgba(20, 14, 10, 0.72);
+    border-radius: 0.8rem;
+    box-shadow: 0 1rem 2.5rem -1rem rgba(0,0,0,0.7), inset 0 1px 0 var(--iron-edge);
   }
-  .top-links a, .foot a {
-    color: var(--sc-ink-soft); text-decoration: none; font-weight: 600; font-size: var(--sc-t-sm);
-    transition: color 140ms var(--sc-ease-out);
+  .map::before {
+    content: ""; position: absolute; left: 1.32rem; top: 1.5rem; bottom: 1.5rem; width: 2px;
+    background: linear-gradient(180deg, rgba(200,117,51,0.9) 0 var(--route, 0%), rgba(201,184,164,0.18) var(--route, 0%));
   }
-  .top-links a:focus-visible, .foot a:focus-visible { outline: 2px solid var(--sc-accent); outline-offset: 3px; border-radius: 2px; }
-  @media (hover: hover) and (pointer: fine) { .top-links a:hover, .foot a:hover { color: var(--sc-ink); } }
+  .map li { position: relative; }
+  .map button {
+    display: grid; grid-template-columns: 1.1rem auto; align-items: center; gap: 0.7rem;
+    width: 100%; padding: 0.45rem 0.4rem; background: none; border: 0; cursor: pointer;
+    color: var(--sc-ink-soft); text-align: left;
+    font: 600 0.78rem/1.2 var(--sc-font-text); letter-spacing: 0.02em;
+    transition: color 160ms var(--sc-ease-out);
+  }
+  .map .dot {
+    width: 0.62rem; height: 0.62rem; margin-left: 0.25rem; border-radius: 50%;
+    background: #3A2E26; box-shadow: inset 0 0 0 1.5px rgba(201,184,164,0.35);
+    transition: background-color 200ms var(--sc-ease-out), box-shadow 200ms var(--sc-ease-out), transform 200ms var(--sc-ease-out);
+  }
+  .map .stamp {
+    display: block; margin-top: 0.2rem; color: var(--sc-accent);
+    font-weight: 700; font-size: 0.72rem; letter-spacing: 0.01em;
+    opacity: 0; transform: translateY(-3px);
+    transition: opacity 260ms var(--sc-ease-out), transform 260ms var(--sc-ease-out);
+  }
+  .map li.is-passed .dot { background: var(--copper); box-shadow: none; }
+  .map li.is-passed .stamp { opacity: 1; transform: none; }
+  .map li[aria-current="true"] button { color: var(--sc-ink); }
+  .map li[aria-current="true"] .dot {
+    background: var(--ember); transform: scale(1.25);
+    box-shadow: 0 0 0 4px rgba(255,178,92,0.18), 0 0.2rem 0.9rem rgba(255,140,50,0.55);
+  }
+  @media (hover: hover) and (pointer: fine) { .map button:hover { color: var(--sc-ink); } }
 
-  /* Act 2 */
-  #doubt .split { padding-block: 8rem 6rem; }
-  .leftovers { list-style: none; margin: 0; padding: 0; max-width: min(24rem, calc(47vw - var(--sc-gutter) - 2.5rem)); }
-  .leftovers li {
-    display: grid; grid-template-columns: 2.25rem 1fr; gap: 0.9rem; align-items: start;
-    padding-block: 1.35rem; border-top: 1px solid var(--pilot-rule);
-    color: var(--pilot-ink); font-size: var(--sc-t-base); line-height: 1.5;
-  }
-  .leftovers li:last-child { border-bottom: 1px solid var(--pilot-rule); }
-  .leftovers svg { width: 1.6rem; height: 1.6rem; color: var(--pilot-ink-soft); margin-top: 0.1rem; }
-  .leftovers small { display: block; color: var(--pilot-ink-soft); font-size: var(--sc-t-sm); margin-top: 0.2rem; }
-  .question { align-self: center; }
-  .question h2 {
-    margin: 0; font: italic 500 var(--sc-t-3xl)/1.02 var(--sc-font-display); letter-spacing: -0.03em;
-    max-width: 11ch; text-wrap: balance;
-  }
-  .question p { margin: 1.25rem 0 0; max-width: 34ch; color: var(--sc-ink-soft); }
+  /* ── Copy windows ───────────────────────────────────────────── */
+  .scrim { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+  .scrim--hero  { background: linear-gradient(to top right, rgba(14,10,8,0.96) 0%, rgba(14,10,8,0.86) 30%, rgba(14,10,8,0.5) 46%, rgba(14,10,8,0) 64%); }
+  .scrim--lead  { background: linear-gradient(to right, rgba(14,10,8,0.95) 0%, rgba(14,10,8,0.9) 36%, rgba(14,10,8,0.55) 50%, rgba(14,10,8,0) 66%); }
+  .scrim--trail { background: linear-gradient(to left, rgba(14,10,8,0.95) 0%, rgba(14,10,8,0.9) 46%, rgba(14,10,8,0.55) 60%, rgba(14,10,8,0) 74%); }
 
-  /* Act 3 */
-  #record .sc-stage { display: grid; }
-  #record .split { align-items: center; padding-block: 6rem 4rem; }
-  .befores { position: relative; min-height: 12rem; max-width: min(19rem, calc(35vw - var(--sc-gutter) - 2rem)); }
-  .befores p {
-    position: absolute; inset: 0 auto auto 0; margin: 0;
-    font-size: var(--sc-t-lg); line-height: 1.45; color: var(--pilot-ink);
+  .copy { max-width: 34rem; }
+  .copy--lead  { position: absolute; left: var(--sc-gutter); bottom: clamp(3rem, 11vh, 8rem); }
+  .copy--mid   { position: absolute; left: var(--sc-gutter); top: 50%; translate: 0 -50%; }
+  .copy--trail { position: absolute; right: calc(var(--sc-gutter) + 11rem); top: 50%; translate: 0 -50%; }
+
+  .hero-h {
+    margin: 0; font-family: var(--sc-font-display); font-weight: 600;
+    font-size: clamp(3.2rem, 1.8rem + 5vw, 6.4rem); line-height: 0.95; letter-spacing: -0.035em;
+    font-variation-settings: "opsz" 144; text-wrap: balance;
   }
-  .befores p small {
-    display: block; margin-bottom: 0.9rem; color: var(--pilot-ink-soft);
-    font: 600 0.72rem/1 var(--sc-font-text); letter-spacing: 0.14em; text-transform: uppercase;
+  .hero-h em { font-style: italic; font-weight: 500; color: var(--sc-accent); }
+  .lede { margin: 1.25rem 0 1.75rem; color: var(--sc-ink-soft); font-size: var(--sc-t-lg); line-height: 1.5; max-width: 30ch; }
+
+  .kicker {
+    display: block; margin-bottom: 0.9rem; color: var(--sc-accent);
+    font: 700 0.78rem/1 var(--sc-font-text); letter-spacing: 0.12em; text-transform: uppercase;
   }
-  .ledger-h { margin: 0 0 1.5rem; font: 600 var(--sc-t-2xl)/1 var(--sc-font-display); letter-spacing: -0.03em; }
-  .ledger { margin: 0; padding: 0; list-style: none; max-width: 36rem; }
+  .station-h {
+    margin: 0; font: 600 clamp(2.2rem, 1.4rem + 2.8vw, 3.8rem)/1 var(--sc-font-display);
+    letter-spacing: -0.03em; text-wrap: balance;
+  }
+  .station-p { margin: 1rem 0 0; color: var(--sc-ink-soft); max-width: 42ch; line-height: 1.6; }
+  .figs {
+    display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 0.4rem 2rem;
+    margin: 1.6rem 0 0; padding: 1.1rem 0 0; border-top: 1px solid rgba(244,234,220,0.14);
+  }
+  .figs div { display: grid; gap: 0.3rem; }
+  .figs dt { order: 2; color: var(--sc-ink-soft); font-size: var(--sc-t-sm); line-height: 1.35; max-width: 12ch; }
+  .figs dd {
+    order: 1; margin: 0; font: 600 clamp(1.7rem, 1.2rem + 1.2vw, 2.4rem)/1 var(--sc-font-display);
+    letter-spacing: -0.02em; color: var(--sc-ink); font-variant-numeric: tabular-nums;
+  }
+  .figs--two { grid-template-columns: repeat(2, auto); }
+
+  .ledger { margin: 1.4rem 0 0; padding: 0; list-style: none; }
   .ledger li {
-    display: grid; grid-template-columns: minmax(7.5rem, 0.8fr) 1.2fr; gap: 1.5rem; align-items: baseline;
-    padding-block: 1.2rem; border-top: 1px solid rgba(242, 232, 218, 0.12);
+    display: grid; grid-template-columns: 5.5rem 1fr; gap: 1rem; align-items: baseline;
+    padding: 0.8rem 0; border-top: 1px solid rgba(244,234,220,0.12);
   }
-  .ledger__fig {
-    font: 600 clamp(2.4rem, 1.6rem + 2.6vw, 4rem)/1 var(--sc-font-display);
-    letter-spacing: -0.03em; color: var(--sc-ink); font-variant-numeric: tabular-nums; white-space: nowrap;
-  }
-  .ledger__what { font-weight: 700; font-size: var(--sc-t-base); }
-  .ledger__who { display: block; color: var(--sc-ink-soft); font-size: var(--sc-t-sm); margin-top: 0.25rem; }
+  .ledger b { font: 600 1.9rem/1 var(--sc-font-display); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .ledger span { color: var(--sc-ink-soft); font-size: var(--sc-t-sm); line-height: 1.45; }
 
-  /* Act 4 */
-  #method .split { padding-block: 7rem 9rem; }
-  .pilot-status {
-    align-self: end; max-width: min(16rem, calc(33vw - var(--sc-gutter) - 2rem)); margin: 0; color: var(--pilot-ink-dim);
-    font-size: var(--sc-t-sm); line-height: 1.5;
-  }
-  .pilot-status b { display: block; color: var(--pilot-ink-soft); font-weight: 600; }
-  .method h2 { margin: 0 0 2rem; font: 600 var(--sc-t-2xl)/1 var(--sc-font-display); letter-spacing: -0.03em; }
-  .verbs { margin: 0; max-width: 34rem; }
-  .verbs div { display: grid; grid-template-columns: 7rem 1fr; gap: 1rem; padding-block: 0.8rem; }
-  .verbs dt { font: italic 500 var(--sc-t-lg)/1.3 var(--sc-font-display); color: var(--sc-accent); }
-  .verbs dd { margin: 0; color: var(--sc-ink-soft); }
-  .research { margin: 2.5rem 0 0; max-width: 34rem; color: var(--sc-ink-soft); font-size: var(--sc-t-sm); }
-  .research a { color: var(--sc-ink); text-underline-offset: 0.2em; }
-
-  /* Act 5: the peak */
-  .fire-scrim {
-    position: absolute; inset: 0; z-index: 1; pointer-events: none;
-    background: linear-gradient(to top right,
-      rgba(15, 10, 7, 0.97) 0%, rgba(15, 10, 7, 0.86) 30%, rgba(15, 10, 7, 0.45) 54%, transparent 74%);
-  }
-  #fire .sc-copy { max-width: 40rem; }
-  #fire h2 { margin: 0; }
-  #fire .sc-body { margin-top: 1.25rem; color: #D9CBB9; }
-  .burn-sheet { display: none; }
-
-  /* Act 6: the close, on the copper ground the payback side won */
-  #close .sc-stage {
-    background:
-      radial-gradient(120% 70% at 30% 115%, rgba(200, 117, 51, 0.42), transparent 62%),
-      radial-gradient(60% 40% at 85% 110%, rgba(255, 150, 60, 0.16), transparent 70%),
-      #120B07;
-    display: grid; grid-template-rows: 1fr auto;
-  }
-  .close {
-    align-self: center; padding: 6rem var(--sc-gutter) 2rem;
-    display: grid; grid-template-columns: minmax(0, 36rem); gap: 0;
-    margin-left: clamp(0rem, 8vw, 9rem);
-  }
-  .close h2 {
-    margin: 0; font: 600 var(--sc-t-3xl)/1 var(--sc-font-display); letter-spacing: -0.035em;
-  }
-  .close h2 em { font-style: italic; font-weight: 500; color: var(--sc-accent); }
-  .close > p { margin: 1.25rem 0 2rem; color: var(--sc-ink-soft); max-width: 40ch; }
-  .case-files { margin: 2.75rem 0 0; font-size: var(--sc-t-sm); color: var(--sc-ink-soft); max-width: 46ch; }
-  .case-files a { color: var(--sc-ink); text-underline-offset: 0.2em; }
+  .finale-h { margin: 0; font: 600 clamp(2.8rem, 1.6rem + 4vw, 5.2rem)/0.98 var(--sc-font-display); letter-spacing: -0.035em; }
+  .finale-h em { font-style: italic; font-weight: 500; color: var(--sc-accent); }
   .foot {
-    display: flex; flex-wrap: wrap; gap: 0.75rem 1.75rem; align-items: center;
-    padding: 1.5rem var(--sc-gutter) 1.75rem; border-top: 1px solid rgba(242, 232, 218, 0.1);
+    display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem; margin-top: 2.2rem;
     font-size: var(--sc-t-xs); color: var(--sc-ink-soft);
   }
-  .foot .foot__mark { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--sc-ink); font-weight: 700; }
-  .foot .foot__mark svg { width: 1rem; height: 1rem; }
-  .foot nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-left: auto; }
-  .foot a { font-size: var(--sc-t-xs); }
+  .foot a { color: var(--sc-ink-soft); text-decoration: none; font-weight: 600; }
+  @media (hover: hover) and (pointer: fine) { .foot a:hover { color: var(--sc-ink); } }
 
-  .mobile-fuse { display: none; }
-
-  /* ── Phone: the split rotates. Pilot above, payback below. ─────────── */
-  @media (max-width: 899px) {
-    .pilot-ground, .seam-wrap { display: none; }
-    .split { grid-template-columns: 1fr; }
-    .pilot-side { background: var(--pilot-canvas); padding: 2.25rem var(--sc-gutter); }
-    .pay-side { padding: 2.25rem var(--sc-gutter); }
-    .top-links {
-      top: auto; bottom: 1.25rem; right: auto; left: var(--sc-gutter);
-      gap: 1.25rem; flex-wrap: wrap;
+  /* ── Phone ──────────────────────────────────────────────────── */
+  @media (max-width: 860px) {
+    .map {
+      top: auto; bottom: 0.75rem; left: 50%; right: auto; transform: translateX(-50%);
+      display: flex; gap: 0.1rem; padding: 0.45rem 0.6rem; border-radius: 999px;
     }
-
-    .mobile-fuse {
-      display: block; position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 6;
-      background: repeating-linear-gradient(90deg, #A89276 0 5px, #8C7760 5px 8px);
+    .map::before { display: none; }
+    .map button { grid-template-columns: auto; padding: 0.35rem; }
+    .map button .label { display: none; }
+    .map .dot { margin: 0; width: 0.7rem; height: 0.7rem; }
+    .copy, .copy--lead, .copy--mid, .copy--trail {
+      left: var(--sc-gutter); right: var(--sc-gutter); max-width: none;
+      top: auto; bottom: 4.5rem; translate: none;
     }
-    .mobile-fuse::before {
-      content: ""; position: absolute; inset: 0; transform-origin: left;
-      background: linear-gradient(90deg, #120B07, #3A2517 92%, var(--copper));
-      transform: scaleX(var(--fuse));
+    .scrim--hero, .scrim--lead, .scrim--trail {
+      background: linear-gradient(to top, rgba(14,10,8,0.97) 0%, rgba(14,10,8,0.93) 52%, rgba(14,10,8,0.6) 64%, rgba(14,10,8,0) 80%);
     }
-    .mobile-fuse::after {
-      content: ""; position: absolute; top: -4px; left: 0; width: 11px; height: 11px; border-radius: 50%;
-      background: radial-gradient(circle, #FFF1D6 0 22%, var(--ember) 40%, var(--copper) 62%, transparent 72%);
-      transform: translateX(calc(var(--fuse) * 100vw - 5px));
+    .scrim--hero {
+      background: linear-gradient(to top, rgba(14,10,8,0.97) 0%, rgba(14,10,8,0.9) 36%, rgba(14,10,8,0.45) 48%, rgba(14,10,8,0) 58%);
     }
-    .mobile-mark {
-      display: flex !important; align-items: center; gap: 0.45rem; color: var(--pilot-ink);
-      font: 700 0.85rem/1 var(--sc-font-text); text-decoration: none; margin-bottom: 1.75rem;
+    .scrim--finale {
+      background: linear-gradient(to top, rgba(14,10,8,0.97) 0%, rgba(14,10,8,0.93) 60%, rgba(14,10,8,0.6) 72%, rgba(14,10,8,0) 86%);
     }
-    .mobile-mark svg { width: 1.1rem; height: 1.1rem; }
-
-    #open .split { padding: 0; grid-template-rows: auto 1fr; height: 100%; }
-    #open .pilot-side { padding-top: 1.5rem; }
-    #open .pay-side { align-self: center; }
-    .pilot-h { font-size: 1.6rem; }
-    .pilot-sub { margin-top: 0.6rem; font-size: 0.95rem; }
-    .pay-h { font-size: clamp(2.6rem, 11vw, 3.4rem); }
-    .pay-lede { font-size: 1.05rem; margin: 1rem 0 1.5rem; }
-
-    #doubt .split { padding: 0; }
-    .leftovers, .pilot-status { max-width: none; }
-    .question { padding-block: 3.5rem; }
-
-    #record .split { padding: 0; grid-template-rows: auto 1fr; height: 100%; }
-    #record .pilot-side { padding-top: 1.75rem; padding-bottom: 1.25rem; }
-    .befores { min-height: 5.5rem; max-width: none; }
-    .befores p { font-size: 1rem; }
-    .befores p small { margin-bottom: 0.5rem; }
-    #record .pay-side { padding-top: 1.5rem; }
-    .ledger-h { font-size: 1.6rem; margin-bottom: 0.75rem; }
-    .ledger li { grid-template-columns: 6.2rem 1fr; gap: 1rem; padding-block: 0.8rem; }
-    .ledger__fig { font-size: 2.1rem; }
-
-    #method .split { padding: 0; }
-    #method .pay-side { padding-block: 3rem 4rem; }
-    .verbs div { grid-template-columns: 5.5rem 1fr; }
-
-    .burn-sheet {
-      display: block; position: absolute; inset: 0; z-index: 3; background: var(--pilot-canvas);
-      clip-path: inset(0 calc((1 - var(--sheet)) * 100%) 0 0);
-    }
-    .fire-scrim {
-      background: linear-gradient(to top,
-        rgba(15, 10, 7, 0.97) 0%, rgba(15, 10, 7, 0.9) 38%, rgba(15, 10, 7, 0.4) 58%, transparent 74%);
-    }
-    .close { margin-left: 0; padding-top: 4rem; }
-    .foot nav { margin-left: 0; }
+    .hero-h { font-size: clamp(2.6rem, 11vw, 3.4rem); }
+    .lede { font-size: 1.02rem; margin: 0.9rem 0 1.3rem; }
+    .station-h { font-size: 2rem; }
+    .station-p { font-size: 0.95rem; line-height: 1.5; }
+    .figs { grid-template-columns: repeat(3, 1fr); gap: 0.4rem 1rem; margin-top: 1rem; padding-top: 0.8rem; }
+    .figs--two { grid-template-columns: repeat(2, 1fr); }
+    .figs dd { font-size: 1.5rem; }
+    .figs dt { font-size: 0.78rem; }
+    .ledger li { grid-template-columns: 4.3rem 1fr; padding: 0.55rem 0; }
+    .ledger b { font-size: 1.5rem; }
+    .bar .cta { display: none; }
   }
-  .mobile-mark { display: none; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .pilot-ground::after, .seam__ember { animation: none; }
+  @media (max-width: 860px) and (max-height: 700px) {
+    .station-p { display: none; }
   }
 </style>
 </head>
@@ -402,269 +239,177 @@
   <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h13m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </svg>
 
-<div class="pilot-ground" aria-hidden="true"></div>
-<div class="mobile-fuse" aria-hidden="true"></div>
+<header class="bar">
+  <a class="mark" href="/" aria-label="Fireside Labs home"><svg aria-hidden="true"><use href="#flame"/></svg>Fireside Labs</a>
+  <a class="cta" href="/contact"><svg aria-hidden="true"><use href="#flame-ink"/></svg>Have a Fireside</a>
+</header>
 
-<div class="seam-wrap">
-  <div class="seam">
-    <div class="seam__cord" aria-hidden="true"></div>
-    <div class="seam__char" aria-hidden="true"></div>
-    <a class="seam__mark" href="/" aria-label="Fireside Labs home">
-      <svg aria-hidden="true"><use href="#flame"/></svg>Fireside Labs
-    </a>
-    <nav aria-label="Page sections">
-      <ol class="seam__index">
-        <li style="top: 30%"><button class="seam__notch" type="button" data-jump="doubt"><span>What it returned</span></button></li>
-        <li style="top: 48%"><button class="seam__notch" type="button" data-jump="record"><span>The record</span></button></li>
-        <li style="top: 72%"><button class="seam__notch" type="button" data-jump="method"><span>How it runs</span></button></li>
-        <li style="top: 94%"><button class="seam__notch" type="button" data-jump="fire"><span>The fire</span></button></li>
-      </ol>
-    </nav>
-    <div class="seam__ember" aria-hidden="true"></div>
-    <span class="seam__label seam__label--pilot" aria-hidden="true">The pilot</span>
-    <span class="seam__label seam__label--payback" aria-hidden="true">The payback</span>
-  </div>
-</div>
+<nav aria-label="The forge">
+  <ol class="map">
+    <li data-leg="0" data-at="0"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">Hearth</span></button></li>
+    <li data-leg="1" data-at="0.25"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">Into the fire</span></button></li>
+    <li data-leg="2" data-at="0.43"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">CallPulse<span class="stamp">80% fewer uncalled leads</span></span></button></li>
+    <li data-leg="3" data-at="0.63"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">Librarian<span class="stamp">3M+ images searchable</span></span></button></li>
+    <li data-leg="4" data-at="0.765"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">The record<span class="stamp">$1.1M · $8M · 13%</span></span></button></li>
+    <li data-leg="5" data-at="0.97"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">Pull up a chair</span></button></li>
+  </ol>
+</nav>
 
-<main id="top">
+<main data-sc-mode="worldflight" data-sc-seam="0.16" data-sc-lerp="0.12">
 
-  <!-- 1 · Recognition: both headlines at once -->
-  <section id="open" data-sc-act="pin" data-sc-span="1.4">
-    <div data-sc-stage>
-      <ul class="top-links">
-        <li><a href="/services">Services</a></li>
-        <li><a href="/work">Work</a></li>
-        <li><a href="/research">Research</a></li>
-        <li><a href="/about">About</a></li>
-      </ul>
-      <div class="split">
-        <div class="pilot-side" data-sc-cue="0 1 0 0.12">
-          <a class="mobile-mark" href="/"><svg aria-hidden="true"><use href="#flame"/></svg>Fireside Labs</a>
-          <p class="pilot-h">Another AI pilot.</p>
-          <p class="pilot-sub">Twelve weeks, one demo, and a renewal quote.</p>
-        </div>
-        <div class="pay-side" data-sc-cue="0 1 0 0.12">
-          <h1 class="pay-h">AI that <em>pays back.</em></h1>
-          <p class="pay-lede">An AI studio for mid-market operators. We find where AI returns money, then build it and measure it.</p>
-          <a class="cta" href="/contact"><svg aria-hidden="true"><use href="#flame-ink"/></svg>Have a Fireside</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 2 · Doubt: the pilot's leftovers pile up, the other side asks one thing -->
-  <section id="doubt" data-sc-act="flow">
-    <div class="split">
-      <div class="pilot-side">
-        <ul class="leftovers" data-sc-in data-sc-stagger="80">
-          <li>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v10H9l-5 4V5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-            <span>A chatbot on the intranet.<small>Nobody opens it.</small></span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10m6 10V4m6 16v-7m4 7H3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-            <span>A dashboard.<small>Last viewed at the kickoff.</small></span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v11H3zM12 16v4m-4 0h8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-            <span>A slide titled "Phase 2".<small>Scope to be confirmed.</small></span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Zm3 5h6m-6 4h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-            <span>A renewal quote.<small>Due next quarter.</small></span>
-          </li>
-        </ul>
-      </div>
-      <div class="pay-side question" data-sc-in>
-        <h2>What did it return?</h2>
-        <p>If nobody can answer in one number, you bought a demo.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 3 · Confidence: the record, and the seam tips -->
-  <section id="record" data-sc-act="pin" data-sc-span="3">
-    <div data-sc-stage>
-      <div class="split">
-        <div class="pilot-side">
-          <div class="befores">
-            <p data-sc-cue="0 0.32 0"><small>Before</small>Claims-adjacent work was eating thousands of analyst hours.</p>
-            <p data-sc-cue="0.27 0.58"><small>Before</small>Capital sat idle as a buffer because nobody could forecast demand.</p>
-            <p data-sc-cue="0.53 1 0.1 0.2"><small>Before</small>Late cancellations left empty slots at every location.</p>
-          </div>
-        </div>
-        <div class="pay-side">
-          <h2 class="ledger-h" data-sc-cue="0 1 0 0.08">The record.</h2>
-          <ol class="ledger">
-            <li data-sc-cue="0.06 1 0.1 0.085">
-              <span class="ledger__fig">$<span data-sc-count="0 1.1" data-sc-count-at="0.06 0.22">1.1</span>M</span>
-              <span><span class="ledger__what">Annual cost reduction</span><span class="ledger__who">National health insurer. Verified against baseline the following fiscal year.</span></span>
-            </li>
-            <li data-sc-cue="0.32 1 0.1 0.12">
-              <span class="ledger__fig">$<span data-sc-count="0 8" data-sc-count-at="0.32 0.46">8</span>M</span>
-              <span><span class="ledger__what">Working capital released</span><span class="ledger__who">Transportation and logistics operator.</span></span>
-            </li>
-            <li data-sc-cue="0.58 1 0.1 0.19">
-              <span class="ledger__fig"><span data-sc-count="0 13" data-sc-count-at="0.58 0.72">13</span>%</span>
-              <span><span class="ledger__what">Fewer no-shows</span><span class="ledger__who">Multi-location healthcare operator.</span></span>
-            </li>
-          </ol>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 4 · Quiet: authored silence before the peak -->
-  <section id="method" data-sc-act="flow">
-    <div class="split">
-      <p class="pilot-side pilot-status"><b>Pilot status</b>Renewal pending.</p>
-      <div class="pay-side method" data-sc-in data-sc-stagger="70">
-        <h2>How it runs.</h2>
-        <dl class="verbs">
-          <div><dt>Find</dt><dd>We sit with your operators and trace where time and money actually leak.</dd></div>
-          <div><dt>Build</dt><dd>Models wired into the systems you already run.</dd></div>
-          <div><dt>Deploy</dt><dd>Inside your environment. Your data stays in the building.</dd></div>
-          <div><dt>Measure</dt><dd>Against a baseline, in P&amp;L, the following quarter.</dd></div>
-        </dl>
-        <p class="research">We publish what we learn: <a href="/research">20+ research papers</a> and a <a href="/benchmarks">23-model local benchmark</a>.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 5 · The peak: the fuse runs out, the pilot side burns, the fire -->
-  <section id="fire" data-sc-act="scrub" data-sc-span="3.2" data-sc-dwell="0.35">
-    <div data-sc-stage>
+  <div data-sc-world>
+    <div data-sc-segment data-sc-w="2.2" data-sc-linger="0.2" data-sc-waypoint="Hearth">
       <picture>
-        <source media="(max-width: 899px)" srcset="/home/peak-fire-v0-m.webp">
-        <img class="sc-stage__poster" src="/home/peak-fire-v0.webp" alt="">
+        <source media="(max-width: 860px)" srcset="/forge/forge-leg1-v1-m.webp">
+        <img class="sc-world__poster" src="/forge/forge-leg1-v1.webp" alt="" decoding="async">
       </picture>
-      <video data-sc-scrub data-sc-src="/home/peak-fire-v0.mp4"
-             data-sc-src-mobile="/home/peak-fire-v0-m.mp4" muted playsinline></video>
-      <div class="burn-sheet" aria-hidden="true"></div>
-      <div class="fire-scrim" aria-hidden="true"></div>
-      <div class="sc-copy sc-copy--lead" data-sc-cue="0.34 1 0.12 0.08">
-        <h2 class="sc-display sc-display--xl" data-sc-kinetic="lines">Built to run. Measured to pay.</h2>
-        <p class="sc-body">Everything we ship runs in your environment and reports against a baseline you agreed to up front.</p>
-      </div>
+      <video data-sc-src="/forge/forge-leg1-v1.mp4" data-sc-src-mobile="/forge/forge-leg1-v1-m.mp4" data-sc-lerp="0.12" muted playsinline></video>
     </div>
-  </section>
-
-  <!-- 6 · Resolve: the close, on the ground the payback side won -->
-  <section id="close" data-sc-act="pin" data-sc-span="1.2">
-    <div data-sc-stage>
-      <div class="close" data-sc-cue="0 1 0 0">
-        <h2>Pull up <em>a chair.</em></h2>
-        <p>15 minutes. No pitch, no deck. Tell us what is costing you time and money, and we will tell you honestly whether AI can fix it and what it would pay back.</p>
-        <div><a class="cta" href="/contact"><svg aria-hidden="true"><use href="#flame-ink"/></svg>Have a Fireside<svg aria-hidden="true"><use href="#arrow"/></svg></a></div>
-        <!-- PLACEHOLDER: swap in real case study titles and links once written -->
-        <p class="case-files" data-placeholder="case-studies">Case files in progress: Case study 1, Case study 2, Case study 3. Until they land, the full record is on <a href="/work">the work page</a>.</p>
-      </div>
-      <footer class="foot" data-sc-cue="0 1 0 0">
-        <span class="foot__mark"><svg aria-hidden="true"><use href="#flame"/></svg>Fireside Labs</span>
-        <a href="mailto:j.nguyen@firesidelabs.ai">j.nguyen@firesidelabs.ai</a>
-        <nav aria-label="Site">
-          <a href="/services">Services</a>
-          <a href="/work">Work</a>
-          <a href="/research">Research</a>
-          <a href="/benchmarks">Benchmarks</a>
-          <a href="/about">About</a>
-        </nav>
-      </footer>
+    <div data-sc-segment data-sc-w="2.2" data-sc-waypoint="Into the fire">
+      <picture>
+        <source media="(max-width: 860px)" srcset="/forge/forge-leg2-v1-m.webp">
+        <img class="sc-world__poster" src="/forge/forge-leg2-v1.webp" alt="" decoding="async">
+      </picture>
+      <video data-sc-src="/forge/forge-leg2-v1.mp4" data-sc-src-mobile="/forge/forge-leg2-v1-m.mp4" data-sc-lerp="0.12" muted playsinline></video>
     </div>
-  </section>
+    <div data-sc-segment data-sc-w="2.2" data-sc-linger="0.25" data-sc-waypoint="CallPulse">
+      <picture>
+        <source media="(max-width: 860px)" srcset="/forge/forge-leg3-v1-m.webp">
+        <img class="sc-world__poster" src="/forge/forge-leg3-v1.webp" alt="" decoding="async">
+      </picture>
+      <video data-sc-src="/forge/forge-leg3-v1.mp4" data-sc-src-mobile="/forge/forge-leg3-v1-m.mp4" data-sc-lerp="0.12" muted playsinline></video>
+    </div>
+    <div data-sc-segment data-sc-w="2.2" data-sc-linger="0.25" data-sc-waypoint="Librarian">
+      <picture>
+        <source media="(max-width: 860px)" srcset="/forge/forge-leg4-v1-m.webp">
+        <img class="sc-world__poster" src="/forge/forge-leg4-v1.webp" alt="" decoding="async">
+      </picture>
+      <video data-sc-src="/forge/forge-leg4-v1.mp4" data-sc-src-mobile="/forge/forge-leg4-v1-m.mp4" data-sc-lerp="0.12" muted playsinline></video>
+    </div>
+    <div data-sc-segment data-sc-w="1.83" data-sc-waypoint="The record">
+      <picture>
+        <source media="(max-width: 860px)" srcset="/forge/forge-leg5-v1-m.webp">
+        <img class="sc-world__poster" src="/forge/forge-leg5-v1.webp" alt="" decoding="async">
+      </picture>
+      <video data-sc-src="/forge/forge-leg5-v1.mp4" data-sc-src-mobile="/forge/forge-leg5-v1-m.mp4" data-sc-lerp="0.12" muted playsinline></video>
+    </div>
+    <div data-sc-segment data-sc-w="2.2" data-sc-waypoint="Pull up a chair">
+      <picture>
+        <source media="(max-width: 860px)" srcset="/forge/forge-leg6-v1-m.webp">
+        <img class="sc-world__poster" src="/forge/forge-leg6-v1.webp" alt="" decoding="async">
+      </picture>
+      <video data-sc-src="/forge/forge-leg6-v1.mp4" data-sc-src-mobile="/forge/forge-leg6-v1-m.mp4" data-sc-lerp="0.12" muted playsinline></video>
+    </div>
+  </div>
 
+  <div data-sc-world-copy>
+    <!-- Scrims are siblings of the copy they protect; the page script mirrors
+         each one's opacity from its copy block. -->
+    <div class="scrim scrim--hero" data-scrim-for="c-hero" aria-hidden="true"></div>
+    <div class="scrim scrim--lead" data-scrim-for="c-callpulse" aria-hidden="true"></div>
+    <div class="scrim scrim--trail" data-scrim-for="c-librarian" aria-hidden="true"></div>
+    <div class="scrim scrim--trail" data-scrim-for="c-record" aria-hidden="true"></div>
+    <div class="scrim scrim--hero scrim--finale" data-scrim-for="c-finale" aria-hidden="true"></div>
+
+    <div class="copy copy--lead" id="c-hero" data-sc-copy data-sc-window="hero">
+      <h1 class="hero-h">AI that <em>pays back.</em></h1>
+      <p class="lede">We build AI for operators, then measure what it returns.</p>
+      <a class="cta" href="/contact"><svg aria-hidden="true"><use href="#flame-ink"/></svg>Have a Fireside</a>
+    </div>
+
+    <section class="copy copy--mid" id="c-callpulse" data-sc-copy data-sc-window="0.355 0.505" aria-labelledby="cp-h">
+      <span class="kicker">CallPulse · Conversation intelligence</span>
+      <h2 class="station-h" id="cp-h">Every call, heard.</h2>
+      <p class="station-p">A national aesthetic surgery group needed every consult call graded against its own sales and service standards. We built it in-house, running on their hardware, refreshed daily.</p>
+      <dl class="figs">
+        <div><dt>fewer leads left uncalled</dt><dd>80%</dd></div>
+        <div><dt>less time auditing calls</dt><dd>80%</dd></div>
+        <div><dt>a year in platform fees, never needed</dt><dd>$120K</dd></div>
+      </dl>
+    </section>
+
+    <section class="copy copy--trail" id="c-librarian" data-sc-copy data-sc-window="0.575 0.68" aria-labelledby="lib-h">
+      <span class="kicker">Librarian · Visual search</span>
+      <h2 class="station-h" id="lib-h">One photo finds its match.</h2>
+      <p class="station-p">Show it one before-and-after photo and it finds the most similar results across the group's entire archive, with consent and face-blur checks on everything a prospect sees. Sales, scheduling, marketing and nursing use it daily.</p>
+      <dl class="figs figs--two">
+        <div><dt>images searchable</dt><dd>3M+</dd></div>
+        <div><dt>photo sorting accuracy, by body area and angle</dt><dd>94 / 98%</dd></div>
+      </dl>
+    </section>
+
+    <section class="copy copy--trail" id="c-record" data-sc-copy data-sc-window="0.70 0.825" aria-labelledby="rec-h">
+      <span class="kicker">Earlier work</span>
+      <h2 class="station-h" id="rec-h">Measured in P&amp;L.</h2>
+      <ul class="ledger">
+        <li><b>$1.1M</b><span>annual cost reduction, national health insurer</span></li>
+        <li><b>$8M</b><span>working capital released, transportation and logistics</span></li>
+        <li><b>13%</b><span>fewer no-shows, multi-location healthcare operator</span></li>
+      </ul>
+    </section>
+
+    <div class="copy copy--lead" id="c-finale" data-sc-copy data-sc-window="finale">
+      <h2 class="finale-h">Pull up <em>a chair.</em></h2>
+      <p class="lede">15 minutes. No pitch, no deck. Tell us what is costing you time and money, and we will tell you honestly whether AI can fix it.</p>
+      <a class="cta" href="/contact"><svg aria-hidden="true"><use href="#flame-ink"/></svg>Have a Fireside<svg aria-hidden="true"><use href="#arrow"/></svg></a>
+      <p class="foot">
+        <a href="/services">Services</a><a href="/work">Work</a><a href="/research">Research</a><a href="/benchmarks">Benchmarks</a><a href="/about">About</a><a href="mailto:j.nguyen@firesidelabs.ai">j.nguyen@firesidelabs.ai</a>
+      </p>
+    </div>
+  </div>
+
+  <div data-sc-spacer aria-hidden="true"></div>
 </main>
 
 <script src="/home/scrollcraft-030.js"></script>
 <script>
 (function () {
-  var sc = ScrollCraft.mount(document.body);
-  var root = document.documentElement;
+  var sc = ScrollCraft.mount(document);
+  window.__sc = sc;
+  var W = sc.worlds[0];
   var reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  var phone = matchMedia('(max-width: 899px)');
 
-  function act(id) {
-    for (var i = 0; i < sc.acts.length; i++) if (sc.acts[i].el.id === id) return sc.acts[i];
-  }
-  var A = { doubt: act('doubt'), record: act('record'), method: act('method'), fire: act('fire') };
+  // The spacer is sized at mount; re-measure once the window and fonts settle.
+  function relayout() { dispatchEvent(new Event('resize')); }
+  addEventListener('load', relayout);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
 
-  function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
-  function ease(t) { return 1 - Math.pow(1 - t, 3); }
-  function step(p, a, b) { return ease(clamp((p - a) / (b - a))); }
-  function docTop(el) { return el.getBoundingClientRect().top + scrollY; }
+  // Forge map: current station, stamped stations, and the burnt route line.
+  var map = document.querySelector('.map');
+  var items = map.querySelectorAll('li');
 
-  // Seam position (percent of the viewport) is a function of where the reader
-  // is: it tips one notch per figure in the record, then burns out at the fire.
-  function splitAt(y, t) {
-    if (y < t.record) return 50 - 3 * clamp((y - t.doubt) / (t.record - t.doubt));
-    var pr = A.record.p;
-    if (y < t.method) return 47 - 4 * (step(pr, 0.06, 0.2) + step(pr, 0.32, 0.46) + step(pr, 0.58, 0.72));
-    if (y < t.fire) return 35 - 2 * clamp((y - t.method) / (t.fire - t.method));
-    return 33 * (1 - (reduced.matches ? 1 : step(A.fire.p, 0, 0.24)));
-  }
-
-  var last = {};
-  function set(name, v) {
-    var s = v.toFixed(4);
-    if (last[name] !== s) { last[name] = s; root.style.setProperty(name, s); }
-  }
-
-  var notches = document.querySelectorAll('.seam__notch');
-  var seam = document.querySelector('.seam');
-  function frame() {
-    var y = scrollY;
-    var t = { doubt: docTop(A.doubt.el), record: docTop(A.record.el), method: docTop(A.method.el), fire: docTop(A.fire.el) };
-    var fuse = clamp(y / t.fire);
-    var split = splitAt(y, t);
-    var fp = A.fire.p;
-    set('--fuse', fuse);
-    set('--split', split);
-    set('--burn', y >= t.fire && fp < 0.3 && !reduced.matches ? 1 : 0);
-    var seamO = y < t.fire ? 1 : clamp(split / 33 * 1.4 - 0.4);
-    set('--seam-o', seamO);
-    seam.classList.toggle('is-out', seamO < 0.05);
-    set('--sheet', reduced.matches ? (fp > 0 ? 0 : 1) : 1 - step(fp, 0, 0.24));
-    for (var i = 0; i < notches.length; i++) {
-      var target = t[notches[i].getAttribute('data-jump')];
-      notches[i].classList.toggle('is-burnt', y >= target - 2);
-    }
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
-
-  // Notches are real navigation: place each at its beat's share of the fuse.
-  function placeNotches() {
-    var fire = docTop(A.fire.el);
-    for (var i = 0; i < notches.length; i++) {
-      var id = notches[i].getAttribute('data-jump');
-      var y = docTop(document.getElementById(id));
-      notches[i].parentNode.style.top = (Math.min(y / fire, 0.97) * 100).toFixed(2) + '%';
+  function update(index) {
+    for (var i = 0; i < items.length; i++) {
+      items[i].setAttribute('aria-current', String(i === index));
+      if (i < index) items[i].classList.add('is-passed');
     }
   }
-  addEventListener('load', placeNotches);
-  addEventListener('resize', placeNotches);
-  setTimeout(placeNotches, 400);
+  addEventListener('sc:waypoint', function (e) { update(e.detail.index); });
 
-  for (var n = 0; n < notches.length; n++) {
-    notches[n].addEventListener('click', function (e) {
-      var el = document.getElementById(e.currentTarget.getAttribute('data-jump'));
-      scrollTo({ top: docTop(el) + 2, behavior: reduced.matches ? 'instant' : 'smooth' });
+  var scrims = Array.prototype.map.call(document.querySelectorAll('[data-scrim-for]'), function (el) {
+    return { el: el, copy: document.getElementById(el.getAttribute('data-scrim-for')), o: -1 };
+  });
+
+  (function route() {
+    for (var j = 0; j < scrims.length; j++) {
+      var o = +(parseFloat(getComputedStyle(scrims[j].copy).opacity) || 0).toFixed(3);
+      if (o !== scrims[j].o) { scrims[j].o = o; scrims[j].el.style.opacity = o; }
+    }
+    var t = Math.max(0, Math.min(1, (scrollY - W.top) / Math.max(innerHeight, 1) / W.total));
+    map.style.setProperty('--route', (t * 100).toFixed(2) + '%');
+    requestAnimationFrame(route);
+  })();
+
+  // Clicking a station flies the camera there.
+  for (var i = 0; i < items.length; i++) {
+    items[i].querySelector('button').addEventListener('click', function (e) {
+      // Land inside the station's copy window, not at the leg boundary.
+      var at = +e.currentTarget.parentNode.getAttribute('data-at');
+      var y = W.top + at * W.total * innerHeight;
+      scrollTo({ top: y, behavior: reduced.matches ? 'instant' : 'smooth' });
     });
   }
-
-  // The ember runs hotter when the pointer is near the seam.
-  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    var heat = 0, want = 0;
-    addEventListener('pointermove', function (e) {
-      var seamX = innerWidth * (parseFloat(last['--split'] || '50') / 100);
-      want = reduced.matches || phone.matches ? 0 : clamp(1 - Math.abs(e.clientX - seamX) / 160);
-    }, { passive: true });
-    (function cool() {
-      heat += (want - heat) * 0.12;
-      set('--heat', heat);
-      requestAnimationFrame(cool);
-    })();
-  }
+  update(0);
 })();
 </script>
 </body>

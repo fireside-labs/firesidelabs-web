@@ -169,6 +169,38 @@
   }
   .figs--two { grid-template-columns: repeat(2, auto); }
 
+  .copy--wide { max-width: 46rem; }
+  .tools {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0 2rem;
+    margin: 1.4rem 0 0; padding: 0; list-style: none;
+  }
+  .tools li { padding: 0.7rem 0; border-top: 1px solid rgba(244,234,220,0.12); }
+  .tools b { display: block; font-weight: 700; font-size: var(--sc-t-base); }
+  .tools span { display: block; margin-top: 0.15rem; color: var(--sc-ink-soft); font-size: var(--sc-t-sm); line-height: 1.4; }
+
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+  .tour {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.85rem 1.15rem; border-radius: 0.6rem; cursor: pointer;
+    background: rgba(244,234,220,0.08); color: var(--sc-ink);
+    border: 1px solid rgba(244,234,220,0.22);
+    font: 700 0.92rem/1 var(--sc-font-text);
+    transition: background-color 160ms var(--sc-ease-out), transform 140ms var(--sc-ease-out);
+  }
+  .tour svg { width: 0.9rem; height: 0.9rem; }
+  .tour:active { transform: scale(0.97); }
+  .tour:focus-visible, .tour-stop:focus-visible { outline: 2px solid var(--ember); outline-offset: 3px; }
+  @media (hover: hover) and (pointer: fine) { .tour:hover { background: rgba(244,234,220,0.14); } }
+  .tour-stop {
+    position: fixed; left: 50%; bottom: 1.25rem; z-index: 75; transform: translateX(-50%);
+    display: none; align-items: center; gap: 0.5rem;
+    padding: 0.6rem 1rem; border-radius: 999px; cursor: pointer;
+    background: rgba(20,14,10,0.85); color: var(--sc-ink); border: 1px solid rgba(244,234,220,0.2);
+    font: 700 0.8rem/1 var(--sc-font-text);
+  }
+  .tour-stop svg { width: 0.8rem; height: 0.8rem; }
+  body.is-touring .tour-stop { display: inline-flex; }
+
   .ledger { margin: 1.4rem 0 0; padding: 0; list-style: none; }
   .ledger li {
     display: grid; grid-template-columns: 5.5rem 1fr; gap: 1rem; align-items: baseline;
@@ -221,6 +253,13 @@
     .ledger b { font-size: 1.5rem; }
     .bar .cta { display: none; }
   }
+  @media (max-width: 860px) {
+    .tools { grid-template-columns: 1fr 1fr; gap: 0 0.9rem; margin-top: 0.8rem; }
+    .tools li { padding: 0.45rem 0; }
+    .tools b { font-size: 0.85rem; }
+    .tools span { display: none; }
+    body.is-touring .tour-stop { bottom: 4.2rem; }
+  }
   @media (max-width: 860px) and (max-height: 700px) {
     .station-p { display: none; }
   }
@@ -250,10 +289,12 @@
     <li data-leg="1" data-at="0.25"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">Into the fire</span></button></li>
     <li data-leg="2" data-at="0.43"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">CallPulse<span class="stamp">80% fewer uncalled leads</span></span></button></li>
     <li data-leg="3" data-at="0.63"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">Librarian<span class="stamp">3M+ images searchable</span></span></button></li>
-    <li data-leg="4" data-at="0.765"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">The record<span class="stamp">$1.1M · $8M · 13%</span></span></button></li>
+    <li data-leg="4" data-at="0.735"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">The record<span class="stamp">$1.1M · $8M · 13%</span></span></button></li>
     <li data-leg="5" data-at="0.97"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">Pull up a chair</span></button></li>
   </ol>
 </nav>
+
+<button class="tour-stop" type="button" data-tour-stop><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg>Stop the tour</button>
 
 <main data-sc-mode="worldflight" data-sc-seam="0.16" data-sc-lerp="0.12">
 
@@ -309,12 +350,16 @@
     <div class="scrim scrim--lead" data-scrim-for="c-callpulse" aria-hidden="true"></div>
     <div class="scrim scrim--trail" data-scrim-for="c-librarian" aria-hidden="true"></div>
     <div class="scrim scrim--trail" data-scrim-for="c-record" aria-hidden="true"></div>
+    <div class="scrim scrim--lead" data-scrim-for="c-workshop" aria-hidden="true"></div>
     <div class="scrim scrim--hero scrim--finale" data-scrim-for="c-finale" aria-hidden="true"></div>
 
     <div class="copy copy--lead" id="c-hero" data-sc-copy data-sc-window="hero">
       <h1 class="hero-h">AI that <em>pays back.</em></h1>
       <p class="lede">We build AI for operators, then measure what it returns.</p>
-      <a class="cta" href="/contact"><svg aria-hidden="true"><use href="#flame-ink"/></svg>Have a Fireside</a>
+      <div class="actions">
+        <a class="cta" href="/contact"><svg aria-hidden="true"><use href="#flame-ink"/></svg>Have a Fireside</a>
+        <button class="tour" type="button" data-tour><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>Play the tour</button>
+      </div>
     </div>
 
     <section class="copy copy--mid" id="c-callpulse" data-sc-copy data-sc-window="0.355 0.505" aria-labelledby="cp-h">
@@ -338,13 +383,28 @@
       </dl>
     </section>
 
-    <section class="copy copy--trail" id="c-record" data-sc-copy data-sc-window="0.70 0.825" aria-labelledby="rec-h">
+    <section class="copy copy--trail" id="c-record" data-sc-copy data-sc-window="0.695 0.77" aria-labelledby="rec-h">
       <span class="kicker">Earlier work</span>
       <h2 class="station-h" id="rec-h">Measured in P&amp;L.</h2>
       <ul class="ledger">
         <li><b>$1.1M</b><span>annual cost reduction, national health insurer</span></li>
         <li><b>$8M</b><span>working capital released, transportation and logistics</span></li>
         <li><b>13%</b><span>fewer no-shows, multi-location healthcare operator</span></li>
+      </ul>
+    </section>
+
+    <section class="copy copy--mid copy--wide" id="c-workshop" data-sc-copy data-sc-window="0.775 0.875" aria-labelledby="ws-h">
+      <span class="kicker">The workshop</span>
+      <h2 class="station-h" id="ws-h">What else we build.</h2>
+      <ul class="tools">
+        <li><b>Uplift modeling</b><span>which customers your outreach actually moves</span></li>
+        <li><b>Propensity scoring</b><span>who is likely to book, buy or cancel</span></li>
+        <li><b>Cancellation prediction</b><span>fewer no-shows, fuller schedules</span></li>
+        <li><b>Ad signal engineering</b><span>feed ad platforms the conversions worth paying for</span></li>
+        <li><b>Marketing mix and incrementality</b><span>what each channel really returns</span></li>
+        <li><b>Demand forecasting</b><span>buffers sized by data instead of habit</span></li>
+        <li><b>Next best action</b><span>the right call, text or offer for each lead</span></li>
+        <li><b>Private language and vision models</b><span>on your own hardware, your data stays in</span></li>
       </ul>
     </section>
 
@@ -410,6 +470,77 @@
     });
   }
   update(0);
+
+  // Idle drift and the guided tour both move the page by scrolling it, so the
+  // film, copy and map behave exactly as they do under the reader's own hand.
+  // Any input from the reader ends either one immediately.
+  var trackPx = function (f) { return W.top + f * W.total * innerHeight; };
+  var mode = null, raf = 0, idleTimer = 0, userMoved = false;
+
+  function stop() {
+    mode = null; cancelAnimationFrame(raf);
+    document.body.classList.remove('is-touring');
+  }
+  function onInput(e) {
+    // The press that starts the tour must not cancel it; a wheel or touch
+    // over the same button still means the reader wants control back.
+    var onButton = e && e.target && e.target.closest && e.target.closest('[data-tour]');
+    if (onButton && (e.type === 'pointerdown' || e.type === 'keydown')) return;
+    userMoved = true; clearTimeout(idleTimer);
+    if (mode) stop();
+  }
+  ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (t) {
+    addEventListener(t, onInput, { passive: true });
+  });
+
+  // After 3 s untouched at the top, the camera creeps toward the fire.
+  function drift() {
+    if (userMoved || reduced.matches || scrollY > 4) return;
+    mode = 'drift';
+    var limit = trackPx(0.35 * W.segs[0].w / W.total), last = performance.now();
+    (function step(now) {
+      if (mode !== 'drift') return;
+      var y = Math.min(limit, scrollY + (now - last) * 0.03);
+      last = now;
+      scrollTo({ top: y, behavior: 'instant' });
+      if (y < limit) raf = requestAnimationFrame(step); else stop();
+    })(last);
+  }
+  idleTimer = setTimeout(drift, 3000);
+
+  // The tour glides station to station and holds where there is copy.
+  var stops = [
+    { at: 0.25, hold: 0 },
+    { at: 0.43, hold: 3200 },
+    { at: 0.63, hold: 3200 },
+    { at: 0.735, hold: 2600 },
+    { at: 0.83, hold: 3400 },
+    { at: 0.985, hold: 0 }
+  ];
+  function glide(from, to, ms, done) {
+    var t0 = performance.now();
+    (function step(now) {
+      if (mode !== 'tour') return;
+      var k = Math.min(1, (now - t0) / ms);
+      var e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      scrollTo({ top: from + (to - from) * e, behavior: 'instant' });
+      if (k < 1) raf = requestAnimationFrame(step); else done();
+    })(t0);
+  }
+  function tour() {
+    stop(); mode = 'tour'; userMoved = true; clearTimeout(idleTimer);
+    document.body.classList.add('is-touring');
+    var i = 0;
+    (function next() {
+      if (mode !== 'tour') return;
+      if (i >= stops.length) return stop();
+      var st = stops[i++], to = trackPx(st.at), from = scrollY;
+      var ms = Math.max(1800, Math.abs(to - from) / innerHeight * 4200);
+      glide(from, to, ms, function () { setTimeout(next, st.hold); });
+    })();
+  }
+  document.querySelector('[data-tour]').addEventListener('click', tour);
+  document.querySelector('[data-tour-stop]').addEventListener('click', stop);
 })();
 </script>
 </body>

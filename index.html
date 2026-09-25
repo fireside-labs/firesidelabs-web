@@ -138,7 +138,7 @@
   .copy { max-width: 34rem; }
   .copy--lead  { position: absolute; left: var(--sc-gutter); bottom: clamp(3rem, 11vh, 8rem); }
   .copy--mid   { position: absolute; left: var(--sc-gutter); top: 50%; translate: 0 -50%; }
-  .copy--trail { position: absolute; right: calc(var(--sc-gutter) + 11rem); top: 50%; translate: 0 -50%; }
+  .copy--trail { position: absolute; right: calc(var(--sc-gutter) + 15rem); top: 50%; translate: 0 -50%; }
 
   .hero-h {
     margin: 0; font-family: var(--sc-font-display); font-weight: 600;
@@ -286,10 +286,10 @@
 <nav aria-label="The forge">
   <ol class="map">
     <li data-leg="0" data-at="0"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">Hearth</span></button></li>
-    <li data-leg="1" data-at="0.25"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">Into the fire</span></button></li>
-    <li data-leg="2" data-at="0.43"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">CallPulse<span class="stamp">80% fewer uncalled leads</span></span></button></li>
-    <li data-leg="3" data-at="0.63"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">Librarian<span class="stamp">3M+ images searchable</span></span></button></li>
-    <li data-leg="4" data-at="0.735"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">The record<span class="stamp">$1.1M · $8M · 13%</span></span></button></li>
+    <li data-leg="1" data-at="0.243"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">Into the fire</span></button></li>
+    <li data-leg="2" data-at="0.418"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">CallPulse<span class="stamp">80% fewer uncalled leads</span></span></button></li>
+    <li data-leg="3" data-at="0.612"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">Librarian<span class="stamp">3M+ images searchable</span></span></button></li>
+    <li data-leg="4" data-at="0.745"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">The record<span class="stamp">$1.1M · $8M · 13%</span></span></button></li>
     <li data-leg="5" data-at="0.97"><button type="button"><span class="dot" aria-hidden="true"></span><span class="label">Pull up a chair</span></button></li>
   </ol>
 </nav>
@@ -327,12 +327,12 @@
       </picture>
       <video data-sc-src="/forge/forge-leg4-v1.mp4" data-sc-src-mobile="/forge/forge-leg4-v1-m.mp4" data-sc-lerp="0.12" muted playsinline></video>
     </div>
-    <div data-sc-segment data-sc-w="1.83" data-sc-waypoint="The record">
+    <div data-sc-segment data-sc-w="2.2" data-sc-waypoint="The record">
       <picture>
-        <source media="(max-width: 860px)" srcset="/forge/forge-leg5-v1-m.webp">
-        <img class="sc-world__poster" src="/forge/forge-leg5-v1.webp" alt="" decoding="async">
+        <source media="(max-width: 860px)" srcset="/forge/forge-leg5-v2-m.webp">
+        <img class="sc-world__poster" src="/forge/forge-leg5-v2.webp" alt="" decoding="async">
       </picture>
-      <video data-sc-src="/forge/forge-leg5-v1.mp4" data-sc-src-mobile="/forge/forge-leg5-v1-m.mp4" data-sc-lerp="0.12" muted playsinline></video>
+      <video data-sc-src="/forge/forge-leg5-v2.mp4" data-sc-src-mobile="/forge/forge-leg5-v2-m.mp4" data-sc-lerp="0.12" muted playsinline></video>
     </div>
     <div data-sc-segment data-sc-w="2.2" data-sc-waypoint="Pull up a chair">
       <picture>
@@ -362,7 +362,7 @@
       </div>
     </div>
 
-    <section class="copy copy--mid" id="c-callpulse" data-sc-copy data-sc-window="0.355 0.505" aria-labelledby="cp-h">
+    <section class="copy copy--mid" id="c-callpulse" data-sc-copy data-sc-window="0.345 0.491" aria-labelledby="cp-h">
       <span class="kicker">CallPulse · Conversation intelligence</span>
       <h2 class="station-h" id="cp-h">Every call, heard.</h2>
       <p class="station-p">A national aesthetic surgery group needed every consult call graded against its own sales and service standards. We built it in-house, running on their hardware, refreshed daily.</p>
@@ -373,7 +373,7 @@
       </dl>
     </section>
 
-    <section class="copy copy--trail" id="c-librarian" data-sc-copy data-sc-window="0.575 0.68" aria-labelledby="lib-h">
+    <section class="copy copy--trail" id="c-librarian" data-sc-copy data-sc-window="0.559 0.661" aria-labelledby="lib-h">
       <span class="kicker">Librarian · Visual search</span>
       <h2 class="station-h" id="lib-h">One photo finds its match.</h2>
       <p class="station-p">Show it one before-and-after photo and it finds the most similar results across the group's entire archive, with consent and face-blur checks on everything a prospect sees. Sales, scheduling, marketing and nursing use it daily.</p>
@@ -383,7 +383,7 @@
       </dl>
     </section>
 
-    <section class="copy copy--trail" id="c-record" data-sc-copy data-sc-window="0.695 0.77" aria-labelledby="rec-h">
+    <section class="copy copy--trail" id="c-record" data-sc-copy data-sc-window="0.712 0.782" aria-labelledby="rec-h">
       <span class="kicker">Earlier work</span>
       <h2 class="station-h" id="rec-h">Measured in P&amp;L.</h2>
       <ul class="ledger">
@@ -393,7 +393,7 @@
       </ul>
     </section>
 
-    <section class="copy copy--mid copy--wide" id="c-workshop" data-sc-copy data-sc-window="0.775 0.875" aria-labelledby="ws-h">
+    <section class="copy copy--mid copy--wide" id="c-workshop" data-sc-copy data-sc-window="0.792 0.88" aria-labelledby="ws-h">
       <span class="kicker">The workshop</span>
       <h2 class="station-h" id="ws-h">What else we build.</h2>
       <ul class="tools">
@@ -510,11 +510,11 @@
 
   // The tour glides station to station and holds where there is copy.
   var stops = [
-    { at: 0.25, hold: 0 },
-    { at: 0.43, hold: 3200 },
-    { at: 0.63, hold: 3200 },
-    { at: 0.735, hold: 2600 },
-    { at: 0.83, hold: 3400 },
+    { at: 0.243, hold: 0 },
+    { at: 0.418, hold: 3200 },
+    { at: 0.612, hold: 3200 },
+    { at: 0.745, hold: 2600 },
+    { at: 0.836, hold: 3400 },
     { at: 0.985, hold: 0 }
   ];
   function glide(from, to, ms, done) {

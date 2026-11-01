@@ -4,6 +4,36 @@ import { MotionLink } from '../components/MotionLink';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+const BUILDS = [
+  {
+    name: 'Studio',
+    tag: 'Photo production',
+    stat: '<1 min',
+    statLabel: 'Patient folder to publish-ready before and after package',
+    summary:
+      'Marketers upload a patient folder. Studio pairs each view, crops, levels, grays the backdrop, matches the lighting and exports a layered Photoshop file for the editor.',
+    points: [
+      'Pose and body models run locally on a single GPU, so patient photos never leave the building',
+      'Deterministic pipeline: the same input produces byte-identical output on every run',
+      'Four selectable looks, an editable framing and label editor, and a pre-publish check',
+      'Single sign-on with a team audit log, red-teamed twice before launch',
+    ],
+  },
+  {
+    name: 'Creator',
+    tag: 'Video ad production',
+    stat: '2 min',
+    statLabel: 'Storyboard to finished paid social ad',
+    summary:
+      'A local production line for paid social. A storyboard and an asset folder go in; finished 4:5 and 9:16 ads come out, each with a QC report, a contact sheet and campaign-ready file names.',
+    points: [
+      'Motion design rendered frame by frame through headless Chrome and ffmpeg, so every render is exact and repeatable',
+      'A b-roll library tagged by content, with generative clips to fill the gaps',
+      'Next: matting and compositing to multiply the b-roll library from existing shoots',
+    ],
+  },
+];
+
 const CASES = [
   {
     stat: '$1.1M',
@@ -74,6 +104,54 @@ const WorkPage = () => {
         </motion.p>
       </div>
 
+      <section className="max-w-5xl mx-auto px-6 mb-24" aria-labelledby="builds-h">
+        <div className="mb-10">
+          <h2 id="builds-h" className="font-mono text-xs tracking-[0.35em] text-indigo uppercase mb-4">
+            Shipped this year
+          </h2>
+          <p className="text-text-secondary leading-relaxed max-w-3xl">
+            Creative production for a national aesthetic surgery group&apos;s marketing team.
+            Before-and-after retouching and video ad edits normally wait in a designer&apos;s
+            queue. With these two tools, marketers make new creative themselves in minutes.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-8">
+          {BUILDS.map((b, i) => (
+            <motion.article
+              key={b.name}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
+              viewport={{ once: true, margin: '-10% 0px' }}
+              className="glass rounded-3xl p-8 md:p-10 flex flex-col gap-6"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <h3 className="font-display text-3xl font-semibold">{b.name}</h3>
+                <div className="shrink-0 px-3 py-1 rounded-full border border-indigo/30 font-mono text-[10px] tracking-widest text-indigo uppercase">
+                  {b.tag}
+                </div>
+              </div>
+              <div>
+                <div className="font-mono text-5xl font-bold text-gradient mb-2">{b.stat}</div>
+                <div className="text-sm text-text-muted">{b.statLabel}</div>
+              </div>
+              <p className="text-text-secondary leading-relaxed">{b.summary}</p>
+              <ul className="flex flex-col gap-3 border-t border-white/10 pt-5">
+                {b.points.map((pt) => (
+                  <li key={pt} className="flex gap-3 text-sm text-text-secondary leading-relaxed">
+                    <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo" />
+                    {pt}
+                  </li>
+                ))}
+              </ul>
+            </motion.article>
+          ))}
+        </div>
+      </section>
+
+      <div className="max-w-5xl mx-auto px-6 mb-10">
+        <h2 className="font-mono text-xs tracking-[0.35em] text-indigo uppercase">Earlier outcomes</h2>
+      </div>
       <div className="max-w-5xl mx-auto px-6 flex flex-col gap-8 mb-24">
         {CASES.map((c, i) => (
           <motion.article

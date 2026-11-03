@@ -200,6 +200,8 @@
   }
   .tour-stop svg { width: 0.8rem; height: 0.8rem; }
   body.is-touring .tour-stop { display: inline-flex; }
+  .tour-stop .i-play, body.is-paused .tour-stop .i-pause { display: none; }
+  body.is-paused .tour-stop .i-play { display: block; }
 
   .ledger { margin: 1.4rem 0 0; padding: 0; list-style: none; }
   .ledger li {
@@ -295,47 +297,47 @@
   </ol>
 </nav>
 
-<button class="tour-stop" type="button" data-tour-stop><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg>Stop the tour</button>
+<button class="tour-stop" type="button" data-tour-stop aria-pressed="false"><svg class="i-pause" aria-hidden="true" viewBox="0 0 24 24"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg><svg class="i-play" aria-hidden="true" viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg><span>Pause</span></button>
 
 <main data-sc-mode="worldflight" data-sc-seam="0.16" data-sc-lerp="0.14">
 
   <div data-sc-world>
-    <div data-sc-segment data-sc-w="2.2" data-sc-linger="0.2" data-sc-waypoint="Hearth">
+    <div data-sc-segment data-sc-w="1.32" data-sc-linger="0.2" data-sc-waypoint="Hearth">
       <picture>
         <source media="(max-width: 860px)" srcset="/forge/forge-leg1-v1-m.webp">
         <img class="sc-world__poster" src="/forge/forge-leg1-v1.webp" alt="" decoding="async">
       </picture>
       <video data-sc-src="/forge/forge-leg1-v2.mp4" data-sc-src-mobile="/forge/forge-leg1-v1-m.mp4" data-sc-lerp="0.14" muted playsinline></video>
     </div>
-    <div data-sc-segment data-sc-w="2.2" data-sc-waypoint="Into the fire">
+    <div data-sc-segment data-sc-w="1.32" data-sc-waypoint="Into the fire">
       <picture>
         <source media="(max-width: 860px)" srcset="/forge/forge-leg2-v1-m.webp">
         <img class="sc-world__poster" src="/forge/forge-leg2-v1.webp" alt="" decoding="async">
       </picture>
       <video data-sc-src="/forge/forge-leg2-v2.mp4" data-sc-src-mobile="/forge/forge-leg2-v1-m.mp4" data-sc-lerp="0.14" muted playsinline></video>
     </div>
-    <div data-sc-segment data-sc-w="2.2" data-sc-linger="0.25" data-sc-waypoint="CallPulse">
+    <div data-sc-segment data-sc-w="1.32" data-sc-linger="0.25" data-sc-waypoint="CallPulse">
       <picture>
         <source media="(max-width: 860px)" srcset="/forge/forge-leg3-v1-m.webp">
         <img class="sc-world__poster" src="/forge/forge-leg3-v1.webp" alt="" decoding="async">
       </picture>
       <video data-sc-src="/forge/forge-leg3-v2.mp4" data-sc-src-mobile="/forge/forge-leg3-v1-m.mp4" data-sc-lerp="0.14" muted playsinline></video>
     </div>
-    <div data-sc-segment data-sc-w="3.6" data-sc-linger="0.25" data-sc-waypoint="Librarian">
+    <div data-sc-segment data-sc-w="2.16" data-sc-linger="0.25" data-sc-waypoint="Librarian">
       <picture>
         <source media="(max-width: 860px)" srcset="/forge/forge-leg4-v1-m.webp">
         <img class="sc-world__poster" src="/forge/forge-leg4-v1.webp" alt="" decoding="async">
       </picture>
       <video data-sc-src="/forge/forge-leg4-v2.mp4" data-sc-src-mobile="/forge/forge-leg4-v1-m.mp4" data-sc-lerp="0.14" muted playsinline></video>
     </div>
-    <div data-sc-segment data-sc-w="2.2" data-sc-waypoint="The record">
+    <div data-sc-segment data-sc-w="1.32" data-sc-waypoint="The record">
       <picture>
         <source media="(max-width: 860px)" srcset="/forge/forge-leg5-v2-m.webp">
         <img class="sc-world__poster" src="/forge/forge-leg5-v2.webp" alt="" decoding="async">
       </picture>
       <video data-sc-src="/forge/forge-leg5-v3.mp4" data-sc-src-mobile="/forge/forge-leg5-v2-m.mp4" data-sc-lerp="0.14" muted playsinline></video>
     </div>
-    <div data-sc-segment data-sc-w="2.2" data-sc-waypoint="Pull up a chair">
+    <div data-sc-segment data-sc-w="1.32" data-sc-waypoint="Pull up a chair">
       <picture>
         <source media="(max-width: 860px)" srcset="/forge/forge-leg6-v1-m.webp">
         <img class="sc-world__poster" src="/forge/forge-leg6-v1.webp" alt="" decoding="async">
@@ -424,7 +426,10 @@
     <div class="copy copy--lead" id="c-finale" data-sc-copy data-sc-window="finale">
       <h2 class="finale-h">Pull up <em>a chair.</em></h2>
       <p class="lede">15 minutes. No pitch, no deck. Tell us what is costing you time and money, and we will tell you honestly whether AI can fix it.</p>
-      <a class="cta" href="/contact"><svg aria-hidden="true"><use href="#flame-ink"/></svg>Have a Fireside<svg aria-hidden="true"><use href="#arrow"/></svg></a>
+      <div class="actions">
+        <a class="cta" href="/contact"><svg aria-hidden="true"><use href="#flame-ink"/></svg>Have a Fireside<svg aria-hidden="true"><use href="#arrow"/></svg></a>
+        <button class="tour" type="button" data-tour data-tour-replay><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z" fill="currentColor"/></svg>Replay the tour</button>
+      </div>
       <p class="foot">
         <a href="/services">Services</a><a href="/work">Work</a><a href="/research">Research</a><a href="/benchmarks">Benchmarks</a><a href="/about">About</a><a href="mailto:j.nguyen@firesidelabs.ai">j.nguyen@firesidelabs.ai</a>
       </p>
@@ -496,16 +501,24 @@
   // film, copy and map behave exactly as they do under the reader's own hand.
   // Any input from the reader ends either one immediately.
   var trackPx = function (f) { return W.top + f * W.total * innerHeight; };
-  var mode = null, raf = 0, idleTimer = 0, userMoved = false;
+  var mode = null, raf = 0, idleTimer = 0, userMoved = false, paused = false;
+  var pauseBtn = document.querySelector('[data-tour-stop]');
 
+  function setPaused(p) {
+    paused = p;
+    document.body.classList.toggle('is-paused', p);
+    pauseBtn.setAttribute('aria-pressed', String(p));
+    pauseBtn.querySelector('span').textContent = p ? 'Resume' : 'Pause';
+  }
   function stop() {
-    mode = null; cancelAnimationFrame(raf);
+    mode = null; cancelAnimationFrame(raf); clearTimeout(beatTimer);
     document.body.classList.remove('is-touring');
+    setPaused(false);
   }
   function onInput(e) {
     // The press that starts the tour must not cancel it; a wheel or touch
     // over the same button still means the reader wants control back.
-    var onButton = e && e.target && e.target.closest && e.target.closest('[data-tour]');
+    var onButton = e && e.target && e.target.closest && e.target.closest('[data-tour], [data-tour-stop]');
     if (onButton && (e.type === 'pointerdown' || e.type === 'keydown')) return;
     userMoved = true; clearTimeout(idleTimer);
     if (mode) stop();
@@ -529,25 +542,30 @@
   }
   idleTimer = setTimeout(drift, 3000);
 
-  // The tour glides station to station and holds where there is copy.
+  // The tour glides station to station; ms is the glide time per screen of
+  // scroll, beat a short settle on each copy block so a pause lands on it.
   var stops = [
-    { at: 0.22, hold: 0 },
-    { at: 0.378, hold: 3200 },
-    { at: 0.534, hold: 3200 },
-    { at: 0.644, hold: 3600 },
-    { at: 0.769, hold: 2600 },
-    { at: 0.852, hold: 3400 },
-    { at: 0.986, hold: 0 }
+    { at: 0.22, ms: 2500, beat: 0 },
+    { at: 0.378, ms: 3670, beat: 800 },
+    { at: 0.534, ms: 3670, beat: 800 },
+    { at: 0.644, ms: 3670, beat: 800 },
+    { at: 0.769, ms: 3670, beat: 800 },
+    { at: 0.852, ms: 3670, beat: 800 },
+    { at: 0.986, ms: 2500, beat: 0 }
   ];
+  var beatTimer = 0;
   function glide(from, to, ms, done) {
-    var t0 = performance.now();
+    var elapsed = 0, last = performance.now();
     (function step(now) {
       if (mode !== 'tour') return;
-      var k = Math.min(1, (now - t0) / ms);
+      if (!paused) elapsed += now - last;
+      last = now;
+      if (paused) { raf = requestAnimationFrame(step); return; }
+      var k = Math.min(1, elapsed / ms);
       var e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
       scrollTo({ top: from + (to - from) * e, behavior: 'instant' });
       if (k < 1) raf = requestAnimationFrame(step); else done();
-    })(t0);
+    })(last);
   }
   function tour() {
     stop(); mode = 'tour'; userMoved = true; clearTimeout(idleTimer);
@@ -557,12 +575,17 @@
       if (mode !== 'tour') return;
       if (i >= stops.length) return stop();
       var st = stops[i++], to = trackPx(st.at), from = scrollY;
-      var ms = Math.max(1800, Math.abs(to - from) / innerHeight * 4200);
-      glide(from, to, ms, function () { setTimeout(next, st.hold); });
+      var ms = Math.max(700, Math.abs(to - from) / innerHeight * st.ms);
+      glide(from, to, ms, function () { beatTimer = setTimeout(next, st.beat); });
     })();
   }
-  document.querySelector('[data-tour]').addEventListener('click', tour);
-  document.querySelector('[data-tour-stop]').addEventListener('click', stop);
+  document.querySelectorAll('[data-tour]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (b.hasAttribute('data-tour-replay')) scrollTo({ top: 0, behavior: 'instant' });
+      tour();
+    });
+  });
+  pauseBtn.addEventListener('click', function () { setPaused(!paused); });
 })();
 </script>
 </body>

@@ -35,7 +35,15 @@
       "destination": "/wayward/support.html"
     },
     {
-      "source": "/((?!$|papers/|film/|home/|forge/|wayward/|assets/).*)",
+      "source": "/voice/privacy",
+      "destination": "/voice/privacy.html"
+    },
+    {
+      "source": "/voice/support",
+      "destination": "/voice/support.html"
+    },
+    {
+      "source": "/((?!$|papers/|film/|home/|forge/|wayward/|voice/|assets/).*)",
       "destination": "/app.html"
     }
   ],
